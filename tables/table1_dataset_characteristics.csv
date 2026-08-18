@@ -1,0 +1,6 @@
+dataset,uci_id,n_rows,n_features,minority_count,majority_count,positive_class_meaning
+banknote_authentication,267,1372,4,610,762,forged/counterfeit banknote
+blood_transfusion,176,748,4,178,570,donated blood in target period
+south_german_credit,522,1000,20,300,700,bad credit risk
+spambase,94,4601,57,1813,2788,spam email
+breast_cancer_wisconsin,17,569,30,212,357,malignant diagnosis

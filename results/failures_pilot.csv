@@ -1,0 +1,13 @@
+dataset,seed,r,c,direction,method,error
+banknote_authentication,13,0.5,0.05,majority_to_minority,tabpfn_downsample,Cannot take a larger sample than population when replace is False
+banknote_authentication,13,0.5,0.1,majority_to_minority,tabpfn_downsample,Cannot take a larger sample than population when replace is False
+banknote_authentication,13,0.5,0.2,majority_to_minority,tabpfn_downsample,Cannot take a larger sample than population when replace is False
+banknote_authentication,13,0.5,0.3,majority_to_minority,tabpfn_downsample,Cannot take a larger sample than population when replace is False
+banknote_authentication,37,0.5,0.05,majority_to_minority,tabpfn_downsample,Cannot take a larger sample than population when replace is False
+banknote_authentication,37,0.5,0.1,majority_to_minority,tabpfn_downsample,Cannot take a larger sample than population when replace is False
+banknote_authentication,37,0.5,0.2,majority_to_minority,tabpfn_downsample,Cannot take a larger sample than population when replace is False
+banknote_authentication,37,0.5,0.3,majority_to_minority,tabpfn_downsample,Cannot take a larger sample than population when replace is False
+banknote_authentication,73,0.5,0.05,majority_to_minority,tabpfn_downsample,Cannot take a larger sample than population when replace is False
+banknote_authentication,73,0.5,0.1,majority_to_minority,tabpfn_downsample,Cannot take a larger sample than population when replace is False
+banknote_authentication,73,0.5,0.2,majority_to_minority,tabpfn_downsample,Cannot take a larger sample than population when replace is False
+banknote_authentication,73,0.5,0.3,majority_to_minority,tabpfn_downsample,Cannot take a larger sample than population when replace is False

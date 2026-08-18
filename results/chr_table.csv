@@ -1,0 +1,15 @@
+method,direction,CHR
+tabpfn_distpfn,majority_to_minority,0.03125
+tabpfn_distpfn,minority_to_majority,0.03125
+tabpfn_distpfn_t,majority_to_minority,0.025
+tabpfn_distpfn_t,minority_to_majority,0.025
+tabpfn_downsample,majority_to_minority,0.31666666666666665
+tabpfn_downsample,minority_to_majority,0.075
+tabpfn_threshold,majority_to_minority,0.11875
+tabpfn_threshold,minority_to_majority,0.00625
+xgb_ros,majority_to_minority,0.2
+xgb_ros,minority_to_majority,0.125
+xgb_smote,majority_to_minority,0.25
+xgb_smote,minority_to_majority,0.1125
+xgb_weighted,majority_to_minority,0.15
+xgb_weighted,minority_to_majority,0.1125

@@ -1,0 +1,18 @@
+component,value
+python,3.13.5
+platform,macOS-26.5.1-arm64-arm-64bit-Mach-O
+numpy,2.3.0
+pandas,3.0.5
+scikit-learn,1.9.0
+scipy,1.18.0
+xgboost,3.4.1
+imbalanced-learn,0.14.2
+statsmodels,0.14.6
+tabpfn,8.3.0
+seeds,"[13, 37, 73]"
+xgboost.n_estimators,500
+xgboost.max_depth,6
+xgboost.learning_rate,0.05
+xgboost.subsample,0.8
+xgboost.colsample_bytree,0.8
+xgboost.eval_metric,logloss

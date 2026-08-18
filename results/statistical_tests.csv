@@ -1,0 +1,37 @@
+family,direction,test,pair,stat,p,p_holm,significant,n_blocks
+xgboost,majority_to_minority,friedman,,53.048040455119946,1.7906308903027615e-11,,True,80
+xgboost,majority_to_minority,wilcoxon,xgb_none vs xgb_weighted,,6.070675455348994e-10,3.6424052732093965e-09,True,80
+xgboost,majority_to_minority,wilcoxon,xgb_none vs xgb_ros,,1.1722866300567239e-09,5.861433150283619e-09,True,80
+xgboost,majority_to_minority,wilcoxon,xgb_none vs xgb_smote,,9.72435583192104e-08,3.889742332768416e-07,True,80
+xgboost,majority_to_minority,wilcoxon,xgb_weighted vs xgb_ros,,0.003312009243673199,0.009936027731019597,True,80
+xgboost,majority_to_minority,wilcoxon,xgb_weighted vs xgb_smote,,0.8469277799879871,0.8469277799879871,False,80
+xgboost,majority_to_minority,wilcoxon,xgb_ros vs xgb_smote,,0.417218691303645,0.83443738260729,False,80
+xgboost,minority_to_majority,friedman,,85.34942820838614,2.1834808847947526e-18,,True,80
+xgboost,minority_to_majority,wilcoxon,xgb_none vs xgb_weighted,,8.536174017858578e-13,5.1217044107151466e-12,True,80
+xgboost,minority_to_majority,wilcoxon,xgb_none vs xgb_ros,,4.186496789982493e-12,1.6745987159929973e-11,True,80
+xgboost,minority_to_majority,wilcoxon,xgb_none vs xgb_smote,,1.0038341056415484e-12,5.1217044107151466e-12,True,80
+xgboost,minority_to_majority,wilcoxon,xgb_weighted vs xgb_ros,,0.05492035072459871,0.05492035072459871,False,80
+xgboost,minority_to_majority,wilcoxon,xgb_weighted vs xgb_smote,,0.002003531228844107,0.004007062457688214,True,80
+xgboost,minority_to_majority,wilcoxon,xgb_ros vs xgb_smote,,0.00019396263262633302,0.000581887897878999,True,80
+tabpfn,majority_to_minority,friedman,,97.01372369624899,4.250137328141606e-20,,True,60
+tabpfn,majority_to_minority,wilcoxon,tabpfn_none vs tabpfn_threshold,,6.153745516737695e-10,6.153745516737695e-09,True,60
+tabpfn,majority_to_minority,wilcoxon,tabpfn_none vs tabpfn_distpfn,,1.9717376792195055e-09,1.5773901433756044e-08,True,60
+tabpfn,majority_to_minority,wilcoxon,tabpfn_none vs tabpfn_distpfn_t,,9.634403725281625e-10,8.670963352753462e-09,True,60
+tabpfn,majority_to_minority,wilcoxon,tabpfn_none vs tabpfn_downsample,,5.579887078153938e-05,0.00016739661234461815,True,60
+tabpfn,majority_to_minority,wilcoxon,tabpfn_threshold vs tabpfn_distpfn,,1.336221426384288e-07,8.017328558305729e-07,True,60
+tabpfn,majority_to_minority,wilcoxon,tabpfn_threshold vs tabpfn_distpfn_t,,2.764481785818482e-06,1.1057927143273927e-05,True,60
+tabpfn,majority_to_minority,wilcoxon,tabpfn_threshold vs tabpfn_downsample,,4.7014537734009664e-08,3.2910176413806764e-07,True,60
+tabpfn,majority_to_minority,wilcoxon,tabpfn_distpfn vs tabpfn_distpfn_t,,4.2405237648921826e-07,2.1202618824460914e-06,True,60
+tabpfn,majority_to_minority,wilcoxon,tabpfn_distpfn vs tabpfn_downsample,,0.2732719618863563,0.5465439237727125,False,60
+tabpfn,majority_to_minority,wilcoxon,tabpfn_distpfn_t vs tabpfn_downsample,,0.8133200378065524,0.8133200378065524,False,60
+tabpfn,minority_to_majority,friedman,,183.15954415954425,1.5628828986267384e-38,,True,80
+tabpfn,minority_to_majority,wilcoxon,tabpfn_none vs tabpfn_threshold,,2.743436847525893e-13,2.743436847525893e-12,True,80
+tabpfn,minority_to_majority,wilcoxon,tabpfn_none vs tabpfn_distpfn,,1.7284150609355646e-12,1.2098905426548952e-11,True,80
+tabpfn,minority_to_majority,wilcoxon,tabpfn_none vs tabpfn_distpfn_t,,4.998031538401729e-13,4.4982283845615566e-12,True,80
+tabpfn,minority_to_majority,wilcoxon,tabpfn_none vs tabpfn_downsample,,9.086095881838164e-13,7.268876705470531e-12,True,80
+tabpfn,minority_to_majority,wilcoxon,tabpfn_threshold vs tabpfn_distpfn,,9.14999946963411e-12,5.489999681780466e-11,True,80
+tabpfn,minority_to_majority,wilcoxon,tabpfn_threshold vs tabpfn_distpfn_t,,2.2087169265716532e-11,1.1043584632858266e-10,True,80
+tabpfn,minority_to_majority,wilcoxon,tabpfn_threshold vs tabpfn_downsample,,8.229374050369289e-08,2.4688122151107864e-07,True,80
+tabpfn,minority_to_majority,wilcoxon,tabpfn_distpfn vs tabpfn_distpfn_t,,2.288887505573057e-08,9.155550022292228e-08,True,80
+tabpfn,minority_to_majority,wilcoxon,tabpfn_distpfn vs tabpfn_downsample,,1.6947509036007028e-06,3.3895018072014056e-06,True,80
+tabpfn,minority_to_majority,wilcoxon,tabpfn_distpfn_t vs tabpfn_downsample,,5.33521022059738e-05,5.33521022059738e-05,True,80
