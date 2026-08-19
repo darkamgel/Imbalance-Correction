@@ -190,7 +190,7 @@ xgb_ros,spambase,0.05,majority_to_minority,>0.30
 xgb_ros,spambase,0.05,minority_to_majority,>0.30
 xgb_ros,spambase,0.1,majority_to_minority,>0.30
 xgb_ros,spambase,0.1,minority_to_majority,>0.30
-xgb_ros,spambase,0.2,majority_to_minority,0.3
+xgb_ros,spambase,0.2,majority_to_minority,>0.30
 xgb_ros,spambase,0.2,minority_to_majority,>0.30
 xgb_ros,spambase,0.5,majority_to_minority,>0.30
 xgb_ros,spambase,0.5,minority_to_majority,>0.30
@@ -230,10 +230,10 @@ xgb_smote,spambase,0.05,majority_to_minority,>0.30
 xgb_smote,spambase,0.05,minority_to_majority,>0.30
 xgb_smote,spambase,0.1,majority_to_minority,>0.30
 xgb_smote,spambase,0.1,minority_to_majority,>0.30
-xgb_smote,spambase,0.2,majority_to_minority,0.2
+xgb_smote,spambase,0.2,majority_to_minority,0.3
 xgb_smote,spambase,0.2,minority_to_majority,>0.30
-xgb_smote,spambase,0.5,majority_to_minority,>0.30
-xgb_smote,spambase,0.5,minority_to_majority,0.1
+xgb_smote,spambase,0.5,majority_to_minority,0.05
+xgb_smote,spambase,0.5,minority_to_majority,>0.30
 xgb_weighted,banknote_authentication,0.05,majority_to_minority,>0.30
 xgb_weighted,banknote_authentication,0.05,minority_to_majority,>0.30
 xgb_weighted,banknote_authentication,0.1,majority_to_minority,>0.30
@@ -273,4 +273,4 @@ xgb_weighted,spambase,0.1,minority_to_majority,>0.30
 xgb_weighted,spambase,0.2,majority_to_minority,>0.30
 xgb_weighted,spambase,0.2,minority_to_majority,>0.30
 xgb_weighted,spambase,0.5,majority_to_minority,>0.30
-xgb_weighted,spambase,0.5,minority_to_majority,0.05
+xgb_weighted,spambase,0.5,minority_to_majority,>0.30
