@@ -1,8 +1,8 @@
 method,direction,severe_c30,clean_c0
-tabpfn_distpfn,majority_to_minority,0.8102147740699783,0.8177583529939219
-tabpfn_distpfn,minority_to_majority,0.7913633499078168,0.8177583529939219
-tabpfn_distpfn_t,majority_to_minority,0.8166866824385458,0.8232905802767085
-tabpfn_distpfn_t,minority_to_majority,0.7976542777294592,0.8232905802767085
+tabpfn_distpfn,majority_to_minority,0.7889907669528935,0.8057802923861537
+tabpfn_distpfn,minority_to_majority,0.7638338364390566,0.8057802923861537
+tabpfn_distpfn_t,majority_to_minority,0.7971911134987544,0.8087005343084599
+tabpfn_distpfn_t,minority_to_majority,0.7749236626066166,0.8087005343084599
 tabpfn_downsample,majority_to_minority,0.8144524578001664,0.8358555919065952
 tabpfn_downsample,minority_to_majority,0.8342230483515911,0.8358555919065952
 tabpfn_none,majority_to_minority,0.7744347205535161,0.7965862962395027

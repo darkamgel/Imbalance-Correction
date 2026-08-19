@@ -1,8 +1,8 @@
 method,direction,CHR
-tabpfn_distpfn,majority_to_minority,0.03125
-tabpfn_distpfn,minority_to_majority,0.03125
-tabpfn_distpfn_t,majority_to_minority,0.025
-tabpfn_distpfn_t,minority_to_majority,0.025
+tabpfn_distpfn,majority_to_minority,0.23125
+tabpfn_distpfn,minority_to_majority,0.2875
+tabpfn_distpfn_t,majority_to_minority,0.225
+tabpfn_distpfn_t,minority_to_majority,0.25
 tabpfn_downsample,majority_to_minority,0.31666666666666665
 tabpfn_downsample,minority_to_majority,0.075
 tabpfn_threshold,majority_to_minority,0.11875
