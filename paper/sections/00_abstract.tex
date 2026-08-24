@@ -1,23 +1,23 @@
 \begin{abstract}
-Class-imbalance correction techniques -- resampling, cost-sensitive reweighting, and,
-for tabular foundation models, test-time posterior adjustment -- are treated as
-near-universally safe interventions: applying one is assumed to help, or at worst do
-no harm. This assumption has been evaluated almost exclusively under the premise that
-training labels are correct. We audit seven widely used correction methods, spanning
-TabPFN (threshold correction, DistPFN, DistPFN-T, class-balanced downsampling) and
-XGBoost (cost-sensitive weighting, random oversampling, SMOTE), under two directed
-label-error mechanisms -- majority-to-minority contamination and minority-to-majority
-loss -- across five UCI benchmark datasets, holding total training-set size fixed
-across imbalance levels so that imbalance and label noise can be varied as independent
-factors. Across 6{,}417 stress-tested evaluations, every method exhibits a nonzero
-Correction Harm Rate: the fraction of conditions under which a correction
-underperforms its uncorrected baseline ranges from 0.6\% to 31.7\% depending on method
-and corruption direction, with break-even contamination rates as low as 5\% for some
-method-dataset pairs. Friedman tests confirm these differences are statistically
-significant ($p < 10^{-11}$) in every method family and corruption direction tested.
-No single correction is robust across both corruption directions, and robustness
-varies substantially by dataset. These results indicate that imbalance correction
-cannot be assumed safe once label quality is uncertain, and that robustness to
-directed label error should be evaluated alongside accuracy before deploying any
-given correction in practice.
+Imbalance-correction methods -- resampling, cost-sensitive reweighting, and, for
+tabular foundation models, test-time posterior rescaling -- are usually assumed to be
+safe: they might not always help much, but they are not supposed to hurt. That
+assumption is almost never tested under label noise; it is validated on clean data,
+then deployed into systems where labels are not clean. We test it directly. Using
+TabPFN~\cite{hollmann2023tabpfn,hollmann2025tabpfnv2} (threshold correction,
+DistPFN~\cite{lee2026distpfn}, DistPFN-T, class-balanced downsampling) and
+XGBoost~\cite{chen2016xgboost} (cost-sensitive weighting, random oversampling,
+SMOTE~\cite{chawla2002smote}), we inject two directed, asymmetric label-error
+mechanisms -- majority rows mislabeled as minority, and minority rows lost into the
+majority class -- across five UCI datasets, at four imbalance ratios and five
+contamination rates, holding the total training-set size fixed so that imbalance and
+label noise vary independently. Across 6{,}417 evaluations, every one of the seven
+corrections has a nonzero failure rate: it underperforms doing nothing at all in
+anywhere from 0.6\% to 31.7\% of the conditions tested, depending on the method and
+which direction the labels were corrupted. Some corrections stop paying off after as
+little as 5\% contamination. These differences are statistically significant in every
+model family and corruption direction we tested (Friedman, $p < 10^{-11}$). No method
+we tested is safe in both corruption directions, and which method is safest depends on
+the dataset. If label quality cannot be guaranteed -- and in practice it rarely can be
+-- imbalance correction should not be applied on the assumption that it is harmless.
 \end{abstract}
