@@ -1,5 +1,23 @@
 \begin{abstract}
-% PENDING -- written last, per the project's execution plan (Day 3: Methods ->
-% Results -> Intro/Related Work -> Discussion -> Threats -> Abstract). Every
-% claim here must trace to a number already in results/ once written.
+Class-imbalance correction techniques -- resampling, cost-sensitive reweighting, and,
+for tabular foundation models, test-time posterior adjustment -- are treated as
+near-universally safe interventions: applying one is assumed to help, or at worst do
+no harm. This assumption has been evaluated almost exclusively under the premise that
+training labels are correct. We audit seven widely used correction methods, spanning
+TabPFN (threshold correction, DistPFN, DistPFN-T, class-balanced downsampling) and
+XGBoost (cost-sensitive weighting, random oversampling, SMOTE), under two directed
+label-error mechanisms -- majority-to-minority contamination and minority-to-majority
+loss -- across five UCI benchmark datasets, holding total training-set size fixed
+across imbalance levels so that imbalance and label noise can be varied as independent
+factors. Across 6{,}417 stress-tested evaluations, every method exhibits a nonzero
+Correction Harm Rate: the fraction of conditions under which a correction
+underperforms its uncorrected baseline ranges from 0.6\% to 31.7\% depending on method
+and corruption direction, with break-even contamination rates as low as 5\% for some
+method-dataset pairs. Friedman tests confirm these differences are statistically
+significant ($p < 10^{-11}$) in every method family and corruption direction tested.
+No single correction is robust across both corruption directions, and robustness
+varies substantially by dataset. These results indicate that imbalance correction
+cannot be assumed safe once label quality is uncertain, and that robustness to
+directed label error should be evaluated alongside accuracy before deploying any
+given correction in practice.
 \end{abstract}
