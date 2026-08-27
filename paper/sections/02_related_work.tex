@@ -18,12 +18,17 @@ distribution that differs from what the prior assumes is a distinct concern
 from that of a conventionally trained classifier, and has only recently begun
 to receive dedicated attention.
 
-DistPFN~\cite{lee2026distpfn} is, to our knowledge, the first method proposed
-specifically to correct this failure mode: a test-time posterior adjustment
-that rescales TabPFN's predicted class probabilities to counteract label shift
-between the training context and the deployment distribution, with a
-temperature-scaled variant (DistPFN-T) that adapts the adjustment strength to
-the discrepancy between the observed and reference priors. Both variants
+DistPFN~\cite{lee2026distpfn} is the newest instance of a much older idea:
+adjusting a classifier's output probabilities to match a known or assumed
+target class prior, without retraining, first formalized for conventional
+probabilistic classifiers by Saerens et al.~\cite{saerens2002adjusting}. To
+our knowledge, DistPFN is the first method to bring this idea to an
+in-context tabular foundation model, where the "prior" being adjusted for
+is implicit in the pretrained transformer rather than an explicit model
+parameter: it rescales TabPFN's predicted class probabilities to counteract
+label shift between the training context and the deployment distribution,
+with a temperature-scaled variant (DistPFN-T) that adapts the adjustment
+strength to the discrepancy between the observed and reference priors. Both variants
 require no retraining or architectural change, which is what makes them
 practical correction methods for the same class-imbalance setting that
 classical resampling and cost-sensitive techniques were designed for on
@@ -52,8 +57,15 @@ distribution untouched and reweights the loss so that minority-class errors
 are penalized more heavily than majority-class errors in proportion to the
 observed class ratio; XGBoost's \texttt{scale\_pos\_weight}
 parameter~\cite{chen2016xgboost}, which we use as the weighted correction in
-our XGBoost family, is a direct implementation of this idea. All of these
-methods share an implicit assumption that is central to this paper: that the
+our XGBoost family, is a direct implementation of this idea. Whether these
+corrections reliably help at all, even when every label is trustworthy, is
+itself contested: Elor and Averbuch-Elor~\cite{elor2022smote} find that with
+a sufficiently strong classifier and well-chosen hyperparameters, balancing
+the training set often provides no benefit over the imbalanced data as-is,
+and can be actively counterproductive, a finding that already complicates
+the assumption that these corrections are safe by default, before label
+noise is introduced at all. All of these methods share a further, implicit
+assumption that is central to this paper: that the
 observed class labels used to compute the resampling ratio, the interpolation
 neighborhood, or the cost ratio are themselves trustworthy. None of the
 methods above were designed with, or have been systematically evaluated
@@ -69,7 +81,7 @@ established conditions under which consistent classifiers can still be
 recovered~\cite{natarajan2013noisylabels}. Asymmetric label noise, where the
 flip probabilities differ across classes or flip in only one direction, was
 shown to require different identifiability and denoising strategies than the
-symmetric case~\cite{scott2013asymmetricnoise} -- a distinction that maps
+symmetric case~\cite{scott2013asymmetricnoise}, a distinction that maps
 directly onto our two directed corruption mechanisms, which are asymmetric by
 construction rather than symmetric random flips. Frénay and
 Verleysen~\cite{frenay2014labelnoise} survey sources and taxonomies of label
@@ -80,7 +92,7 @@ including loss correction, sample selection, and label correction approaches.
 Both surveys treat label noise as a phenomenon to be corrected or tolerated
 during training; neither surveys, nor the methods they catalog, examine how
 label noise interacts with a class-imbalance correction applied
-\emph{alongside} it -- which is the specific interaction this paper studies,
+\emph{alongside} it, which is the specific interaction this paper studies,
 not by proposing a new noise-robust training method, but by auditing whether
 existing, widely deployed imbalance corrections remain net-beneficial once
 that assumption is violated.
@@ -97,13 +109,14 @@ apart; they propose a class-balanced sample selection procedure with
 confidence-based augmentation to correct this bias during training. This line
 of work targets the training-time mechanism for handling noisy labels under
 imbalance and proposes a new algorithm for that setting. It does not evaluate
-whether the standard \emph{imbalance corrections already in widespread use} --
-SMOTE, random oversampling, cost-sensitive reweighting, or, for the newer
+whether the standard \emph{imbalance corrections already in widespread use}
+(SMOTE, random oversampling, cost-sensitive reweighting, or, for the newer
 class of tabular foundation models, test-time posterior adjustment and
-class-balanced downsampling -- continue to help, are neutral, or actively harm
+class-balanced downsampling) continue to help, are neutral, or actively harm
 performance once a controlled fraction of the labels they operate on are
 themselves wrong. To our knowledge, no existing empirical study holds the
 total amount of training evidence fixed across imbalance levels while
 independently varying a directed, asymmetric label-error rate and measuring
-whether the resulting corrections still improve on doing nothing at all --
-the gap this paper's controlled, cross-method audit is designed to fill.
+whether the resulting corrections still improve on doing nothing at all.
+Closing that gap is what this paper's controlled, cross-method audit is
+designed to do.
