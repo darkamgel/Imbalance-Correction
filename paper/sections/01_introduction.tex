@@ -47,39 +47,26 @@ RQ1 and RQ2 are answered by Correction Gain and Correction Harm Rate, RQ3 by the
 break-even contamination rate, and RQ4 by the Prior Sensitivity Gap, all defined in
 Section~\ref{sec:methods}.
 
-We test it directly. We construct two directed, asymmetric label-error mechanisms:
-majority-class rows relabeled as minority (contamination), and minority-class rows
-relabeled as majority (loss), and apply each at five contamination rates, including a
-clean, uncorrupted baseline, to five real datasets drawn from the UCI Machine
-Learning Repository~\cite{kelly_uci}. We test each corruption condition at four
-imbalance ratios, and we hold the total training-set size fixed across those ratios
-so that imbalance and label noise can be studied as independent factors rather than
-confounded with how much training data is available. On top of this controlled
-corruption we run seven correction methods spanning two model families in wide use,
-TabPFN (threshold correction, DistPFN, DistPFN-T, class-balanced downsampling) and
-XGBoost~\cite{chen2016xgboost} (cost-sensitive weighting, random oversampling,
-SMOTE), across three random seeds, producing 6{,}417 individually verified
-model-condition evaluations.
+We test this empirically. Using two widely deployed tabular model families, TabPFN
+and XGBoost~\cite{chen2016xgboost}, we audit seven correction methods under two
+directed, asymmetric label-error mechanisms and a range of imbalance levels, across
+five real datasets drawn from the UCI Machine Learning Repository~\cite{kelly_uci}. The design holds the
+total amount of training evidence fixed across imbalance levels, so that imbalance
+and label noise can be studied as independent factors rather than one confounded
+with the other. Section~\ref{sec:methods} gives the full experimental setup,
+including the exact corruption procedure and every configuration tested.
 
-To judge whether a correction helps or hurts under this design, we use four
-purpose-built metrics, defined in full in Section~\ref{sec:methods}. Correction Gain
-is the difference in performance between a corrected method and its uncorrected
-baseline at the same imbalance and noise condition. Correction Harm Rate is the
-fraction of tested conditions where that gain is negative, that is, where applying
-the correction leaves the model worse off than doing nothing at all. The break-even
-contamination rate is the noise level at which a method stops paying off. The Prior
-Sensitivity Gap is how much better a correction would perform if it were given the
-true, uncorrupted class prior instead of the observed one, isolating how much of a
-correction's failure comes specifically from trusting a corrupted prior.
+To judge whether a correction helps or hurts, rather than only how accurate it is,
+we use four purpose-built metrics: Correction Gain, Correction Harm Rate, a
+break-even contamination rate, and a Prior Sensitivity Gap. Each is defined precisely
+in Section~\ref{sec:methods}.
 
-Across the 6{,}417 evaluations, every one of the seven correction methods we test has
-a nonzero Correction Harm Rate. Depending on the method and the direction of
-corruption, the harm rate ranges from 0.6\% to 31.7\% of tested conditions, and for
-some method-dataset pairs the break-even contamination rate is as low as 5\%. These
-differences are statistically significant in every model family and corruption
-direction we test (Friedman, $p < 10^{-11}$ in all four tests). No single method is
-robust to both corruption directions, and which method is most robust depends on the
-dataset it is applied to.
+Our central finding is that every correction method we test can, at a realistic
+level of label noise, perform worse than applying no correction at all, and that how
+often this happens depends strongly on both the direction of the corruption and the
+dataset it is applied to. No method we test is robust to both corruption directions.
+The complete results, including per-method failure rates and break-even points, are
+reported in Section~\ref{sec:results}.
 
 Our contributions are as follows.
 
@@ -96,8 +83,7 @@ implementation error we found in that process (Section~\ref{sec:methods}).
 break-even contamination rate, and Prior Sensitivity Gap, built specifically to
 measure whether a correction remains net-beneficial once label noise is present,
 rather than measuring model accuracy alone.
-\item We show, across five real datasets and 6{,}417 evaluated conditions, that every
-correction method tested can underperform doing nothing at all, at contamination
-rates as low as 5\%, and that this failure is direction-dependent rather than
-uniform across methods or datasets.
+\item We show, across five real datasets, that every correction method tested can
+underperform doing nothing at all at contamination rates as low as 5\%, and that
+this failure is direction-dependent rather than uniform across methods or datasets.
 \end{itemize}
