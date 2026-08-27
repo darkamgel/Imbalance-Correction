@@ -1,37 +1,36 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Tabular classifiers built for credit risk assessment, medical diagnosis, and spam
-filtering routinely face two problems at once: the outcome of interest is rare, and
-some of the labels describing that outcome are wrong. A rare disease is
-underrepresented in a training set, and some of the recorded diagnoses in that same
-set are themselves incorrect, because a reviewer missed a case, an automated pipeline
-mislabeled a record, or an annotator simply disagreed with the correct answer. Three
-of the five datasets used in this paper (credit risk, breast cancer diagnosis, and
-spam email) are direct instances of this kind of task, and none of them come with a
-guarantee that their labels are error free.
+Class imbalance, where one class occurs far less often than the other, makes
+minority-class prediction difficult: a classifier trained on skewed data can reach
+high overall accuracy while rarely predicting the rare class correctly, since
+defaulting to the majority class already satisfies most of the data.
 
-Practitioners already have a large toolbox for the first problem, class imbalance.
-Resampling techniques such as SMOTE~\cite{chawla2002smote} and random oversampling,
-cost-sensitive reweighting~\cite{elkan2001costsensitive}, and, for newer in-context
-tabular models such as TabPFN~\cite{hollmann2023tabpfn,hollmann2025tabpfnv2},
-test-time posterior rescaling methods such as DistPFN~\cite{lee2026distpfn} are all
-designed to stop a model from ignoring a rare class. Every one of these methods is
-validated, almost without exception, on data where the labels are assumed to be
-correct. Whether they remain beneficial once the second problem, label noise, is
-present at the same time is a question the existing literature has not directly
-answered (Section~\ref{sec:related-work}).
+To address this, practitioners commonly use resampling techniques such as
+SMOTE~\cite{chawla2002smote} and random oversampling, cost-sensitive
+reweighting~\cite{elkan2001costsensitive}, and, for newer in-context tabular models
+such as TabPFN~\cite{hollmann2023tabpfn,hollmann2025tabpfnv2}, threshold and
+posterior-probability correction methods such as DistPFN~\cite{lee2026distpfn}.
 
-This gap matters because the two problems are not independent once a correction is
-applied. A resampling method decides how many synthetic or duplicated minority rows
-to add based on the observed count of minority-labeled rows. A cost-sensitive method
-sets its penalty in proportion to the observed class ratio. A posterior-rescaling
-method for an in-context model corrects a predicted probability against the observed
-minority rate. In every case, the correction is calibrated against an observed
-quantity, not the true one. If a meaningful fraction of the rows behind that observed
-quantity are mislabeled, in either direction, the correction inherits that error
-without any way of detecting it. This paper is organized around four research
-questions.
+Nearly all of these techniques share one assumption that is rarely stated
+explicitly: that the observed minority-class labels used to calibrate the
+correction, whether that is a resampling ratio, a cost weight, or a decision
+threshold, are themselves trustworthy. This assumption is validated almost
+exclusively on data where the labels are assumed correct
+(Section~\ref{sec:related-work}).
+
+If that assumption does not hold, the correction has no way to tell. A resampling
+method will duplicate or synthesize around a mislabeled row exactly as readily as a
+correctly labeled one. A cost-sensitive method will set its penalty from a corrupted
+class ratio. A posterior-rescaling method will correct a prediction against a prior
+that is itself wrong. In each case, the correction can end up amplifying the
+mislabeled examples it was built to compensate for, rather than correcting for
+genuine class imbalance.
+
+This paper tests that failure mode directly: we experimentally measure when
+standard imbalance-correction methods help and when they backfire, under
+controlled, directed label contamination. Concretely, this paper is organized
+around four research questions.
 
 \begin{itemize}
 \item \textbf{RQ1.} Do standard imbalance corrections remain beneficial once
