@@ -1,36 +1,39 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Class imbalance, where one class occurs far less often than the other, makes
-minority-class prediction difficult: a classifier trained on skewed data can reach
-high overall accuracy while rarely predicting the rare class correctly, since
-defaulting to the majority class already satisfies most of the data.
+Class imbalance occurs when one class is far more common than the other, and it
+makes minority-class prediction difficult. A classifier trained on skewed data can
+reach high overall accuracy while rarely predicting the rare class correctly, since
+simply defaulting to the majority class already satisfies most of the data.
 
-To address this, practitioners commonly use resampling techniques such as
-SMOTE~\cite{chawla2002smote} and random oversampling, cost-sensitive
-reweighting~\cite{elkan2001costsensitive}, and, for newer in-context tabular models
-such as TabPFN~\cite{hollmann2023tabpfn,hollmann2025tabpfnv2}, threshold and
-posterior-probability correction methods such as DistPFN~\cite{lee2026distpfn}.
+To address this, practitioners commonly turn to three kinds of correction.
+Data-level resampling techniques, such as SMOTE~\cite{chawla2002smote} and random
+oversampling, add or duplicate minority examples before training begins.
+Cost-sensitive reweighting~\cite{elkan2001costsensitive} instead leaves the data
+untouched and penalizes mistakes on the minority class more heavily during
+training. And for newer in-context tabular models such as
+TabPFN~\cite{hollmann2023tabpfn,hollmann2025tabpfnv2}, threshold and
+posterior-probability correction methods such as DistPFN~\cite{lee2026distpfn}
+adjust the model's predictions after they have already been made.
 
 Nearly all of these techniques share one assumption that is rarely stated
-explicitly: that the observed minority-class labels used to calibrate the
-correction, whether that is a resampling ratio, a cost weight, or a decision
-threshold, are themselves trustworthy. This assumption is validated almost
-exclusively on data where the labels are assumed correct
-(Section~\ref{sec:related-work}).
+explicitly: the observed minority-class labels used to calibrate the correction,
+whether a resampling ratio, a cost weight, or a decision threshold, are themselves
+trustworthy. That assumption is validated almost exclusively on data where the
+labels are assumed to be correct (Section~\ref{sec:related-work}).
 
 If that assumption does not hold, the correction has no way to tell. A resampling
 method will duplicate or synthesize around a mislabeled row exactly as readily as a
 correctly labeled one. A cost-sensitive method will set its penalty from a corrupted
 class ratio. A posterior-rescaling method will correct a prediction against a prior
-that is itself wrong. In each case, the correction can end up amplifying the
+that is itself wrong. Either way, the correction can end up amplifying the
 mislabeled examples it was built to compensate for, rather than correcting for
 genuine class imbalance.
 
-This paper tests that failure mode directly: we experimentally measure when
-standard imbalance-correction methods help and when they backfire, under
-controlled, directed label contamination. Concretely, this paper is organized
-around four research questions.
+This paper tests that failure mode directly, measuring when standard
+imbalance-correction methods help and when they backfire under controlled, directed
+label contamination. We organize this investigation around four research
+questions.
 
 \begin{itemize}
 \item \textbf{RQ1.} Do standard imbalance corrections remain beneficial once
@@ -46,24 +49,24 @@ RQ1 and RQ2 are answered by Correction Gain and Correction Harm Rate, RQ3 by the
 break-even contamination rate, and RQ4 by the Prior Sensitivity Gap, all defined in
 Section~\ref{sec:methods}.
 
-We test this empirically. Using two widely deployed tabular model families, TabPFN
-and XGBoost~\cite{chen2016xgboost}, we audit seven correction methods under two
-directed, asymmetric label-error mechanisms and a range of imbalance levels, across
-five real datasets drawn from the UCI Machine Learning Repository~\cite{kelly_uci}. The design holds the
-total amount of training evidence fixed across imbalance levels, so that imbalance
-and label noise can be studied as independent factors rather than one confounded
-with the other. Section~\ref{sec:methods} gives the full experimental setup,
-including the exact corruption procedure and every configuration tested.
+Concretely, we audit seven correction methods across two widely deployed tabular
+model families, TabPFN and XGBoost~\cite{chen2016xgboost}, under two directed,
+asymmetric label-error mechanisms and a range of imbalance levels, using five real
+datasets drawn from the UCI Machine Learning Repository~\cite{kelly_uci}. The design
+holds the total amount of training evidence fixed across imbalance levels, so that
+imbalance and label noise can be varied independently rather than confounded with
+one another. Section~\ref{sec:methods} gives the full experimental setup, including
+the exact corruption procedure and every configuration tested.
 
-To judge whether a correction helps or hurts, rather than only how accurate it is,
-we use four purpose-built metrics: Correction Gain, Correction Harm Rate, a
-break-even contamination rate, and a Prior Sensitivity Gap. Each is defined precisely
-in Section~\ref{sec:methods}.
+To judge whether a correction helps or hurts, rather than simply how accurate it
+is, we use four purpose-built metrics: Correction Gain, Correction Harm Rate, a
+break-even contamination rate, and a Prior Sensitivity Gap. Each is defined
+precisely in Section~\ref{sec:methods}.
 
-Our central finding is that every correction method we test can, at a realistic
-level of label noise, perform worse than applying no correction at all, and that how
+Our central finding is that every correction method tested can, at a realistic
+level of label noise, perform worse than applying no correction at all, and how
 often this happens depends strongly on both the direction of the corruption and the
-dataset it is applied to. No method we test is robust to both corruption directions.
+dataset it is applied to. No single method is robust to both corruption directions.
 The complete results, including per-method failure rates and break-even points, are
 reported in Section~\ref{sec:results}.
 
@@ -71,18 +74,19 @@ Our contributions are as follows.
 
 \begin{itemize}
 \item We introduce a controlled experimental design that holds total training-set
-size fixed across imbalance ratios and injects two directed, asymmetric label-error
-mechanisms on top of it, so that imbalance and label noise can be varied as
-independent factors rather than as a single confounded variable.
-\item We audit seven correction methods across two model families in practical use,
-including DistPFN and DistPFN-T, whose reference implementation we check directly
-against the authors' published code before using it in this study, and we report an
-implementation error we found in that process (Section~\ref{sec:methods}).
+size fixed across imbalance ratios and injects two directed, asymmetric
+label-error mechanisms on top of it, isolating the effect of label noise from the
+effect of imbalance itself.
+\item We audit seven correction methods across two widely used model families,
+including DistPFN and DistPFN-T. We check their reference implementation directly
+against the authors' published code before using it, and report an implementation
+error we found in that process (Section~\ref{sec:methods}).
 \item We define four contribution metrics, Correction Gain, Correction Harm Rate,
-break-even contamination rate, and Prior Sensitivity Gap, built specifically to
-measure whether a correction remains net-beneficial once label noise is present,
-rather than measuring model accuracy alone.
+break-even contamination rate, and Prior Sensitivity Gap, designed to measure
+whether a correction remains net-beneficial once label noise is present, rather
+than measuring model accuracy alone.
 \item We show, across five real datasets, that every correction method tested can
-underperform doing nothing at all at contamination rates as low as 5\%, and that
-this failure is direction-dependent rather than uniform across methods or datasets.
+underperform doing nothing at all once contamination reaches as little as 5\%, and
+that this failure is direction-dependent rather than uniform across methods or
+datasets.
 \end{itemize}
