@@ -28,15 +28,11 @@ is implicit in the pretrained transformer rather than an explicit model
 parameter: it rescales TabPFN's predicted class probabilities to counteract
 label shift between the training context and the deployment distribution,
 with a temperature-scaled variant (DistPFN-T) that adapts the adjustment
-strength to the discrepancy between the observed and reference priors. Both variants
-require no retraining or architectural change, which is what makes them
-practical correction methods for the same class-imbalance setting that
-classical resampling and cost-sensitive techniques were designed for on
-conventional classifiers. We treat DistPFN and DistPFN-T as first-class
-imbalance-correction methods for TabPFN, on equal footing with the classical
-corrections described next for gradient-boosted trees, and evaluate the
-official formulation directly against the reference implementation before
-using it in our study.
+strength to the discrepancy between the observed and reference priors. Both
+variants require no retraining or architectural change, which places them in
+the same class-imbalance setting that classical resampling and
+cost-sensitive techniques were designed for on conventional classifiers,
+despite operating through a completely different mechanism.
 
 \subsection{Correcting Class Imbalance}
 
@@ -51,13 +47,13 @@ after its introduction. Random oversampling, by contrast, corrects the
 training distribution by duplicating existing minority rows without
 synthesizing new feature vectors; both are implemented as standard,
 interchangeable components in imbalanced-learn~\cite{lemaitre2017imbalancedlearn},
-the toolbox we use for both corrections in this study. Cost-sensitive
+a widely used toolbox implementing both corrections. Cost-sensitive
 learning~\cite{elkan2001costsensitive} instead leaves the training
 distribution untouched and reweights the loss so that minority-class errors
 are penalized more heavily than majority-class errors in proportion to the
 observed class ratio; XGBoost's \texttt{scale\_pos\_weight}
-parameter~\cite{chen2016xgboost}, which we use as the weighted correction in
-our XGBoost family, is a direct implementation of this idea. Whether these
+parameter~\cite{chen2016xgboost} is a direct, widely used implementation of
+this idea. Whether these
 corrections reliably help at all, even when every label is trustworthy, is
 itself contested: Elor and Averbuch-Elor~\cite{elor2022smote} find that with
 a sufficiently strong classifier and well-chosen hyperparameters, balancing
