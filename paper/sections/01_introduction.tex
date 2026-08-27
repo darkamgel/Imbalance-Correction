@@ -30,26 +30,21 @@ method for an in-context model corrects a predicted probability against the obse
 minority rate. In every case, the correction is calibrated against an observed
 quantity, not the true one. If a meaningful fraction of the rows behind that observed
 quantity are mislabeled, in either direction, the correction inherits that error
-without any way of detecting it. Whether this actually causes a correction to fail in
-practice, and how often, is what we set out to measure. Concretely, this paper asks
-four research questions.
+without any way of detecting it. This paper is organized around four research
+questions.
 
 \begin{itemize}
-\item \textbf{RQ1.} Do standard imbalance corrections for TabPFN and XGBoost remain
-net-beneficial under directed label error, or can they underperform an uncorrected
-baseline?
-\item \textbf{RQ2.} Does the direction of label corruption, contamination of the
-majority class versus loss of the minority class, change how often a correction
-backfires?
-\item \textbf{RQ3.} At what contamination rate does each correction stop paying off,
-and does that threshold depend on the dataset it is applied to?
-\item \textbf{RQ4.} How much of a correction's performance loss comes specifically
-from not knowing the true class prior, as opposed to the corruption itself?
+\item \textbf{RQ1.} Do standard imbalance corrections remain beneficial once
+directed label error is present?
+\item \textbf{RQ2.} Does the direction of label corruption change how often a
+correction fails?
+\item \textbf{RQ3.} At what contamination rate does each correction stop paying off?
+\item \textbf{RQ4.} How much of a correction's failure is due to an incorrect prior
+alone, rather than the corruption itself?
 \end{itemize}
 
-We answer these using the four metrics introduced below: RQ1 and RQ2 are answered by
-Correction Gain and Correction Harm Rate, RQ3 by the break-even contamination rate,
-and RQ4 by the Prior Sensitivity Gap, all defined precisely in
+RQ1 and RQ2 are answered by Correction Gain and Correction Harm Rate, RQ3 by the
+break-even contamination rate, and RQ4 by the Prior Sensitivity Gap, all defined in
 Section~\ref{sec:methods}.
 
 We test it directly. We construct two directed, asymmetric label-error mechanisms:
