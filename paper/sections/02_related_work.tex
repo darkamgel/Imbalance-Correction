@@ -96,16 +96,20 @@ that assumption is violated.
 \subsection{The Understudied Intersection: Imbalance Correction Under Noisy Labels}
 
 A smaller body of work has begun to treat class imbalance and label noise as
-jointly occurring problems rather than independent ones. Liu et
-al.~\cite{liu2024imbalancednoisy} observe that standard loss-based sample
-selection for noisy-label training is itself biased against minority classes,
-since under-learned tail classes and noise-corrupted classes are both
-associated with high training loss and are consequently difficult to tell
-apart; they propose a class-balanced sample selection procedure with
-confidence-based augmentation to correct this bias during training. This line
-of work targets the training-time mechanism for handling noisy labels under
-imbalance and proposes a new algorithm for that setting. It does not evaluate
-whether the standard \emph{imbalance corrections already in widespread use}
+jointly occurring problems rather than independent ones. Koziarski et
+al.~\cite{koziarski2020ccr} combine a resampling step with a label-cleaning step
+specifically for multi-class imbalanced data known to contain label noise, and
+Khanal et al.~\cite{khanal2024activelabel} combine active learning with
+noisy-label training to handle both problems together in imbalanced medical
+image classification. Liu et al.~\cite{liu2024imbalancednoisy} observe that
+standard loss-based sample selection for noisy-label training is itself biased
+against minority classes, since under-learned tail classes and noise-corrupted
+classes are both associated with high training loss and are consequently
+difficult to tell apart; they propose a class-balanced sample selection
+procedure with confidence-based augmentation to correct this bias during
+training. Each of these lines of work proposes a new algorithm for the
+training-time mechanism of handling noisy labels under imbalance. None of them
+evaluates whether the standard \emph{imbalance corrections already in widespread use}
 (SMOTE, random oversampling, cost-sensitive reweighting, or, for the newer
 class of tabular foundation models, test-time posterior adjustment and
 class-balanced downsampling) continue to help, are neutral, or actively harm
