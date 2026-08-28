@@ -24,7 +24,8 @@ threshold, are themselves trustworthy. That assumption is validated almost
 exclusively on data where the labels are assumed to be correct
 (Section~\ref{sec:related-work}).
 
-If that assumption does not hold, the correction has no way to tell. A resampling
+If that assumption does not hold, none of these corrections can tell a genuine
+minority example from a mislabeled one. A resampling
 method will duplicate or synthesize around a mislabeled row exactly as readily as a
 correctly labeled one. A cost-sensitive method will set its penalty from a corrupted
 class ratio. A posterior-rescaling method will correct a prediction against a prior
