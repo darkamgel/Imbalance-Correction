@@ -18,16 +18,17 @@ or the training process, it adjusts the model's predictions after they have
 already been made.
 
 Nearly all of these techniques share one assumption that is rarely stated
-explicitly: the observed minority-class labels used to calibrate the correction,
-whether a resampling ratio, a cost weight, or a decision threshold, are themselves
-trustworthy. That assumption is validated almost exclusively on data where the
-labels are assumed to be correct (Section~\ref{sec:related-work}).
+explicitly: that the observed minority-class labels used to calibrate them, whether
+the correction takes the form of a resampling ratio, a cost weight, or a decision
+threshold, are themselves trustworthy. That assumption is validated almost
+exclusively on data where the labels are assumed to be correct
+(Section~\ref{sec:related-work}).
 
 If that assumption does not hold, the correction has no way to tell. A resampling
 method will duplicate or synthesize around a mislabeled row exactly as readily as a
 correctly labeled one. A cost-sensitive method will set its penalty from a corrupted
 class ratio. A posterior-rescaling method will correct a prediction against a prior
-that is itself wrong. Either way, the correction can end up amplifying the
+that is itself wrong. In every case, the correction can end up amplifying the
 mislabeled examples it was built to compensate for, rather than correcting for
 genuine class imbalance.
 
