@@ -79,9 +79,9 @@ size fixed across imbalance ratios and injects two directed, asymmetric
 label-error mechanisms on top of it, isolating the effect of label noise from the
 effect of imbalance itself.
 \item We audit seven correction methods across two widely used model families,
-including DistPFN and DistPFN-T. We check their reference implementation directly
-against the authors' published code before using it, and report an implementation
-error we found in that process (Section~\ref{sec:methods}).
+including DistPFN and DistPFN-T~\cite{lee2026distpfn}. We check their reference
+implementation directly against the authors' published code before using it, and
+report an implementation error we found in that process (Section~\ref{sec:methods}).
 \item We define four contribution metrics, Correction Gain, Correction Harm Rate,
 break-even contamination rate, and Prior Sensitivity Gap, designed to measure
 whether a correction remains net-beneficial once label noise is present, rather
