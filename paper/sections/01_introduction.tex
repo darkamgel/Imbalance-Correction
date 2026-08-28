@@ -11,10 +11,11 @@ Data-level resampling techniques, such as SMOTE~\cite{chawla2002smote} and rando
 oversampling, add or duplicate minority examples before training begins.
 Cost-sensitive reweighting~\cite{elkan2001costsensitive} instead leaves the data
 untouched and penalizes mistakes on the minority class more heavily during
-training. And for newer in-context tabular models such as
-TabPFN~\cite{hollmann2023tabpfn,hollmann2025tabpfnv2}, threshold and
-posterior-probability correction methods such as DistPFN~\cite{lee2026distpfn}
-adjust the model's predictions after they have already been made.
+training. A third kind, threshold and posterior-probability correction such as
+DistPFN~\cite{lee2026distpfn}, is suited to newer in-context tabular models such as
+TabPFN~\cite{hollmann2023tabpfn,hollmann2025tabpfnv2}: instead of touching the data
+or the training process, it adjusts the model's predictions after they have
+already been made.
 
 Nearly all of these techniques share one assumption that is rarely stated
 explicitly: the observed minority-class labels used to calibrate the correction,
