@@ -29,35 +29,31 @@ method per condition.
 \begin{figure*}[t]
 \centering
 \begin{tikzpicture}[
-  node distance=0.5cm,
-  box/.style={draw, rounded corners, align=center, minimum height=1.05cm,
-              text width=2.3cm, font=\footnotesize},
+  node distance=0.35cm,
+  box/.style={draw, rounded corners, align=center, minimum height=1.15cm,
+              text width=1.85cm, font=\footnotesize},
   arr/.style={-{Stealth[length=2mm]}, thick}
 ]
-\node[box] (data) {Dataset\\(1 of 5 UCI sources)};
-\node[box, right=of data] (split) {Stratified\\80/20 split};
-\node[box, right=of split] (pool) {Training pool};
-\node[box, right=of pool] (sample) {Controlled sample\\($N_{\text{common}}$, ratio $r$)};
-\node[box, right=of sample] (corrupt) {Inject label error\\($c$, Direction A/B,\\or clean)};
-
-\node[box, below=of split] (test) {Held-out test set\\(fixed, clean)};
-\node[box, right=of test] (fit) {Fit correction\\method};
-\node[box, right=of fit] (predict) {Predict on\\test set};
-\node[box, right=of predict] (score) {Metrics \& CG /\\CHR / $c^*$ / PSG};
+\node[box] (data) {Dataset\\(1 of 5 UCI\\sources)};
+\node[box, right=of data] (split) {Stratified\\80/20 split\\(test set\\held out)};
+\node[box, right=of split] (sample) {Controlled\\sample\\($N_{\text{common}}$,\\ratio $r$)};
+\node[box, right=of sample] (corrupt) {Inject label\\error ($c$,\\Direction A/B,\\or clean)};
+\node[box, right=of corrupt] (fit) {Fit\\correction\\method};
+\node[box, right=of fit] (predict) {Predict on\\held-out\\test set};
+\node[box, right=of predict] (score) {Metrics \&\\CG / CHR /\\$c^*$ / PSG};
 
 \draw[arr] (data) -- (split);
-\draw[arr] (split) -- (pool);
-\draw[arr] (pool) -- (sample);
+\draw[arr] (split) -- (sample);
 \draw[arr] (sample) -- (corrupt);
-\draw[arr] (split) -- (test);
 \draw[arr] (corrupt) -- (fit);
 \draw[arr] (fit) -- (predict);
 \draw[arr] (predict) -- (score);
-\draw[arr] (test) -| (predict);
 \end{tikzpicture}
 \caption{The stress-cell pipeline applied to every dataset, seed, imbalance
-ratio, contamination rate, and direction. The held-out test set is fixed and
-clean for the entire run; only the training side is resampled and corrupted.}
+ratio, contamination rate, and direction. The test set is held out once, at
+the initial split, and stays fixed and clean for the entire run; only the
+training side is resampled and corrupted before each correction method is
+fit and then scored against that same held-out test set.}
 \label{fig:pipeline}
 \end{figure*}
 
