@@ -48,10 +48,6 @@ correction fails?
 alone, rather than the corruption itself?
 \end{itemize}
 
-RQ1 and RQ2 are answered by Correction Gain and Correction Harm Rate, RQ3 by the
-break-even contamination rate, and RQ4 by the Prior Sensitivity Gap, all defined in
-Section~\ref{sec:methods}.
-
 Concretely, we audit seven correction methods across two widely deployed tabular
 model families, TabPFN and XGBoost~\cite{chen2016xgboost}, under two directed,
 asymmetric label-error mechanisms and a range of imbalance levels, using five real
@@ -61,10 +57,12 @@ imbalance and label noise can be varied independently rather than confounded wit
 one another. Section~\ref{sec:methods} gives the full experimental setup, including
 the exact corruption procedure and every configuration tested.
 
-To judge whether a correction helps or hurts, rather than simply how accurate it
-is, we use four purpose-built metrics: Correction Gain, Correction Harm Rate, a
-break-even contamination rate, and a Prior Sensitivity Gap. Each is defined
-precisely in Section~\ref{sec:methods}.
+To answer these questions, we judge whether a correction helps or hurts, rather
+than only how accurate it is, using four purpose-built metrics. Correction Gain and
+Correction Harm Rate answer RQ1 and RQ2, measuring whether and how often a
+correction underperforms its uncorrected baseline. The break-even contamination
+rate answers RQ3, and the Prior Sensitivity Gap answers RQ4. Each metric is
+defined precisely in Section~\ref{sec:methods}.
 
 Our central finding is that every correction method tested can, at a realistic
 level of label noise, perform worse than applying no correction at all, and how
