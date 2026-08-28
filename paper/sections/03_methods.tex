@@ -1,3 +1,386 @@
 \section{Methods}
 \label{sec:methods}
-% PENDING
+
+This section describes the full experimental design: the datasets, the
+construction that isolates imbalance from label noise, the two directed
+label-error mechanisms, the seven correction methods audited, the metrics used
+to score them, and the statistical tests used to compare them. Every number,
+formula, and configuration below is taken directly from the study's
+implementation, not approximated.
+
+\subsection{Overview}
+\label{sec:methods-overview}
+
+Figure~\ref{fig:pipeline} summarizes the pipeline applied to every dataset. A
+dataset is split once into a training pool and a held-out test set, which stays
+fixed and clean for the rest of that seed's run. A controlled sample is drawn
+from the training pool at a target minority ratio $r$ and a fixed total size
+$N_{\text{common}}$ (Section~\ref{sec:methods-ncommon}). A directed label error
+is then injected into that sample at a contamination rate $c$, in one of two
+directions (Section~\ref{sec:methods-corruption}), or left clean at $c{=}0$.
+Every correction method (Section~\ref{sec:methods-corrections}) is fit on the
+resulting training set and scored against the same held-out test set, and the
+scores are converted into the metrics described in
+Sections~\ref{sec:methods-metrics} and~\ref{sec:methods-contribution}. This is
+repeated for every combination of dataset, seed, imbalance ratio, contamination
+rate, and direction, and for every correction method, producing one row per
+method per condition.
+
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[
+  node distance=0.5cm,
+  box/.style={draw, rounded corners, align=center, minimum height=1.05cm,
+              text width=2.3cm, font=\footnotesize},
+  arr/.style={-{Stealth[length=2mm]}, thick}
+]
+\node[box] (data) {Dataset\\(1 of 5 UCI sources)};
+\node[box, right=of data] (split) {Stratified\\80/20 split};
+\node[box, right=of split] (pool) {Training pool};
+\node[box, right=of pool] (sample) {Controlled sample\\($N_{\text{common}}$, ratio $r$)};
+\node[box, right=of sample] (corrupt) {Inject label error\\($c$, Direction A/B,\\or clean)};
+
+\node[box, below=of split] (test) {Held-out test set\\(fixed, clean)};
+\node[box, right=of test] (fit) {Fit correction\\method};
+\node[box, right=of fit] (predict) {Predict on\\test set};
+\node[box, right=of predict] (score) {Metrics \& CG /\\CHR / $c^*$ / PSG};
+
+\draw[arr] (data) -- (split);
+\draw[arr] (split) -- (pool);
+\draw[arr] (pool) -- (sample);
+\draw[arr] (sample) -- (corrupt);
+\draw[arr] (split) -- (test);
+\draw[arr] (corrupt) -- (fit);
+\draw[arr] (fit) -- (predict);
+\draw[arr] (predict) -- (score);
+\draw[arr] (test) -| (predict);
+\end{tikzpicture}
+\caption{The stress-cell pipeline applied to every dataset, seed, imbalance
+ratio, contamination rate, and direction. The held-out test set is fixed and
+clean for the entire run; only the training side is resampled and corrupted.}
+\label{fig:pipeline}
+\end{figure*}
+
+\subsection{Datasets}
+\label{sec:methods-datasets}
+
+Five binary-classification datasets were drawn from the UCI Machine Learning
+Repository~\cite{kelly_uci}, chosen so that no single result could be
+attributed to one dataset's idiosyncrasies. Table~\ref{tab:datasets}
+summarizes their size and the meaning of the positive (minority) class in
+each. No transformation altered the semantics of any feature; the one
+exception, documented for Spambase, is purely cosmetic: XGBoost's tree
+serialization format rejects the characters \texttt{[}, \texttt{]}, and
+\texttt{<} in feature names, so the column \texttt{char\_freq\_[} (the
+frequency of the \texttt{[} character in an email) was renamed to
+\texttt{char\_freq\_bracket\_open}; its values are unchanged.
+
+\begin{table}[t]
+\centering
+\caption{Dataset characteristics.}
+\label{tab:datasets}
+\begin{tabular}{@{}lrrl@{}}
+\toprule
+Dataset & Rows & Feat. & Minority meaning \\
+\midrule
+Banknote Authentication      & 1{,}372 & 4  & Forged banknote \\
+Blood Transfusion             & 748    & 4  & Donated blood, target period \\
+South German Credit           & 1{,}000 & 20 & Bad credit risk \\
+Spambase                      & 4{,}601 & 57 & Spam email \\
+Breast Cancer Wisconsin       & 569    & 30 & Malignant diagnosis \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Before any sampling or corruption, each dataset is split once with a
+stratified 80/20 train/test split, so both partitions preserve the dataset's
+original class ratio. The test partition is fixed for that seed and never
+altered by any later step; every correction method, at every imbalance ratio
+and contamination level, is scored against exactly the same test rows.
+
+\subsection{Controlled Imbalance: A Common Training Size}
+\label{sec:methods-ncommon}
+
+Comparing a model trained at $r{=}0.20$ against one trained at $r{=}0.05$ is
+only informative about imbalance if both use the same total amount of
+training evidence; otherwise a difference in performance could be explained
+by sample size rather than by imbalance. To remove that confound, one shared
+training size $N_{\text{common}}$ is computed for each dataset and seed, and
+used at every tested imbalance ratio $r \in \{0.50, 0.20, 0.10, 0.05\}$.
+
+For a given $r$, the largest achievable training size is bounded by whichever
+class runs out first:
+\begin{equation}
+\text{feasible\_n}(r) = \min\!\left(\frac{n_{\min}}{r},\ \frac{n_{\max}}{1-r}\right),
+\label{eq:feasible-n}
+\end{equation}
+where $n_{\min}$ and $n_{\max}$ are the number of minority and majority rows
+available in the training pool. $N_{\text{common}}$ is the largest size
+achievable at every tested ratio simultaneously, floored to a whole number of
+rows:
+\begin{equation}
+N_{\text{common}} = \left\lfloor \min_{r \in \{0.50,0.20,0.10,0.05\}} \text{feasible\_n}(r) \right\rfloor.
+\label{eq:ncommon}
+\end{equation}
+For a given $r$ and $N_{\text{common}}$, a controlled training set is drawn by
+sampling $\text{round}(r \cdot N_{\text{common}})$ minority rows and the
+remaining $N_{\text{common}}$ rows from the majority class, both without
+replacement, then shuffling the combined set.
+
+\subsection{Directed Label-Error Mechanisms}
+\label{sec:methods-corruption}
+
+Two label-error mechanisms are applied to the controlled training set, each
+at contamination rate $c \in \{0.05, 0.10, 0.20, 0.30\}$, plus a shared clean
+condition at $c{=}0$. Both flip a controlled number of true labels; they
+differ in which class is flipped and how $c$ is defined relative to the
+resulting pool.
+
+\textbf{Direction A (contamination): majority rows relabeled as minority.}
+$c$ is defined as the fraction of the \emph{observed} minority-labeled pool
+that is actually mislabeled majority rows. If $k$ majority rows are flipped
+and $n_{\min}$ true minority rows exist,
+\begin{equation}
+c = \frac{k}{n_{\min} + k}
+\quad\Longrightarrow\quad
+k = \frac{c}{1-c}\, n_{\min}.
+\label{eq:directionA}
+\end{equation}
+$k$ rows are drawn uniformly at random from the majority pool and relabeled.
+
+\textbf{Direction B (loss): minority rows relabeled as majority.}
+Here $c$ is defined directly against the true minority count:
+\begin{equation}
+k = c \cdot n_{\min}.
+\label{eq:directionB}
+\end{equation}
+$k$ rows are drawn uniformly at random from the minority pool and relabeled.
+
+Both mechanisms return the corrupted labels together with the realized
+contamination rate (which can differ slightly from the requested $c$ due to
+integer rounding of $k$) and the indices flipped, so every corruption is
+fully auditable. This asymmetric, class-conditional construction follows the
+label-noise formalization of Natarajan et al.~\cite{natarajan2013noisylabels}
+and Scott et al.~\cite{scott2013asymmetricnoise}, rather than symmetric random
+flipping.
+
+\subsection{Correction Methods}
+\label{sec:methods-corrections}
+
+Seven correction methods are audited, split into two families so that every
+method is compared against the uncorrected baseline for the same underlying
+model. All XGBoost variants share one frozen configuration
+(Table~\ref{tab:config}), never tuned per condition, so any performance
+difference between them is attributable to the correction technique itself.
+
+\subsubsection{XGBoost family}
+
+\texttt{xgb\_none} trains XGBoost~\cite{chen2016xgboost} directly on the
+corrupted, imbalanced training set with no correction, and is the baseline
+every other XGBoost variant is measured against. \texttt{xgb\_weighted} sets
+\texttt{scale\_pos\_weight} to the ratio of observed majority to observed
+minority rows, following the cost-sensitive framing of
+Elkan~\cite{elkan2001costsensitive}. \texttt{xgb\_ros} applies random
+oversampling, duplicating minority-labeled rows with replacement until the
+classes are balanced; \texttt{xgb\_smote} instead synthesizes new
+minority-labeled rows with SMOTE~\cite{chawla2002smote}, interpolating
+between a minority row and one of its $k$ nearest minority neighbors, with
+$k = \min(5,\, n_{\min}-1)$ so the request never exceeds the available
+neighbors. Both resampling variants use
+imbalanced-learn~\cite{lemaitre2017imbalancedlearn}.
+
+\subsubsection{TabPFN family}
+
+TabPFN~\cite{hollmann2023tabpfn,hollmann2025tabpfnv2} is an in-context tabular
+foundation model: it is not fit with gradient descent on the study's data, but
+reads the entire training set as a prompt and produces a prediction for each
+test row in a single forward pass. \texttt{tabpfn\_none} takes its raw
+$P(\text{minority})$ and thresholds at 0.5, and is the baseline for the rest
+of the family. \texttt{tabpfn\_threshold} instead thresholds at the observed
+minority rate $\tau$, following the classical posterior-adjustment principle
+of Saerens et al.~\cite{saerens2002adjusting}: predict minority if
+$P(\text{minority}) > \tau$.
+
+\texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t} implement
+DistPFN and DistPFN-T~\cite{lee2026distpfn}. Writing $p$ for TabPFN's raw
+2-class prediction on one test row and $\bar{p}$ for the mean of $p$ across
+the whole test batch,
+\begin{equation}
+\text{prior} = [1-\pi,\ \pi], \qquad
+\text{adjusted} = \text{Normalize}\!\left(\frac{p \cdot \bar{p}}{\text{prior}}\right),
+\label{eq:distpfn}
+\end{equation}
+where $\pi$ is the class-1 prior used for correction: the observed, possibly
+corrupted training rate for the deployable variant, or the true
+pre-corruption rate for the oracle diagnostic described in
+Section~\ref{sec:methods-contribution}. DistPFN-T adds a shared temperature
+$\tau$ before the same final step:
+\begin{equation}
+\tau = -\sum_i \bar{p}_i \log(\text{prior}_i), \qquad
+\bar{p}_T = \text{softmax}(\bar{p}/\tau),
+\label{eq:distpfnt}
+\end{equation}
+with $\bar{p}_T$ substituted for $\bar{p}$ in Equation~\ref{eq:distpfn}. Both
+formulas were verified directly against the authors' official reference
+implementation before use in this study. That verification surfaced two
+findings, reported here rather than left implicit: an earlier draft of our
+own implementation had mistranscribed Equation~\ref{eq:distpfn}, using
+$p^2$ in place of $p \cdot \bar{p}$, and the authors' own published
+DistPFN-T reference driver raises a shape error (\texttt{numpy}'s
+\texttt{AxisError}) for binary classification, which its own exception
+handling silently swallows, so the reference driver as published cannot
+produce a DistPFN-T score for a two-class problem. Equation~\ref{eq:distpfnt}
+implements the algorithm's evident intent, with that shape bug corrected
+rather than reproduced.
+
+\texttt{tabpfn\_downsample} is the family's one data-level correction: the
+majority class is randomly downsampled, without replacement, to match the
+observed minority count exactly, and TabPFN reads the resulting balanced set
+as its prompt. Because it requires the observed majority count to be at least
+as large as the observed minority count, it can fail when Direction A
+contamination or rounding pushes the observed minority count above the
+observed majority count at $r{=}0.50$; this is a documented limitation of the
+method, not a pipeline error, and every such failure is logged rather than
+silently skipped (Section~\ref{sec:methods-implementation}).
+
+For prior-dependent methods (\texttt{tabpfn\_threshold},
+\texttt{tabpfn\_distpfn}, \texttt{tabpfn\_distpfn\_t}), every stress cell is
+scored twice: once using the observed prior $\pi_{\text{obs}}$, the only
+value available in a real deployment, and once using the oracle prior
+$\pi_{\text{true}}$, the clean pre-corruption rate, which a real system could
+never know. The oracle variant exists only to compute the Prior Sensitivity
+Gap (Section~\ref{sec:methods-contribution}) and is never treated as a
+deployable result.
+
+\subsection{Evaluation Metrics}
+\label{sec:methods-metrics}
+
+Every method, on every stress cell, is scored with ten metrics computed
+against the fixed, clean test set: balanced accuracy; worst-class recall (the
+lower of the two per-class recalls, which catches a collapse in one class
+that balanced accuracy alone can hide); area under the precision-recall curve
+(AUPRC); macro-averaged F1; minority-class precision and recall; area under
+the ROC curve (AUROC); Brier score; log loss; and expected calibration error
+(ECE, ten equal-width bins), which measures how far a model's predicted
+probabilities are from the true observed frequencies. All ten are computed
+identically for every method and condition using
+scikit-learn's implementations, so no method is scored on a different basis
+than any other.
+
+\subsection{Contribution Metrics}
+\label{sec:methods-contribution}
+
+The ten metrics above answer "how good is this method." The following five
+metrics answer the question this study is actually about: whether a
+correction is worth applying once label noise is present, relative to doing
+nothing at all. All five compare a corrected method against its matching
+uncorrected baseline (\texttt{xgb\_none} or \texttt{tabpfn\_none}) at the
+\emph{same} dataset, seed, ratio, contamination rate, and direction.
+
+\textbf{Correction Gain (CG).} For a metric score $S$,
+\begin{equation}
+\text{CG} = S_{\text{corrected}} - S_{\text{uncorrected}},
+\label{eq:cg}
+\end{equation}
+sign-adjusted so that positive always means the correction helped: unchanged
+for metrics where higher is better (balanced accuracy, AUPRC), and negated
+for loss-type metrics where lower is better (Brier score, log loss).
+
+\textbf{Correction Harm Rate (CHR).} Across every stress cell tested for one
+method,
+\begin{equation}
+\text{CHR} = \frac{\#\{\text{cells with CG} < 0\}}{\#\{\text{cells tested}\}}.
+\label{eq:chr}
+\end{equation}
+
+\textbf{Regret.} How large the harm is when a correction does fail, zero
+otherwise:
+\begin{equation}
+\text{Regret} = \max(0,\ -\text{CG}).
+\label{eq:regret}
+\end{equation}
+CHR answers how often a correction backfires; Regret answers how bad it is
+when it does, so a method with low CHR but large Regret on the cells where it
+fails carries a different practical risk than one with high CHR but small
+Regret.
+
+\textbf{Break-even contamination rate ($c^*$).} For a method, dataset, and
+imbalance ratio, $c^*$ is the smallest tested $c > 0$ at which the
+seed-averaged CG first drops to zero or below, i.e., the point past which the
+correction stops paying off. If CG never crosses zero within the tested
+range, $c^*$ is reported as greater than the largest tested $c$ (0.30) rather
+than extrapolated beyond what was actually measured.
+
+\textbf{Prior Sensitivity Gap (PSG).} For the three prior-dependent TabPFN
+methods,
+\begin{equation}
+\text{PSG} = S_{\text{oracle prior}} - S_{\text{observed prior}},
+\label{eq:psg}
+\end{equation}
+comparing the real, deployable variant against the oracle diagnostic
+described in Section~\ref{sec:methods-corrections}. A large positive PSG
+means most of a correction's failure traces specifically to the prior being
+wrong; a small PSG despite otherwise poor performance means the failure comes
+from elsewhere.
+
+\subsection{Statistical Testing}
+\label{sec:methods-statistics}
+
+For each model family (XGBoost, TabPFN) and each corruption direction, the
+methods in that family are compared using the Friedman
+test~\cite{friedman1937ranks}, a non-parametric omnibus test for differences
+among more than two related samples, applied to seed-averaged balanced
+accuracy across every (dataset, $r$, $c$) block with a complete row for every
+method in that family. Blocks with fewer than ten complete rows are excluded
+as too few for a meaningful omnibus test. When the Friedman test is
+significant at $p<0.05$, every pairwise comparison of methods within that
+family and direction is tested with the Wilcoxon signed-rank
+test~\cite{wilcoxon1945ranking}, and the resulting $p$-values are corrected
+for multiple comparisons with Holm's step-down
+procedure~\cite{holm1979sequential}.
+
+\subsection{Implementation and Reproducibility}
+\label{sec:methods-implementation}
+
+Every stress cell (one dataset, seed, ratio, contamination rate, and
+direction) is repeated across three seeds, $\{13, 37, 73\}$, so no result
+depends on one particular random split or one particular set of flipped
+rows. A method failing on one stress cell (for example,
+\texttt{tabpfn\_downsample} at the edge case described in
+Section~\ref{sec:methods-corrections}) is logged with its error and does not
+stop any other method or any later cell; results are never backfilled or
+silently dropped. Table~\ref{tab:config} records the exact software versions
+and the frozen XGBoost configuration used throughout. The TabPFN checkpoint
+used was \texttt{tabpfn-v3-classifier-v3\_default.ckpt}
+(SHA-256~\texttt{d0d865d5\ldots8f3988}), and the project's git history was
+frozen at each stage of the pipeline so that the exact code producing any
+result can be recovered.
+
+\begin{table}[t]
+\centering
+\caption{Software environment and frozen XGBoost configuration.}
+\label{tab:config}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Component & Value \\
+\midrule
+Python & 3.13.5 \\
+NumPy & 2.5.2 \\
+pandas & 3.0.5 \\
+scikit-learn & 1.9.0 \\
+SciPy & 1.18.0 \\
+XGBoost & 3.4.1 \\
+imbalanced-learn & 0.14.2 \\
+statsmodels & 0.14.6 \\
+TabPFN & 8.3.0 \\
+Seeds & 13, 37, 73 \\
+\midrule
+\texttt{n\_estimators} & 500 \\
+\texttt{max\_depth} & 6 \\
+\texttt{learning\_rate} & 0.05 \\
+\texttt{subsample} & 0.8 \\
+\texttt{colsample\_bytree} & 0.8 \\
+\texttt{eval\_metric} & logloss \\
+\bottomrule
+\end{tabular}
+\end{table}
