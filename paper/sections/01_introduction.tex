@@ -1,10 +1,11 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Class imbalance occurs when one class is far more common than the other, and it
-makes minority-class prediction difficult. A classifier trained on skewed data can
-reach high overall accuracy while rarely predicting the rare class correctly, since
-simply defaulting to the majority class already satisfies most of the data.
+Class imbalance arises when one class is substantially less frequent than the
+other, often degrading a model's ability to recognize the minority class. Under
+severe skew, a classifier may achieve deceptively high overall accuracy while
+exhibiting poor minority-class recall, because majority predictions dominate the
+evaluation.
 
 To address this, practitioners commonly turn to three kinds of correction.
 Data-level resampling techniques, such as SMOTE~\cite{chawla2002smote} and random
@@ -12,24 +13,25 @@ oversampling, add or duplicate minority examples before training begins.
 Cost-sensitive reweighting~\cite{elkan2001costsensitive} instead leaves the data
 untouched and penalizes mistakes on the minority class more heavily during
 training. A third kind, threshold and posterior-probability correction such as
-DistPFN~\cite{lee2026distpfn}, is suited to newer in-context tabular models such as
+DistPFN~\cite{lee2026distpfn}, is suited to tabular foundation models such as
 TabPFN~\cite{hollmann2023tabpfn,hollmann2025tabpfnv2}: instead of touching the data
 or the training process, it adjusts the model's predictions after they have
 already been made.
 
-Nearly all of these techniques share one assumption that is rarely stated
-explicitly: that the observed minority-class labels used to calibrate them, whether
-the correction takes the form of a resampling ratio, a cost weight, or a decision
-threshold, are themselves trustworthy. That assumption is validated almost
-exclusively on data where the labels are assumed to be correct
-(Section~\ref{sec:related-work}).
+Many imbalance-correction strategies are evaluated under an implicit condition:
+that the labels used to identify and characterize the minority class are
+sufficiently reliable. Although class imbalance and label noise have each been
+studied extensively, considerably less is known about whether standard imbalance
+corrections remain beneficial when minority-label information is systematically
+corrupted (Section~\ref{sec:related-work}).
 
 If that assumption does not hold, none of these corrections can tell a genuine
-minority example from a mislabeled one. A resampling
-method will duplicate or synthesize around a mislabeled row exactly as readily as a
-correctly labeled one. A cost-sensitive method will set its penalty from a corrupted
-class ratio. A posterior-rescaling method will correct a prediction against a prior
-that is itself wrong. In every case, the correction can end up amplifying the
+minority example from a mislabeled one. A resampling method will duplicate or
+synthesize around a mislabeled row exactly as readily as a correctly labeled one. A
+cost-sensitive method will derive its penalty from the observed class ratio, so any
+corruption in that ratio carries directly into the penalty. A posterior-rescaling
+method will correct a prediction against an observed class prior that carries the
+same corruption. In every case, the correction can end up amplifying the
 mislabeled examples it was built to compensate for, rather than correcting for
 genuine class imbalance.
 
@@ -44,8 +46,8 @@ directed label error is present?
 \item \textbf{RQ2.} Does the direction of label corruption change how often a
 correction fails?
 \item \textbf{RQ3.} At what contamination rate does each correction stop paying off?
-\item \textbf{RQ4.} How much of a correction's failure is due to an incorrect prior
-alone, rather than the corruption itself?
+\item \textbf{RQ4.} How much of a correction's failure comes from using a
+corrupted prior instead of the true, oracle prior?
 \end{itemize}
 
 Concretely, we audit seven correction methods across two widely deployed tabular
@@ -64,12 +66,13 @@ correction underperforms its uncorrected baseline. The break-even contamination
 rate answers RQ3, and the Prior Sensitivity Gap answers RQ4. Each metric is
 defined precisely in Section~\ref{sec:methods}.
 
-Our central finding is that every correction method tested can, at a realistic
-level of label noise, perform worse than applying no correction at all. How often
-this happens depends strongly on both the direction of the corruption and the
-dataset the correction is applied to, and no single method we test is robust to
-both corruption directions. The complete results, including per-method failure
-rates and break-even points, are reported in Section~\ref{sec:results}.
+Our central finding is that every correction method tested underperforms its
+matched uncorrected baseline in at least some conditions. How often this happens
+depends strongly on both the direction of the corruption and the dataset the
+correction is applied to, and no correction remains non-degrading across every
+tested condition in both corruption directions. The complete results, including
+per-method failure rates and break-even points, are reported in
+Section~\ref{sec:results}.
 
 Our contributions are as follows.
 
@@ -79,13 +82,14 @@ size fixed across imbalance ratios and injects two directed, asymmetric
 label-error mechanisms on top of it, isolating the effect of label noise from the
 effect of imbalance itself.
 \item We audit seven correction methods across two widely used model families,
-including DistPFN and DistPFN-T~\cite{lee2026distpfn}. We check their reference
-implementation directly against the authors' published code before using it, and
-report an implementation error we found in that process (Section~\ref{sec:methods}).
-\item We define four contribution metrics, Correction Gain, Correction Harm Rate,
-break-even contamination rate, and Prior Sensitivity Gap, designed to measure
-whether a correction remains net-beneficial once label noise is present, rather
-than measuring model accuracy alone.
+including DistPFN and DistPFN-T~\cite{lee2026distpfn}. We validate our DistPFN and
+DistPFN-T implementation against the authors' published reference code and document
+an implementation error identified during this verification process
+(Section~\ref{sec:methods}).
+\item We operationalize correction robustness using four complementary measures,
+Correction Gain, Correction Harm Rate, break-even contamination rate, and Prior
+Sensitivity Gap, designed to measure whether a correction remains net-beneficial
+once label noise is present, rather than measuring model accuracy alone.
 \item We show, across five real datasets, that every correction method tested can
 underperform doing nothing at all once contamination reaches as little as 5\%, and
 that this failure is direction-dependent rather than uniform across methods or
