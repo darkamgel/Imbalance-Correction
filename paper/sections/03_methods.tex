@@ -274,22 +274,14 @@ deployable result.
 \label{sec:methods-metrics}
 
 Every method, on every stress cell, is scored with ten metrics computed
-against the fixed, clean test set:
-
-\begin{itemize}
-\item balanced accuracy
-\item worst-class recall, the lower of the two per-class recalls, which
-catches a collapse in one class that balanced accuracy alone can hide
-\item area under the precision-recall curve (AUPRC)
-\item macro-averaged F1
-\item minority-class precision and recall
-\item area under the ROC curve (AUROC)
-\item Brier score
-\item log loss
-\item expected calibration error (ECE, ten equal-width bins), which
+against the fixed, clean test set: balanced accuracy, worst-class recall
+(the lower of the two per-class recalls, which catches a collapse in one
+class that balanced accuracy alone can hide), area under the
+precision-recall curve (AUPRC), macro-averaged F1, minority-class
+precision and recall, area under the ROC curve (AUROC), Brier score, log
+loss, and expected calibration error (ECE, ten equal-width bins), which
 measures how far a model's predicted probabilities are from the true
-observed frequencies
-\end{itemize}
+observed frequencies.
 
 All ten are computed identically for every method and condition using
 scikit-learn's implementations, so no method is scored on a different basis
