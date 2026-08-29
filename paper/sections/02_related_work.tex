@@ -45,13 +45,13 @@ neighbors in feature space, rather than duplicating existing rows, and remains
 one of the most widely adopted correction techniques nearly a quarter-century
 after its introduction. Random oversampling, by contrast, corrects the
 training distribution by duplicating existing minority rows without
-synthesizing new feature vectors; both are implemented as standard,
+synthesizing new feature vectors. Both are implemented as standard,
 interchangeable components in imbalanced-learn~\cite{lemaitre2017imbalancedlearn},
 a widely used toolbox implementing both corrections. Cost-sensitive
 learning~\cite{elkan2001costsensitive} instead leaves the training
 distribution untouched and reweights the loss so that minority-class errors
 are penalized more heavily than majority-class errors in proportion to the
-observed class ratio; XGBoost's \texttt{scale\_pos\_weight}
+observed class ratio. XGBoost's \texttt{scale\_pos\_weight}
 parameter~\cite{chen2016xgboost} is a direct, widely used implementation of
 this idea. Whether these
 corrections reliably help at all, even when every label is trustworthy, is
@@ -86,7 +86,7 @@ while Song et al.~\cite{song2022noisylabelssurvey} survey the substantially
 larger body of work on training deep networks to be robust to noisy labels,
 including loss correction, sample selection, and label correction approaches.
 Both surveys treat label noise as a phenomenon to be corrected or tolerated
-during training; neither surveys, nor the methods they catalog, examine how
+during training. Neither the surveys nor the methods they catalog examine how
 label noise interacts with a class-imbalance correction applied
 \emph{alongside} it, which is the specific interaction this paper studies,
 not by proposing a new noise-robust training method, but by auditing whether
@@ -105,7 +105,7 @@ image classification. Liu et al.~\cite{liu2024imbalancednoisy} observe that
 standard loss-based sample selection for noisy-label training is itself biased
 against minority classes, since under-learned tail classes and noise-corrupted
 classes are both associated with high training loss and are consequently
-difficult to tell apart; they propose a class-balanced sample selection
+difficult to tell apart. They propose a class-balanced sample selection
 procedure with confidence-based augmentation to correct this bias during
 training. Each of these lines of work proposes a new algorithm for the
 training-time mechanism of handling noisy labels under imbalance. None of them
