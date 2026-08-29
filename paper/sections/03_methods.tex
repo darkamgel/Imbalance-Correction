@@ -101,27 +101,39 @@ and contamination level, is scored against exactly the same test rows.
 \subsection{Controlled Imbalance: A Common Training Size}
 \label{sec:methods-ncommon}
 
-Comparing a model trained at $r{=}0.20$ against one trained at $r{=}0.05$ is
-only informative about imbalance if both use the same total amount of
-training evidence; otherwise a difference in performance could be explained
-by sample size rather than by imbalance. To remove that confound, one shared
-training size $N_{\text{common}}$ is computed for each dataset and seed, and
-used at every tested imbalance ratio $r \in \{0.50, 0.20, 0.10, 0.05\}$.
+Each dataset is tested at four minority ratios, $r \in \{0.50, 0.20, 0.10,
+0.05\}$, where $r$ is the fraction of training rows that belong to the
+minority class. Comparing a model trained at a high ratio (e.g., $r{=}0.20$)
+against one trained at a low ratio (e.g., $r{=}0.05$) is only informative
+about imbalance itself if both training sets are the same total size;
+otherwise a difference in performance could be explained by sample size
+rather than by imbalance. To remove that confound, one shared training size
+$N_{\text{common}}$ is computed for each dataset and seed and used at every
+tested ratio; only the split between minority and majority rows within that
+fixed total changes as $r$ changes.
 
-For a given $r$, the largest achievable training size is bounded by whichever
+Let $n_{\min}$ and $n_{\max}$ denote the number of minority and majority rows
+available in the training pool for a given dataset and seed. At ratio $r$, a
+total training size of $N$ requires $rN$ minority rows and $(1-r)N$ majority
+rows, so the largest $N$ achievable at that ratio is bounded by whichever
 class runs out first:
 \begin{equation}
-\text{feasible\_n}(r) = \min\!\left(\frac{n_{\min}}{r},\ \frac{n_{\max}}{1-r}\right),
+\text{feasible\_n}(r) = \min\!\left(\frac{n_{\min}}{r},\ \frac{n_{\max}}{1-r}\right).
 \label{eq:feasible-n}
 \end{equation}
-where $n_{\min}$ and $n_{\max}$ are the number of minority and majority rows
-available in the training pool. $N_{\text{common}}$ is the largest size
-achievable at every tested ratio simultaneously, floored to a whole number of
-rows:
+$N_{\text{common}}$ is the largest size achievable at every tested ratio
+simultaneously, i.e., the tightest of these four constraints, floored to a
+whole number of rows:
 \begin{equation}
 N_{\text{common}} = \left\lfloor \min_{r \in \{0.50,0.20,0.10,0.05\}} \text{feasible\_n}(r) \right\rfloor.
 \label{eq:ncommon}
 \end{equation}
+For example, on Banknote Authentication with seed 13, the training pool has
+$n_{\min}{=}488$ and $n_{\max}{=}609$; $\text{feasible\_n}(r)$ evaluates to
+976.0, 761.2, 676.7, and 641.1 at $r{=}0.50, 0.20, 0.10, 0.05$ respectively,
+so $N_{\text{common}} = \lfloor 641.1 \rfloor = 641$, and every one of the
+four ratios for that dataset and seed draws exactly 641 training rows.
+
 For a given $r$ and $N_{\text{common}}$, a controlled training set is drawn by
 sampling $\text{round}(r \cdot N_{\text{common}})$ minority rows and the
 remaining $N_{\text{common}}$ rows from the majority class, both without
