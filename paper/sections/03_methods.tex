@@ -215,7 +215,10 @@ imbalanced-learn~\cite{lemaitre2017imbalancedlearn}.
 TabPFN~\cite{hollmann2023tabpfn,hollmann2025tabpfnv2} is an in-context tabular
 foundation model: it is not fit with gradient descent on the study's data, but
 reads the entire training set as a prompt and produces a prediction for each
-test row in a single forward pass. \texttt{tabpfn\_none} takes its raw
+test row in a single forward pass. Every TabPFN variant uses the library's
+default hyperparameters, with only the random seed set per run, so no
+TabPFN-specific configuration table is needed alongside
+Table~\ref{tab:config}. \texttt{tabpfn\_none} takes its raw
 $P(\text{minority})$ and thresholds at 0.5, and is the baseline for the rest
 of the family. \texttt{tabpfn\_threshold} instead thresholds at $\pi$, the
 class-1 prior used for correction, following the classical
