@@ -85,12 +85,17 @@ Breast Cancer Wisconsin       & 569    & 30 & Malignant diagnosis \\
 \end{table}
 
 No transformation altered the semantics of any feature. Only one
-transformation was applied at all, to Spambase, and it is purely cosmetic:
-XGBoost's tree serialization format rejects the characters \texttt{[},
-\texttt{]}, and \texttt{<} in feature names, so the column
+transformation changed any feature's values at all, applied to Spambase and
+purely cosmetic: XGBoost's tree serialization format rejects the characters
+\texttt{[}, \texttt{]}, and \texttt{<} in feature names, so the column
 \texttt{char\_freq\_[} (the frequency of the \texttt{[} character in an
 email) was renamed to \texttt{char\_freq\_bracket\_open}, but its values are
-unchanged.
+unchanged. The pipeline separately includes leakage-safe median imputation
+and one-hot encoding for missing or non-numeric columns, fit only on each
+stress condition's training rows. None of the five datasets contains a
+missing value or a non-numeric feature column (South German Credit's twenty
+attributes are integer-coded and are treated as numeric throughout), so
+neither step alters any value for any dataset used in this study.
 
 Before any sampling or corruption, each dataset is split once with a
 stratified 80/20 train/test split, so both partitions preserve the dataset's
@@ -352,8 +357,13 @@ methods in that family are compared using the Friedman
 test~\cite{friedman1937ranks}, a non-parametric omnibus test for differences
 among more than two related samples, applied to seed-averaged balanced
 accuracy across every (dataset, $r$, $c$) block with a complete row for every
-method in that family. Blocks with fewer than ten complete rows are excluded
-as too few for a meaningful omnibus test. When the Friedman test is
+method in that family. For the three prior-dependent TabPFN methods, only
+the observed-prior variant, the same deployable score reported everywhere
+else in this study, enters the comparison. The oracle-prior rows are
+excluded so that a method's column reflects its deployable score alone, not
+an average of its observed and oracle variants. Blocks with fewer than ten
+complete rows are excluded as too few for a meaningful omnibus test. When
+the Friedman test is
 significant at $p<0.05$, every pairwise comparison of methods within that
 family and direction is tested with the Wilcoxon signed-rank
 test~\cite{wilcoxon1945ranking}, and the resulting $p$-values are corrected
@@ -370,10 +380,17 @@ rows. A method failing on one stress cell (for example,
 \texttt{tabpfn\_downsample} at the edge case described in
 Section~\ref{sec:methods-corrections}) is logged with its error and does not
 stop any other method or any later cell. Results are never backfilled or
-silently dropped. Table~\ref{tab:config} records the exact software versions
-and the frozen XGBoost configuration used throughout. The TabPFN checkpoint
-used was \texttt{tabpfn-v3-classifier-v3\_default.ckpt}
-(SHA-256~\texttt{d0d865d5\ldots8f3988}).
+silently dropped. Table~\ref{tab:config} records the exact software
+versions, platform, and the frozen XGBoost configuration used throughout.
+The TabPFN checkpoint used was \texttt{tabpfn-v3-classifier-v3\_default.ckpt}
+(SHA-256~\texttt{d0d865d5\ldots8f3988}), and TabPFN inference used Apple's
+Metal (MPS) GPU backend rather than CPU. Every library's internal thread
+pool (OpenMP, BLAS) was forced to a single thread throughout the study,
+because XGBoost and PyTorch, which TabPFN depends on, each bundle their own
+threading runtime, and running both in the same process without this
+restriction reproducibly hangs (or, in the reverse import order, segfaults).
+At the dataset sizes used in this study, the resulting single-threaded
+slowdown is negligible.
 
 \begin{table}[t]
 \centering
@@ -385,6 +402,7 @@ Component & Value \\
 \midrule
 \multicolumn{2}{@{}l}{\textit{Software versions}} \\
 Python & 3.13.5 \\
+Platform & macOS 26.5.1 (arm64) \\
 NumPy & 2.5.2 \\
 pandas & 3.0.5 \\
 scikit-learn & 1.9.0 \\
