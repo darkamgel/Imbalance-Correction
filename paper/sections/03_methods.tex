@@ -136,16 +136,20 @@ replacement, then shuffling the combined set.
 \subsection{Directed Label-Error Mechanisms}
 \label{sec:methods-corruption}
 
-Two label-error mechanisms are applied to the controlled training set, each
-at contamination rate $c \in \{0.05, 0.10, 0.20, 0.30\}$, plus a shared clean
-condition at $c{=}0$. Both flip a controlled number of true labels; they
-differ in which class is flipped and how $c$ is defined relative to the
-resulting pool.
+Two label-error mechanisms are applied to the controlled training set built
+in Section~\ref{sec:methods-ncommon}, each at contamination rate $c \in
+\{0.05, 0.10, 0.20, 0.30\}$, plus a shared clean condition at $c{=}0$. Both
+flip a controlled number of true labels within that set; they differ in
+which class is flipped and how $c$ is defined relative to the resulting
+pool. Here $n_{\min}$ denotes the number of true minority rows in that
+controlled training set, equal to $\text{round}(r \cdot N_{\text{common}})$
+by construction, not the pool-level $n_{\min}$ from
+Section~\ref{sec:methods-ncommon}.
 
 \textbf{Direction A (contamination): majority rows relabeled as minority.}
 $c$ is defined as the fraction of the \emph{observed} minority-labeled pool
-that is actually mislabeled majority rows. If $k$ majority rows are flipped
-and $n_{\min}$ true minority rows exist,
+that is actually mislabeled majority rows. If $k$ majority rows are
+flipped,
 \begin{equation}
 c = \frac{k}{n_{\min} + k}
 \quad\Longrightarrow\quad
