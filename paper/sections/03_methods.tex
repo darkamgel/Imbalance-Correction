@@ -128,12 +128,6 @@ whole number of rows:
 N_{\text{common}} = \left\lfloor \min_{r \in \{0.50,0.20,0.10,0.05\}} \text{feasible\_n}(r) \right\rfloor.
 \label{eq:ncommon}
 \end{equation}
-For example, on Banknote Authentication with seed 13, the training pool has
-$n_{\min}{=}488$ and $n_{\max}{=}609$; $\text{feasible\_n}(r)$ evaluates to
-976.0, 761.2, 676.7, and 641.1 at $r{=}0.50, 0.20, 0.10, 0.05$ respectively,
-so $N_{\text{common}} = \lfloor 641.1 \rfloor = 641$, and every one of the
-four ratios for that dataset and seed draws exactly 641 training rows.
-
 For a given $r$ and $N_{\text{common}}$, a controlled training set is drawn by
 sampling $\text{round}(r \cdot N_{\text{common}})$ minority rows and the
 remaining $N_{\text{common}}$ rows from the majority class, both without
