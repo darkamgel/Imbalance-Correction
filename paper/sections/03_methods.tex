@@ -194,9 +194,15 @@ Elkan~\cite{elkan2001costsensitive}. \texttt{xgb\_ros} applies random
 oversampling, duplicating minority-labeled rows with replacement until the
 classes are balanced; \texttt{xgb\_smote} instead synthesizes new
 minority-labeled rows with SMOTE~\cite{chawla2002smote}, interpolating
-between a minority row and one of its $k$ nearest minority neighbors, with
-$k = \min(5,\, n_{\min}-1)$ so the request never exceeds the available
-neighbors. Both resampling variants use
+between a minority row and one of its $k$ nearest minority neighbors, a
+parameter unrelated to the flip count $k$ in
+Section~\ref{sec:methods-corruption}. It is set to
+$k = \min(5,\, n_{\min}^{\text{obs}}-1)$, where $n_{\min}^{\text{obs}}$ is the
+observed minority count in the corrupted training set actually being
+resampled (distinct from both $n_{\min}$ in
+Section~\ref{sec:methods-ncommon} and $n_{\min}$ in
+Section~\ref{sec:methods-corruption}), so the request never exceeds the
+neighbors actually available. Both resampling variants use
 imbalanced-learn~\cite{lemaitre2017imbalancedlearn}.
 
 \subsubsection{TabPFN family}
@@ -206,10 +212,14 @@ foundation model: it is not fit with gradient descent on the study's data, but
 reads the entire training set as a prompt and produces a prediction for each
 test row in a single forward pass. \texttt{tabpfn\_none} takes its raw
 $P(\text{minority})$ and thresholds at 0.5, and is the baseline for the rest
-of the family. \texttt{tabpfn\_threshold} instead thresholds at the observed
-minority rate $\tau$, following the classical posterior-adjustment principle
-of Saerens et al.~\cite{saerens2002adjusting}: predict minority if
-$P(\text{minority}) > \tau$.
+of the family. \texttt{tabpfn\_threshold} instead thresholds at $\pi$, the
+class-1 prior used for correction, following the classical
+posterior-adjustment principle of Saerens et al.~\cite{saerens2002adjusting}:
+predict minority if $P(\text{minority}) > \pi$. As with every prior-dependent
+method in this family, $\pi$ is either the observed, possibly corrupted
+training rate $\pi_{\text{obs}}$ (the deployable variant) or the true
+pre-corruption rate $\pi_{\text{true}}$ (the oracle diagnostic described in
+Section~\ref{sec:methods-contribution}).
 
 \texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t} implement
 DistPFN and DistPFN-T~\cite{lee2026distpfn}. Writing $p$ for TabPFN's raw
@@ -220,10 +230,8 @@ the whole test batch,
 \text{adjusted} = \text{Normalize}\!\left(\frac{p \cdot \bar{p}}{\text{prior}}\right),
 \label{eq:distpfn}
 \end{equation}
-where $\pi$ is the class-1 prior used for correction: the observed, possibly
-corrupted training rate for the deployable variant, or the true
-pre-corruption rate for the oracle diagnostic described in
-Section~\ref{sec:methods-contribution}. DistPFN-T adds a shared temperature
+using the same class-1 prior $\pi$ (observed or oracle, as defined above).
+DistPFN-T adds a shared temperature
 $\tau$ before the same final step:
 \begin{equation}
 \tau = -\sum_i \bar{p}_i \log(\text{prior}_i), \qquad
