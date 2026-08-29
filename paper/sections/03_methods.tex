@@ -287,14 +287,15 @@ against the fixed, clean test set: balanced accuracy, worst-class recall
 (the lower of the two per-class recalls, which catches a collapse in one
 class that balanced accuracy alone can hide), area under the
 precision-recall curve (AUPRC), macro-averaged F1, minority-class
-precision and recall, area under the ROC curve (AUROC), Brier score, log
-loss, and expected calibration error (ECE, ten equal-width bins), which
+precision and recall, area under the ROC curve (AUROC), Brier
+score~\cite{brier1950verification}, log loss, and expected calibration
+error (ECE, ten equal-width bins)~\cite{guo2017calibration}, which
 measures how far a model's predicted probabilities are from the true
 observed frequencies.
 
 All ten are computed identically for every method and condition using
-scikit-learn's implementations, so no method is scored on a different basis
-than any other.
+scikit-learn's implementations~\cite{pedregosa2011scikitlearn}, so no
+method is scored on a different basis than any other.
 
 \subsection{Contribution Metrics}
 \label{sec:methods-contribution}
