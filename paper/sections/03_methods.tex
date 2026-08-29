@@ -62,12 +62,7 @@ Five binary-classification datasets were drawn from the UCI Machine Learning
 Repository~\cite{kelly_uci}, chosen so that no single result could be
 attributed to one dataset's idiosyncrasies. Table~\ref{tab:datasets}
 summarizes their size and the meaning of the positive (minority) class in
-each. No transformation altered the semantics of any feature; the one
-exception, documented for Spambase, is purely cosmetic: XGBoost's tree
-serialization format rejects the characters \texttt{[}, \texttt{]}, and
-\texttt{<} in feature names, so the column \texttt{char\_freq\_[} (the
-frequency of the \texttt{[} character in an email) was renamed to
-\texttt{char\_freq\_bracket\_open}; its values are unchanged.
+each.
 
 \begin{table}[t]
 \centering
@@ -85,6 +80,14 @@ Breast Cancer Wisconsin       & 569    & 30 & Malignant diagnosis \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+No transformation altered the semantics of any feature. Only one
+transformation was applied at all, to Spambase, and it is purely cosmetic:
+XGBoost's tree serialization format rejects the characters \texttt{[},
+\texttt{]}, and \texttt{<} in feature names, so the column
+\texttt{char\_freq\_[} (the frequency of the \texttt{[} character in an
+email) was renamed to \texttt{char\_freq\_bracket\_open}; its values are
+unchanged.
 
 Before any sampling or corruption, each dataset is split once with a
 stratified 80/20 train/test split, so both partitions preserve the dataset's
