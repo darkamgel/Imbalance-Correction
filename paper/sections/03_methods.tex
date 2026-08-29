@@ -262,8 +262,9 @@ method, not a pipeline error, and every such failure is logged rather than
 silently skipped (Section~\ref{sec:methods-implementation}).
 
 For prior-dependent methods (\texttt{tabpfn\_threshold},
-\texttt{tabpfn\_distpfn}, \texttt{tabpfn\_distpfn\_t}), every stress cell is
-scored twice: once using the observed prior $\pi_{\text{obs}}$, the only
+\texttt{tabpfn\_distpfn}, \texttt{tabpfn\_distpfn\_t}), every stress cell
+(one dataset, seed, ratio, contamination rate, and direction) is scored
+twice: once using the observed prior $\pi_{\text{obs}}$, the only
 value available in a real deployment, and once using the oracle prior
 $\pi_{\text{true}}$, the clean pre-corruption rate, which a real system could
 never know. The oracle variant exists only to compute the Prior Sensitivity
@@ -290,12 +291,12 @@ than any other.
 \subsection{Contribution Metrics}
 \label{sec:methods-contribution}
 
-The ten metrics above answer "how good is this method." The following five
-metrics answer the question this study is actually about: whether a
-correction is worth applying once label noise is present, relative to doing
-nothing at all. All five compare a corrected method against its matching
-uncorrected baseline (\texttt{xgb\_none} or \texttt{tabpfn\_none}) at the
-\emph{same} dataset, seed, ratio, contamination rate, and direction.
+The ten metrics above measure how good a method is in isolation. The
+following five metrics answer the question this study is actually about:
+whether a correction is worth applying once label noise is present, relative
+to doing nothing at all. All five compare a corrected method against its
+matching uncorrected baseline (\texttt{xgb\_none} or \texttt{tabpfn\_none})
+at the \emph{same} dataset, seed, ratio, contamination rate, and direction.
 
 \textbf{Correction Gain (CG).} For a metric score $S$,
 \begin{equation}
