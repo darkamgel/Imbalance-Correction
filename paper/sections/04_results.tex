@@ -81,12 +81,13 @@ helped.}
 Yes, and the direction of the effect is itself method-dependent rather than
 uniform. Five of the seven methods have a higher CHR under Direction A
 (majority rows relabeled as minority) than under Direction B (minority rows
-relabeled as majority): both XGBoost resampling methods, \texttt{xgb\_weighted},
-and both \texttt{tabpfn\_downsample} and \texttt{tabpfn\_threshold}, the last
-two by a wide margin (Table~\ref{tab:robustness}). The two DistPFN variants
-show the opposite pattern, failing more often under Direction B than
-Direction A. Figure~\ref{fig:chr-regret} shows CHR and mean regret side by
-side for every method, split by direction.
+relabeled as majority): \texttt{xgb\_ros}, \texttt{xgb\_smote},
+\texttt{xgb\_weighted}, \texttt{tabpfn\_downsample}, and
+\texttt{tabpfn\_threshold}, the last two by a wide margin
+(Table~\ref{tab:robustness}). The two DistPFN variants show the opposite
+pattern, failing more often under Direction B than Direction A.
+Figure~\ref{fig:chr-regret} shows CHR and mean regret side by side for
+every method, split by direction.
 
 \begin{figure*}[t]
 \centering
@@ -98,14 +99,14 @@ has both a high CHR and the highest regret in both directions.
 \label{fig:chr-regret}
 \end{figure*}
 
-Regret separates two methods that share a similarly elevated CHR under
-Direction A: \texttt{tabpfn\_downsample} (CHR 31.7\%) and \texttt{tabpfn\_distpfn}
-(CHR 23.1\%) fail at broadly comparable rates, but \texttt{tabpfn\_downsample}'s
-mean regret (0.0063) is well under \texttt{tabpfn\_distpfn}'s (0.0089), and
-the gap widens further under Direction B (0.0002 versus 0.0104). When
-\texttt{tabpfn\_downsample} fails, it tends to fail by a small margin.
-\texttt{tabpfn\_distpfn}'s failures are both frequent and, on average, an
-order of magnitude larger.
+Regret separates two methods that both have an elevated CHR under Direction
+A: \texttt{tabpfn\_downsample} (31.7\%) and \texttt{tabpfn\_distpfn}
+(23.1\%). Despite that comparable failure frequency,
+\texttt{tabpfn\_downsample}'s mean regret (0.0063) is well under
+\texttt{tabpfn\_distpfn}'s (0.0089), and the gap widens further under
+Direction B (0.0002 versus 0.0104). When \texttt{tabpfn\_downsample} fails,
+it tends to fail by a small margin. \texttt{tabpfn\_distpfn}'s failures are
+both frequent and, on average, an order of magnitude larger.
 
 Part of this asymmetry traces back to the uncorrected baselines themselves.
 Comparing balanced accuracy at $c{=}0$ against $c{=}0.30$ for
@@ -114,9 +115,9 @@ Comparing balanced accuracy at $c{=}0$ against $c{=}0.30$ for
 much. \texttt{tabpfn\_none} shows the same asymmetry, 0.055 versus 0.022.
 Losing genuine minority rows (Direction B) is inherently more damaging to
 an uncorrected model than diluting the minority class with mislabeled
-majority rows (Direction A), which is part of why a correction's apparent
-robustness under one direction does not predict its robustness under the
-other.
+majority rows (Direction A), which helps explain why a correction's
+apparent robustness under one direction does not predict its robustness
+under the other.
 
 \subsection{RQ3: At what contamination rate does correction stop paying off?}
 \label{sec:results-rq3}
@@ -126,17 +127,19 @@ of the 20 (dataset, $r$) combinations (15 for \texttt{tabpfn\_downsample}
 under Direction A, since its 5 combinations at $r{=}0.50$ have no completed
 runs to compute a break-even point from) whose seed-averaged Correction
 Gain never dropped to zero or below within the tested range, i.e., $c^*>0.30$.
-\texttt{tabpfn\_distpfn} breaks even soonest most often: it stays
-net-beneficial through $c{=}0.30$ in only 30\% of conditions in either
-direction, the lowest share of any method. No single method dominates the
-other end of the table. \texttt{tabpfn\_threshold} never breaks even in
-65\% of Direction B conditions, matching or trailing several XGBoost
-corrections (\texttt{xgb\_ros}, \texttt{xgb\_smote}, \texttt{xgb\_weighted}
-all reach 70\% under Direction B) despite having by far the lowest CHR and
-highest mean CG under that same direction. Break-even share and CHR
-capture different things: a method can fail on very few cells (low CHR)
-while still being among those whose seed-averaged trend eventually crosses
-zero somewhere in a given (dataset, $r$) combination, which is exactly why
+\texttt{tabpfn\_distpfn} is the least likely of the seven to stay
+beneficial across the full contamination range: it remains net-beneficial
+through $c{=}0.30$ in only 30\% of conditions in either direction, the
+lowest share of any method. No single method leads at the high end of the
+table. \texttt{tabpfn\_threshold} stays beneficial through the full range
+in 65\% of Direction B conditions, matching or trailing several XGBoost
+corrections (\texttt{xgb\_ros}, \texttt{xgb\_smote}, and
+\texttt{xgb\_weighted} all reach 70\% under Direction B) despite having by
+far the lowest CHR and highest mean CG under that same direction. CHR
+counts every failing cell individually, while break-even share only asks
+whether a method's seed-averaged trend, aggregated within one (dataset,
+$r$) combination, ever crosses zero. A method can have a low CHR and still
+cross zero in many such combinations, which is exactly why
 Section~\ref{sec:methods-contribution} defines CHR, Regret, and $c^*$ as
 separate, complementary measures rather than collapsing robustness into one
 number.
@@ -180,8 +183,8 @@ Direction A, with the oracle variant degrading faster than the observed
 one. \texttt{tabpfn\_threshold} shows the same ordering but a much smaller
 gap. In no case tested does using the true, uncorrected prior recover the
 correction's clean-condition performance once contamination is severe, so
-whatever drives these corrections' decline at high contamination, it is not
-primarily the corrupted prior.
+the corrupted prior is not the primary driver of these corrections' decline
+at high contamination.
 
 \begin{figure*}[t]
 \centering
@@ -203,11 +206,11 @@ $\chi^2{=}55.3$ ($n{=}80$ blocks), and its Direction B test gives
 $\chi^2{=}91.6$ ($n{=}80$). TabPFN's Direction A test gives $\chi^2{=}64.3$
 ($n{=}60$), and its Direction B test gives $\chi^2{=}154.9$ ($n{=}80$).
 Method identity therefore significantly affects balanced accuracy within
-both families in both directions. Every
-uncorrected baseline differs significantly from every correction in its
-family, in both directions (Holm-corrected $p<0.001$ throughout), confirming
-that the corrections are doing something, even when Section~\ref{sec:results-rq1}
-shows that something is not always an improvement. Not every pair of
+both families in both directions. Every uncorrected baseline differs
+significantly from every correction in its family, in both directions
+(Holm-corrected $p<0.001$ throughout), confirming that the corrections are
+having a measurable effect, even though Section~\ref{sec:results-rq1} shows
+that effect is not always an improvement. Not every pair of
 corrections is distinguishable from each other, however:
 \texttt{xgb\_weighted} and \texttt{xgb\_smote} are statistically
 indistinguishable under Direction A ($p_{\text{Holm}}=0.92$), as are
