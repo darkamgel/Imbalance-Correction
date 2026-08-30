@@ -1,3 +1,256 @@
 \section{Results}
 \label{sec:results}
-% PENDING
+
+Across the five datasets, three seeds, four imbalance ratios, and five
+contamination rates (the shared clean condition plus four noise levels in
+each of the two directions), the full matrix produced 6{,}417 per-seed runs
+over the nine methods (seven corrections plus the two uncorrected
+baselines), seed-averaged into 2{,}139 method-condition rows. Of these,
+63 runs failed outright, all \texttt{tabpfn\_downsample} at $r{=}0.50$
+(Section~\ref{sec:methods-corrections}): 60 under Direction A contamination,
+at every dataset, every nonzero $c$, and every seed, and 3 in the shared
+clean condition. Because the Direction A failures are complete rather than
+sporadic, every $r{=}0.50$ block is entirely absent for
+\texttt{tabpfn\_downsample} under Direction A, which is why the TabPFN
+family's Direction A significance test below runs on 60 blocks rather than
+80 (Section~\ref{sec:results-significance}). All other results below are
+computed only over runs that completed.
+
+\subsection{RQ1: Does correction remain beneficial once label error is present?}
+\label{sec:results-rq1}
+
+No. Every one of the seven correction methods produced at least one stress
+cell with negative Correction Gain, confirming the pattern anticipated in
+Section~\ref{sec:introduction}. How often this happens varies sharply by
+method. Table~\ref{tab:robustness} summarizes Correction Harm Rate (CHR) and
+mean Correction Gain (CG, on balanced accuracy) for every method in each
+direction. \texttt{tabpfn\_threshold} is the most robust method by both
+measures in both directions: its CHR is 11.9\% under Direction A and 0.6\%
+under Direction B, an order of magnitude below every other correction under
+Direction B, and its mean CG (0.053 and 0.076) is the highest of any method
+in both directions. \texttt{tabpfn\_distpfn} sits at the other end: the
+lowest mean CG under Direction A (0.005, barely positive) and among the
+highest CHR in both directions (23.1\% and 28.8\%).
+
+\begin{table}[t]
+\centering
+\caption{Correction Harm Rate and mean Correction Gain (balanced accuracy)
+by method and direction, over noisy stress cells only ($c>0$).}
+\label{tab:robustness}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& \multicolumn{2}{c}{CHR} & \multicolumn{2}{c}{mean CG} \\
+Method & Dir.\ A & Dir.\ B & Dir.\ A & Dir.\ B \\
+\midrule
+\texttt{xgb\_weighted}      & 0.150 & 0.100 & 0.016 & 0.025 \\
+\texttt{xgb\_ros}           & 0.188 & 0.125 & 0.013 & 0.024 \\
+\texttt{xgb\_smote}         & 0.250 & 0.100 & 0.016 & 0.034 \\
+\texttt{tabpfn\_threshold}  & 0.119 & 0.006 & 0.053 & 0.076 \\
+\texttt{tabpfn\_distpfn}    & 0.231 & 0.288 & 0.005 & 0.011 \\
+\texttt{tabpfn\_distpfn\_t} & 0.225 & 0.250 & 0.009 & 0.020 \\
+\texttt{tabpfn\_downsample} & 0.317 & 0.075 & 0.046 & 0.069 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Figure~\ref{fig:gain-heatmap} makes the same contrast spatially, comparing
+\texttt{tabpfn\_threshold} (top row) against \texttt{tabpfn\_distpfn}
+(bottom row) across every tested combination of imbalance ratio $r$ and
+noise level $c$. \texttt{tabpfn\_threshold}'s gain stays positive across the
+entire grid in both directions. \texttt{tabpfn\_distpfn}'s harm is not
+spread evenly: it concentrates specifically at $r{=}0.50$ (near-balanced
+classes) combined with the highest tested contamination, $c{=}0.30$, where
+the correction actively hurts balanced accuracy rather than merely failing
+to help.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.85\linewidth]{figures/gain_heatmap_pair.png}
+\caption{Correction gain (balanced accuracy) across imbalance ratio $r$ and
+noise level $c$, for the most robust corrected method
+(\texttt{tabpfn\_threshold}, top) and the least robust
+(\texttt{tabpfn\_distpfn}, bottom). Blue indicates the correction hurt
+relative to the uncorrected baseline at that cell, and red indicates it
+helped.}
+\label{fig:gain-heatmap}
+\end{figure*}
+
+\subsection{RQ2: Does corruption direction change how often a correction fails?}
+\label{sec:results-rq2}
+
+Yes, and the direction of the effect is itself method-dependent rather than
+uniform. Five of the seven methods have a higher CHR under Direction A
+(majority rows relabeled as minority) than under Direction B (minority rows
+relabeled as majority): both XGBoost resampling methods, \texttt{xgb\_weighted},
+and both \texttt{tabpfn\_downsample} and \texttt{tabpfn\_threshold}, the last
+two by a wide margin (Table~\ref{tab:robustness}). The two DistPFN variants
+show the opposite pattern, failing more often under Direction B than
+Direction A. Figure~\ref{fig:chr-regret} shows CHR and mean regret side by
+side for every method, split by direction.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.85\linewidth]{figures/chr_regret.png}
+\caption{Correction Harm Rate (left) and mean regret (right, $\max(0,-\text{CG})$)
+by method and direction, over noisy stress cells only. \texttt{tabpfn\_distpfn}
+has both a high CHR and the highest regret in both directions.
+\texttt{tabpfn\_threshold} has the lowest of both in both directions.}
+\label{fig:chr-regret}
+\end{figure*}
+
+Regret separates two methods that share a similarly elevated CHR under
+Direction A: \texttt{tabpfn\_downsample} (CHR 31.7\%) and \texttt{tabpfn\_distpfn}
+(CHR 23.1\%) fail at broadly comparable rates, but \texttt{tabpfn\_downsample}'s
+mean regret (0.0063) is well under \texttt{tabpfn\_distpfn}'s (0.0089), and
+the gap widens further under Direction B (0.0002 versus 0.0104). When
+\texttt{tabpfn\_downsample} fails, it tends to fail by a small margin.
+\texttt{tabpfn\_distpfn}'s failures are both frequent and, on average, an
+order of magnitude larger.
+
+Part of this asymmetry traces back to the uncorrected baselines themselves.
+Comparing balanced accuracy at $c{=}0$ against $c{=}0.30$ for
+\texttt{xgb\_none}, Direction B degrades performance by 0.083 (0.779 to
+0.695) versus 0.030 for Direction A (0.779 to 0.749), roughly 2.8 times as
+much. \texttt{tabpfn\_none} shows the same asymmetry, 0.055 versus 0.022.
+Losing genuine minority rows (Direction B) is inherently more damaging to
+an uncorrected model than diluting the minority class with mislabeled
+majority rows (Direction A), which is part of why a correction's apparent
+robustness under one direction does not predict its robustness under the
+other.
+
+\subsection{RQ3: At what contamination rate does correction stop paying off?}
+\label{sec:results-rq3}
+
+Table~\ref{tab:breakeven} reports, for each method and direction, the share
+of the 20 (dataset, $r$) combinations (15 for \texttt{tabpfn\_downsample}
+under Direction A, since its 5 combinations at $r{=}0.50$ have no completed
+runs to compute a break-even point from) whose seed-averaged Correction
+Gain never dropped to zero or below within the tested range, i.e., $c^*>0.30$.
+\texttt{tabpfn\_distpfn} breaks even soonest most often: it stays
+net-beneficial through $c{=}0.30$ in only 30\% of conditions in either
+direction, the lowest share of any method. No single method dominates the
+other end of the table. \texttt{tabpfn\_threshold} never breaks even in
+65\% of Direction B conditions, matching or trailing several XGBoost
+corrections (\texttt{xgb\_ros}, \texttt{xgb\_smote}, \texttt{xgb\_weighted}
+all reach 70\% under Direction B) despite having by far the lowest CHR and
+highest mean CG under that same direction. Break-even share and CHR
+capture different things: a method can fail on very few cells (low CHR)
+while still being among those whose seed-averaged trend eventually crosses
+zero somewhere in a given (dataset, $r$) combination, which is exactly why
+Section~\ref{sec:methods-contribution} defines CHR, Regret, and $c^*$ as
+separate, complementary measures rather than collapsing robustness into one
+number.
+
+\begin{table}[t]
+\centering
+\caption{Share of (dataset, $r$) conditions where a method's seed-averaged
+Correction Gain never dropped to zero or below within the tested
+contamination range ($c^*>0.30$).}
+\label{tab:breakeven}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Method & Dir.\ A & Dir.\ B \\
+\midrule
+\texttt{xgb\_weighted}      & 45\% & 70\% \\
+\texttt{xgb\_ros}           & 55\% & 70\% \\
+\texttt{xgb\_smote}         & 35\% & 70\% \\
+\texttt{tabpfn\_threshold}  & 50\% & 65\% \\
+\texttt{tabpfn\_distpfn}    & 30\% & 30\% \\
+\texttt{tabpfn\_distpfn\_t} & 40\% & 35\% \\
+\texttt{tabpfn\_downsample} & 60\% & 65\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{RQ4: How much of a correction's failure traces to the prior?}
+\label{sec:results-rq4}
+
+Less than expected, and on average the deployable, observed-prior variant
+slightly outperforms the oracle diagnostic rather than trailing it. Mean
+PSG (Equation~\ref{eq:psg}) is negative for all three prior-dependent
+methods in both directions: $-0.008$ for \texttt{tabpfn\_threshold},
+$-0.014$ for \texttt{tabpfn\_distpfn}, and $-0.015$ for
+\texttt{tabpfn\_distpfn\_t} under Direction A, with similar magnitudes
+under Direction B. This gap is not fixed, however: restricted to $c{=}0.30$
+only, mean PSG for \texttt{tabpfn\_distpfn} widens to $-0.060$ under
+Direction A. Figure~\ref{fig:psg} shows why: at low contamination the
+observed and oracle curves for all three methods are close together, but
+for the two DistPFN variants they separate sharply above $c{=}0.20$ under
+Direction A, with the oracle variant degrading faster than the observed
+one. \texttt{tabpfn\_threshold} shows the same ordering but a much smaller
+gap. In no case tested does using the true, uncorrected prior recover the
+correction's clean-condition performance once contamination is severe, so
+whatever drives these corrections' decline at high contamination, it is not
+primarily the corrupted prior.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.85\linewidth]{figures/oracle_vs_observed.png}
+\caption{Observed-prior (deployable, solid) versus oracle-prior (diagnostic,
+dashed) balanced accuracy for the three prior-dependent TabPFN methods.
+The oracle variant is never reliably better than the observed one, and for
+\texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t} it degrades faster
+at high contamination under Direction A.}
+\label{fig:psg}
+\end{figure*}
+
+\subsection{Statistical significance}
+\label{sec:results-significance}
+
+The Friedman test is significant at $p<10^{-11}$ for all four
+family-direction combinations. XGBoost's Direction A test gives
+$\chi^2{=}55.3$ ($n{=}80$ blocks), and its Direction B test gives
+$\chi^2{=}91.6$ ($n{=}80$). TabPFN's Direction A test gives $\chi^2{=}64.3$
+($n{=}60$), and its Direction B test gives $\chi^2{=}154.9$ ($n{=}80$).
+Method identity therefore significantly affects balanced accuracy within
+both families in both directions. Every
+uncorrected baseline differs significantly from every correction in its
+family, in both directions (Holm-corrected $p<0.001$ throughout), confirming
+that the corrections are doing something, even when Section~\ref{sec:results-rq1}
+shows that something is not always an improvement. Not every pair of
+corrections is distinguishable from each other, however:
+\texttt{xgb\_weighted} and \texttt{xgb\_smote} are statistically
+indistinguishable under Direction A ($p_{\text{Holm}}=0.92$), as are
+\texttt{xgb\_ros} and \texttt{xgb\_smote} ($p_{\text{Holm}}=0.92$), and
+\texttt{xgb\_weighted} and \texttt{xgb\_ros} under Direction B
+($p_{\text{Holm}}=0.17$). Within the TabPFN family under Direction A,
+\texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t} are each
+statistically indistinguishable from \texttt{tabpfn\_downsample}
+($p_{\text{Holm}}=0.12$ for both). This is the only non-significant pair
+within the TabPFN family in either direction. Every other TabPFN pairwise
+comparison, in both directions, is significant.
+
+\subsection{Calibration reliability}
+\label{sec:results-reliability}
+
+Figure~\ref{fig:reliability} tracks Brier score and expected calibration
+error against noise level for every method. Every XGBoost correction
+improves on \texttt{xgb\_none}'s Brier score and ECE at every noise level
+tested, in both directions, with no exception. The TabPFN family shows no
+such uniformity. \texttt{tabpfn\_downsample} is worse-calibrated than the
+uncorrected \texttt{tabpfn\_none} baseline on both metrics at every noise
+level under Direction A, and \texttt{tabpfn\_distpfn} and
+\texttt{tabpfn\_distpfn\_t} join it at $c \geq 0.20$ under the same
+direction. This calibration backfire is almost entirely confined to
+Direction A. Only one exception appears under Direction B
+(\texttt{tabpfn\_downsample}'s Brier score at $c{=}0.05$, negligible in
+magnitude at 0.003). \texttt{tabpfn\_threshold} is the one TabPFN
+correction that never exceeds its baseline's Brier score or ECE in either
+direction, consistent with its standing as the most robust method on
+balanced accuracy as well (Sections~\ref{sec:results-rq1}
+and~\ref{sec:results-rq2}). At the lowest noise level tested ($c{=}0.05$),
+\texttt{tabpfn\_distpfn} and \texttt{tabpfn\_threshold} are in fact the
+best-calibrated methods of any tested, correction or baseline, in both
+directions, before \texttt{tabpfn\_distpfn}'s advantage reverses at higher
+contamination.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.85\linewidth]{figures/reliability.png}
+\caption{Brier score (top) and expected calibration error (bottom) against
+noise level, faceted by direction. Dotted gray lines are the two
+uncorrected baselines. Every XGBoost correction improves on its baseline at
+every noise level, while three of the four TabPFN corrections cross above
+their own baseline under Direction A at higher noise.}
+\label{fig:reliability}
+\end{figure*}
