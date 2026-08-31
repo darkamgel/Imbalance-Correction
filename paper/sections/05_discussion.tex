@@ -1,13 +1,10 @@
 \section{Discussion}
 \label{sec:discussion}
 
-We start with the clearest pattern across every result. The simplest
-correction tested is also the most robust one. We then turn to how
-corruption direction, not just its rate, changes which corrections stay
-safe, why the corrupted prior turns out not to be the main problem, and
-why balanced accuracy and calibration can disagree about the same
-correction. We close with what these results mean for imbalance
-correction under label noise more broadly.
+The simplest correction tested is also the most robust one, the clearest
+pattern to emerge from Section~\ref{sec:results}. What follows explains
+why, and what it means for correcting class imbalance under label noise
+more broadly.
 
 \subsection{Simplicity Outperforms Sophistication}
 \label{sec:discussion-simplicity}
@@ -20,10 +17,10 @@ highest mean CG in both directions, and the only TabPFN correction whose
 calibration never falls below its own baseline's. The one exception is
 break-even share, where several XGBoost corrections actually stay
 net-beneficial through the full contamination range more often than
-\texttt{tabpfn\_threshold} does, particularly under Direction B, the same
-divide between failure frequency and failure severity that separates
-\texttt{tabpfn\_downsample} from \texttt{tabpfn\_distpfn}.
-\texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t}, the two
+\texttt{tabpfn\_threshold} does, particularly under Direction B. This is
+the same divide between failure frequency and failure severity that
+separates \texttt{tabpfn\_downsample} from \texttt{tabpfn\_distpfn}
+below. \texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t}, the two
 corrections that rescale TabPFN's predictions against both a prior and a
 temperature term, have the lowest mean CG and the highest regret of any
 method in both directions.
@@ -75,8 +72,7 @@ degrades faster than the deployable one. If the wrong prior were the
 primary cause of these methods' decline, correcting it should have
 helped. It does not.
 
-One structural reason is available directly from how these corrections
-work. \texttt{tabpfn\_threshold}, \texttt{tabpfn\_distpfn}, and
+One structural reason follows directly from how these corrections work. \texttt{tabpfn\_threshold}, \texttt{tabpfn\_distpfn}, and
 \texttt{tabpfn\_distpfn\_t} all adjust TabPFN's output probabilities after
 the fact, using the class prior~\cite{saerens2002adjusting,lee2026distpfn}.
 None of them touch the training rows TabPFN actually reads as its
@@ -120,8 +116,8 @@ resampling~\cite{koziarski2020ccr}, active learning with noisy-label
 training~\cite{khanal2024activelabel}, or class-balanced sample
 selection~\cite{liu2024imbalancednoisy}. This study takes a different
 approach. It asks whether the corrections practitioners are already using
-need replacing at all before proposing something new to replace them
-with. The answer is conditional. \texttt{tabpfn\_threshold}, the cheapest
+need replacing at all before anything new gets proposed. The answer is
+conditional. \texttt{tabpfn\_threshold}, the cheapest
 and simplest correction tested, remains net-beneficial through the full
 contamination range in half or more of the conditions tested, in both
 directions, which suggests that for at least some deployments, auditing
