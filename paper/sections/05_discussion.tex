@@ -1,3 +1,139 @@
 \section{Discussion}
 \label{sec:discussion}
-% PENDING
+
+The results in Section~\ref{sec:results} answer the four questions posed
+in Section~\ref{sec:introduction}, but several patterns recur across them
+that are worth drawing out explicitly.
+
+\subsection{Simplicity Outperforms Sophistication}
+\label{sec:discussion-simplicity}
+
+\texttt{tabpfn\_threshold} is the simplest correction audited in this
+study. It moves the decision boundary from 0.5 to the class prior and does
+nothing else (Section~\ref{sec:methods-corrections}). It is also the most
+robust method tested by nearly every measure, with the lowest CHR and the
+highest mean CG in both directions (Section~\ref{sec:results-rq1}) and the
+only TabPFN correction whose calibration never falls below its own
+baseline's (Section~\ref{sec:results-reliability}). The one exception is
+break-even share, where several XGBoost corrections actually stay
+net-beneficial through the full contamination range more often than
+\texttt{tabpfn\_threshold} does, particularly under Direction B
+(Section~\ref{sec:results-rq3}), which is the same divide between failure
+frequency and failure severity that separates \texttt{tabpfn\_downsample}
+from \texttt{tabpfn\_distpfn} in Section~\ref{sec:results-rq2}.
+\texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t}, the two
+corrections that rescale TabPFN's predictions against both a prior and a
+temperature term (Section~\ref{sec:methods-corrections}), have the lowest
+mean CG and the highest regret of any method in both directions.
+
+This finding builds on prior work rather than standing alone. Elor and
+Averbuch-Elor~\cite{elor2022smote} found that on clean, uncorrupted data, a
+well-tuned classifier often gains nothing from balancing the training set,
+and can lose performance from it. This study's contribution is to show
+that the same pattern holds, and grows sharper, once label noise is added.
+A correction is not just sometimes unnecessary. It can actively backfire,
+and in this comparison the two most mathematically elaborate corrections,
+DistPFN and DistPFN-T, are the ones that backfire hardest, not the
+simplest one. A practitioner choosing a correction method for a TabPFN
+deployment under uncertain label quality has, based on this study's
+results, no clear reason to prefer a more elaborate posterior-rescaling
+method over a simple threshold shift.
+
+\subsection{Direction Asymmetry Undercuts a Single Robustness Score}
+\label{sec:discussion-direction}
+
+Section~\ref{sec:results-rq2} found that five of seven methods fail more
+often under Direction A (majority rows relabeled as minority) than
+Direction B (minority rows relabeled as majority), while the two DistPFN
+variants show the opposite pattern. This asymmetry is exactly what the
+label-noise literature's class-conditional and asymmetric-noise
+formalizations predict in principle~\cite{natarajan2013noisylabels,scott2013asymmetricnoise},
+but this study's results show it is not a minor theoretical caveat. A
+method's CHR under one direction tells you little about its CHR under the
+other. \texttt{tabpfn\_downsample}'s CHR is 31.7\% under Direction A and
+7.5\% under Direction B, a more than fourfold difference in the same
+method on the same datasets. A robustness claim validated under only one
+corruption mechanism, or under the symmetric random-flip noise more
+commonly studied, does not transfer to a directed, class-conditional error
+of the kind this study injects, and in practice the true direction of
+label error is rarely known in advance. This is the strongest argument in
+this study for testing every correction under both directions rather than
+one.
+
+\subsection{The Corrupted Prior Is Not the Main Failure Mode}
+\label{sec:discussion-prior}
+
+The most surprising result in Section~\ref{sec:results-rq4} is that mean
+PSG is negative for all three prior-dependent TabPFN methods in both
+directions. Handing a correction the true, uncorrupted prior, something no
+real deployment could ever do, does not reliably improve it over using the
+corrupted, observed prior, and at high contamination the oracle variant of
+\texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t} degrades faster
+than the deployable one. If the wrong prior were the primary cause of
+these methods' decline, correcting it should have helped. It does not.
+
+One structural reason is available directly from how these corrections
+work (Section~\ref{sec:methods-corrections}). \texttt{tabpfn\_threshold},
+\texttt{tabpfn\_distpfn}, and \texttt{tabpfn\_distpfn\_t} all adjust
+TabPFN's output probabilities after the fact, using the class
+prior~\cite{saerens2002adjusting,lee2026distpfn}. None of them touch the
+training rows TabPFN actually reads as its in-context
+prompt~\cite{hollmann2023tabpfn,hollmann2025tabpfnv2}. Contamination
+happens before any correction is applied
+(Section~\ref{sec:methods-overview}), so the mislabeled rows stay in that
+prompt regardless of which prior a posterior-rescaling method is given
+afterward. Swapping in the true prior fixes the summary statistic the
+correction uses, but not the individual wrong examples TabPFN has already
+been shown. This would explain why the oracle prior helps so little,
+though confirming it directly would require an experiment this study did
+not run, comparing a prior-only fix against a fix that also removes the
+mislabeled rows from the context itself.
+
+\subsection{Accuracy and Calibration Answer Different Questions}
+\label{sec:discussion-calibration}
+
+Section~\ref{sec:results-reliability} found that every XGBoost correction
+improves calibration over its baseline at every noise level tested, even
+the ones that sometimes hurt balanced accuracy
+(Section~\ref{sec:results-rq1}), while three of four TabPFN corrections
+can make calibration worse than doing nothing under Direction A. Balanced
+accuracy and calibration measure different properties of a classifier, and
+a correction that helps one can be neutral or harmful on the other. This
+matters for deployment. A system that only needs a correct label, such as
+most classification benchmarks, cares primarily about balanced accuracy or
+a related discrimination metric. A system that acts on a predicted
+probability (setting a risk threshold, allocating a limited budget,
+ranking cases by urgency) cares about calibration first. Reporting CHR and
+mean CG alone, as most of Section~\ref{sec:results} does for the headline
+comparisons, would miss that \texttt{tabpfn\_downsample} is uniquely bad
+at calibration under Direction A even though its balanced accuracy profile
+looks far more favorable there, the second-highest mean CG of any method
+(Section~\ref{sec:results-rq1}). Evaluating a
+correction method for deployment requires checking both axes separately,
+not inferring one from the other.
+
+\subsection{Implications for Imbalance Correction Under Label Noise}
+\label{sec:discussion-implications}
+
+Related work on class imbalance and label noise as a joint problem has so
+far proposed new training-time algorithms, combining cleaning with
+resampling~\cite{koziarski2020ccr}, active learning with noisy-label
+training~\cite{khanal2024activelabel}, or class-balanced sample
+selection~\cite{liu2024imbalancednoisy}. This study takes a different
+approach. It asks whether the corrections practitioners are already using
+need replacing at all before proposing something new to replace them
+with. The answer is conditional. \texttt{tabpfn\_threshold}, the cheapest
+and simplest correction tested, remains net-beneficial through the full
+contamination range in half or more of the conditions tested, in both
+directions (Section~\ref{sec:results-rq3}), which suggests that for at
+least some deployments, auditing which correction is already in use and
+switching to
+a simpler one may close most of the gap that a new joint training
+algorithm would otherwise be built to address. For the methods that do
+fail badly, particularly \texttt{tabpfn\_distpfn} and
+\texttt{tabpfn\_distpfn\_t} under high contamination, the case for the
+kind of joint noise-and-imbalance-aware training these related works
+propose is stronger. Which situation a practitioner is in is not knowable
+without the kind of audit this study performs, which is itself an argument
+for making this kind of evaluation routine rather than assuming a
+published correction method is safe by default.
