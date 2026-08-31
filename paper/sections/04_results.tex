@@ -203,18 +203,35 @@ at high contamination under Direction A.}
 \subsection{Statistical Significance}
 \label{sec:results-significance}
 
-The Friedman test is significant at $p<10^{-11}$ for all four
-family-direction combinations. XGBoost's Direction A test gives
-$\chi^2{=}55.3$ ($n{=}80$ blocks), and its Direction B test gives
-$\chi^2{=}91.6$ ($n{=}80$). TabPFN's Direction A test gives $\chi^2{=}64.3$
-($n{=}60$), and its Direction B test gives $\chi^2{=}154.9$ ($n{=}80$).
-Method identity therefore significantly affects balanced accuracy within
-both families in both directions. Every uncorrected baseline differs
-significantly from every correction in its family, in both directions
-(Holm-corrected $p<0.001$ throughout), confirming that the corrections are
-having a measurable effect, even though Section~\ref{sec:results-rq1} shows
-that effect is not always an improvement. Not every pair of
-corrections is distinguishable from each other, however.
+Table~\ref{tab:friedman} reports the Friedman omnibus test for each model
+family and corruption direction. All four are significant at $p<10^{-11}$,
+so method identity significantly affects balanced accuracy within both
+families in both directions.
+
+\begin{table}[t]
+\centering
+\caption{Friedman omnibus test statistics by model family and corruption
+direction. All four are significant at $p<10^{-11}$.}
+\label{tab:friedman}
+\begin{tabular}{@{}llrr@{}}
+\toprule
+Family & Direction & $\chi^2$ & $n$ (blocks) \\
+\midrule
+XGBoost & Dir.\ A & 55.3  & 80 \\
+XGBoost & Dir.\ B & 91.6  & 80 \\
+TabPFN  & Dir.\ A & 64.3  & 60 \\
+TabPFN  & Dir.\ B & 154.9 & 80 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Every uncorrected baseline differs significantly from every correction in
+its family, in both directions (Holm-corrected $p<0.001$ throughout). The
+corrections are having a measurable effect, even though
+Section~\ref{sec:results-rq1} shows that effect is not always an
+improvement.
+
+Not every pair of corrections is distinguishable from each other, however.
 \texttt{xgb\_weighted} and \texttt{xgb\_smote} are statistically
 indistinguishable under Direction A ($p_{\text{Holm}}=0.92$), as are
 \texttt{xgb\_ros} and \texttt{xgb\_smote} ($p_{\text{Holm}}=0.92$), and
