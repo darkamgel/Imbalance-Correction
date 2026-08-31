@@ -7,10 +7,10 @@ each of the two directions), the full matrix produced 6{,}417 per-seed runs
 over the nine methods (seven corrections plus the two uncorrected
 baselines), seed-averaged into 2{,}139 method-condition rows. Of these,
 63 runs failed outright, all \texttt{tabpfn\_downsample} at $r{=}0.50$
-(Section~\ref{sec:methods-corrections}): 60 under Direction A contamination,
-at every dataset, every nonzero $c$, and every seed, and 3 in the shared
-clean condition. Because the Direction A failures are complete rather than
-sporadic, every $r{=}0.50$ block is entirely absent for
+(Section~\ref{sec:methods-corrections}). 60 failed under Direction A
+contamination, at every dataset, every nonzero $c$, and every seed, and 3
+failed in the shared clean condition. Because the Direction A failures are
+complete rather than sporadic, every $r{=}0.50$ block is entirely absent for
 \texttt{tabpfn\_downsample} under Direction A, which is why the TabPFN
 family's Direction A significance test below runs on 60 blocks rather than
 80 (Section~\ref{sec:results-significance}). All other results below are
@@ -21,16 +21,16 @@ computed only over runs that completed.
 
 Every one of the seven correction methods produced at least one stress cell
 with negative Correction Gain, confirming the pattern anticipated in
-Section~\ref{sec:introduction}: no correction remains uniformly beneficial
+Section~\ref{sec:introduction}. No correction remains uniformly beneficial
 once label error is present. How often this happens varies sharply by
 method. Table~\ref{tab:robustness} summarizes Correction Harm Rate (CHR) and
 mean Correction Gain (CG, on balanced accuracy) for every method in each
 direction. \texttt{tabpfn\_threshold} is the most robust method by both
-measures in both directions: its CHR is 11.9\% under Direction A and 0.6\%
+measures in both directions. Its CHR is 11.9\% under Direction A and 0.6\%
 under Direction B, an order of magnitude below every other correction under
 Direction B, and its mean CG (0.053 and 0.076) is the highest of any method
-in both directions. \texttt{tabpfn\_distpfn} sits at the other end: the
-lowest mean CG under Direction A (0.005, barely positive) and among the
+in both directions. \texttt{tabpfn\_distpfn} sits at the other end, with
+the lowest mean CG under Direction A (0.005, barely positive) and among the
 highest CHR in both directions (23.1\% and 28.8\%).
 
 \begin{table}[t]
@@ -59,7 +59,7 @@ Figure~\ref{fig:gain-heatmap} makes the same contrast spatially, comparing
 (bottom row) across every tested combination of imbalance ratio $r$ and
 noise level $c$. \texttt{tabpfn\_threshold}'s gain stays positive across the
 entire grid in both directions. \texttt{tabpfn\_distpfn}'s harm is not
-spread evenly: it concentrates specifically at $r{=}0.50$ (near-balanced
+spread evenly. It concentrates specifically at $r{=}0.50$ (near-balanced
 classes) combined with the highest tested contamination, $c{=}0.30$, where
 the correction actively hurts balanced accuracy rather than merely failing
 to help.
@@ -83,7 +83,7 @@ Corruption direction changes how often a correction fails, and the
 direction of the effect is itself method-dependent rather than uniform.
 Five of the seven methods have a higher CHR under Direction A
 (majority rows relabeled as minority) than under Direction B (minority rows
-relabeled as majority): \texttt{xgb\_ros}, \texttt{xgb\_smote},
+relabeled as majority). These are \texttt{xgb\_ros}, \texttt{xgb\_smote},
 \texttt{xgb\_weighted}, \texttt{tabpfn\_downsample}, and
 \texttt{tabpfn\_threshold}, the last two by a wide margin
 (Table~\ref{tab:robustness}). The two DistPFN variants show the opposite
@@ -102,7 +102,7 @@ has both a high CHR and the highest regret in both directions.
 \end{figure*}
 
 Regret separates two methods that both have an elevated CHR under Direction
-A: \texttt{tabpfn\_downsample} (31.7\%) and \texttt{tabpfn\_distpfn}
+A, \texttt{tabpfn\_downsample} (31.7\%) and \texttt{tabpfn\_distpfn}
 (23.1\%). Despite that comparable failure frequency,
 \texttt{tabpfn\_downsample}'s mean regret (0.0063) is well under
 \texttt{tabpfn\_distpfn}'s (0.0089), and the gap widens further under
@@ -130,7 +130,7 @@ under Direction A, since its 5 combinations at $r{=}0.50$ have no completed
 runs to compute a break-even point from) whose seed-averaged Correction
 Gain never dropped to zero or below within the tested range, i.e., $c^*>0.30$.
 \texttt{tabpfn\_distpfn} is the least likely of the seven to stay
-beneficial across the full contamination range: it remains net-beneficial
+beneficial across the full contamination range. It remains net-beneficial
 through $c{=}0.30$ in only 30\% of conditions in either direction, the
 lowest share of any method. No single method leads at the high end of the
 table. \texttt{tabpfn\_threshold} stays beneficial through the full range
@@ -174,12 +174,12 @@ The corrupted prior explains less of a correction's failure than expected.
 On average, the deployable, observed-prior variant slightly outperforms
 the oracle diagnostic rather than trailing it. Mean PSG
 (Equation~\ref{eq:psg}) is negative for all three prior-dependent
-methods in both directions: $-0.008$ for \texttt{tabpfn\_threshold},
-$-0.014$ for \texttt{tabpfn\_distpfn}, and $-0.015$ for
-\texttt{tabpfn\_distpfn\_t} under Direction A, with similar magnitudes
-under Direction B. This gap is not fixed, however: restricted to $c{=}0.30$
+methods in both directions. Under Direction A it is $-0.008$ for
+\texttt{tabpfn\_threshold}, $-0.014$ for \texttt{tabpfn\_distpfn}, and
+$-0.015$ for \texttt{tabpfn\_distpfn\_t}, with similar magnitudes under
+Direction B. This gap is not fixed, however. Restricted to $c{=}0.30$
 only, mean PSG for \texttt{tabpfn\_distpfn} widens to $-0.060$ under
-Direction A. Figure~\ref{fig:psg} shows why: at low contamination the
+Direction A. Figure~\ref{fig:psg} shows why. At low contamination the
 observed and oracle curves for all three methods are close together, but
 for the two DistPFN variants they separate sharply above $c{=}0.20$ under
 Direction A, with the oracle variant degrading faster than the observed
@@ -214,7 +214,7 @@ significantly from every correction in its family, in both directions
 (Holm-corrected $p<0.001$ throughout), confirming that the corrections are
 having a measurable effect, even though Section~\ref{sec:results-rq1} shows
 that effect is not always an improvement. Not every pair of
-corrections is distinguishable from each other, however:
+corrections is distinguishable from each other, however.
 \texttt{xgb\_weighted} and \texttt{xgb\_smote} are statistically
 indistinguishable under Direction A ($p_{\text{Holm}}=0.92$), as are
 \texttt{xgb\_ros} and \texttt{xgb\_smote} ($p_{\text{Holm}}=0.92$), and
