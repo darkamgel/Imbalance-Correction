@@ -58,14 +58,13 @@ one.
 \label{sec:discussion-prior}
 
 The most surprising result of this study is that mean PSG is negative for
-all three prior-dependent TabPFN methods in both directions. Handing a
-correction the true, uncorrupted prior, something no
-real deployment could ever do, does not reliably improve it over using the
-corrupted, observed prior, and under Direction A at high contamination the
-oracle variant of \texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t}
-degrades faster than the deployable one. If the wrong prior were the
-primary cause of these methods' decline, correcting it should have
-helped. It does not.
+all three prior-dependent TabPFN methods in both directions. The true,
+uncorrupted prior, something no real deployment could ever supply, does
+not reliably outperform the corrupted, observed one. Under Direction A,
+at high contamination, the oracle variant of \texttt{tabpfn\_distpfn} and
+\texttt{tabpfn\_distpfn\_t} actually degrades faster than the deployable
+one. If the wrong prior were the primary cause of these methods'
+decline, correcting it should have helped. It does not.
 
 One structural reason follows directly from how these corrections work. \texttt{tabpfn\_threshold}, \texttt{tabpfn\_distpfn}, and
 \texttt{tabpfn\_distpfn\_t} all adjust TabPFN's output probabilities after
