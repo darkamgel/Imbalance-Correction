@@ -1,27 +1,24 @@
 \section{Discussion}
 \label{sec:discussion}
 
-The clearest pattern in Section~\ref{sec:results} is that the simplest
-correction tested is also the most robust one.
-
 \subsection{Simplicity Outperforms Sophistication}
 \label{sec:discussion-simplicity}
 
-\texttt{tabpfn\_threshold} is the simplest correction audited in this
-study. It moves the decision boundary from 0.5 to the class prior and does
-nothing else (Section~\ref{sec:methods-corrections}). It is also the most
-robust method tested by nearly every measure, with the lowest CHR and the
-highest mean CG in both directions, and the only TabPFN correction whose
-calibration never falls below its own baseline's. The one exception is
-break-even share, where several XGBoost corrections actually stay
-net-beneficial through the full contamination range more often than
-\texttt{tabpfn\_threshold} does, particularly under Direction B. This is
-the same divide between failure frequency and failure severity that
-separates \texttt{tabpfn\_downsample} from \texttt{tabpfn\_distpfn}
-below. \texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t}, the two
-corrections that rescale TabPFN's predictions against both a prior and a
-temperature term, have the lowest mean CG and the highest regret of any
-method in both directions.
+\texttt{tabpfn\_threshold} does less than any other correction tested. It
+shifts the decision boundary from 0.5 to the class prior and nothing more
+(Section~\ref{sec:methods-corrections}). Despite that, it is the most
+robust method in the study by nearly every measure. It has the lowest CHR
+and the highest mean CG in both directions, and it is the only TabPFN
+correction whose calibration never falls below its own baseline's. The
+one place it does not lead outright is break-even share, where several
+XGBoost corrections actually stay net-beneficial for longer, particularly
+under Direction B. This is the same divide between failure frequency and
+failure severity that separates \texttt{tabpfn\_downsample} from
+\texttt{tabpfn\_distpfn} below. \texttt{tabpfn\_distpfn} and
+\texttt{tabpfn\_distpfn\_t} sit at the opposite end. Both rescale
+TabPFN's predictions against a prior and a temperature term, and both
+have the lowest mean CG and the highest regret of any method in either
+direction.
 
 This finding builds on prior work rather than standing alone. Elor and
 Averbuch-Elor~\cite{elor2022smote} found that on clean, uncorrupted data, a
