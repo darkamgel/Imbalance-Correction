@@ -16,12 +16,13 @@ family's Direction A significance test below runs on 60 blocks rather than
 80 (Section~\ref{sec:results-significance}). All other results below are
 computed only over runs that completed.
 
-\subsection{RQ1: Does correction remain beneficial once label error is present?}
+\subsection{Overall Correction Robustness}
 \label{sec:results-rq1}
 
-No. Every one of the seven correction methods produced at least one stress
-cell with negative Correction Gain, confirming the pattern anticipated in
-Section~\ref{sec:introduction}. How often this happens varies sharply by
+Every one of the seven correction methods produced at least one stress cell
+with negative Correction Gain, confirming the pattern anticipated in
+Section~\ref{sec:introduction}: no correction remains uniformly beneficial
+once label error is present. How often this happens varies sharply by
 method. Table~\ref{tab:robustness} summarizes Correction Harm Rate (CHR) and
 mean Correction Gain (CG, on balanced accuracy) for every method in each
 direction. \texttt{tabpfn\_threshold} is the most robust method by both
@@ -75,11 +76,12 @@ helped.}
 \label{fig:gain-heatmap}
 \end{figure*}
 
-\subsection{RQ2: Does corruption direction change how often a correction fails?}
+\subsection{Direction-Dependent Failure}
 \label{sec:results-rq2}
 
-Yes, and the direction of the effect is itself method-dependent rather than
-uniform. Five of the seven methods have a higher CHR under Direction A
+Corruption direction changes how often a correction fails, and the
+direction of the effect is itself method-dependent rather than uniform.
+Five of the seven methods have a higher CHR under Direction A
 (majority rows relabeled as minority) than under Direction B (minority rows
 relabeled as majority): \texttt{xgb\_ros}, \texttt{xgb\_smote},
 \texttt{xgb\_weighted}, \texttt{tabpfn\_downsample}, and
@@ -119,7 +121,7 @@ majority rows (Direction A), which helps explain why a correction's
 apparent robustness under one direction does not predict its robustness
 under the other.
 
-\subsection{RQ3: At what contamination rate does correction stop paying off?}
+\subsection{Break-Even Contamination Rates}
 \label{sec:results-rq3}
 
 Table~\ref{tab:breakeven} reports, for each method and direction, the share
@@ -165,12 +167,13 @@ Method & Dir.\ A & Dir.\ B \\
 \end{tabular}
 \end{table}
 
-\subsection{RQ4: How much of a correction's failure traces to the prior?}
+\subsection{Prior Sensitivity}
 \label{sec:results-rq4}
 
-Less than expected, and on average the deployable, observed-prior variant
-slightly outperforms the oracle diagnostic rather than trailing it. Mean
-PSG (Equation~\ref{eq:psg}) is negative for all three prior-dependent
+The corrupted prior explains less of a correction's failure than expected.
+On average, the deployable, observed-prior variant slightly outperforms
+the oracle diagnostic rather than trailing it. Mean PSG
+(Equation~\ref{eq:psg}) is negative for all three prior-dependent
 methods in both directions: $-0.008$ for \texttt{tabpfn\_threshold},
 $-0.014$ for \texttt{tabpfn\_distpfn}, and $-0.015$ for
 \texttt{tabpfn\_distpfn\_t} under Direction A, with similar magnitudes
@@ -197,7 +200,7 @@ at high contamination under Direction A.}
 \label{fig:psg}
 \end{figure*}
 
-\subsection{Statistical significance}
+\subsection{Statistical Significance}
 \label{sec:results-significance}
 
 The Friedman test is significant at $p<10^{-11}$ for all four
@@ -223,7 +226,7 @@ statistically indistinguishable from \texttt{tabpfn\_downsample}
 within the TabPFN family in either direction. Every other TabPFN pairwise
 comparison, in both directions, is significant.
 
-\subsection{Calibration reliability}
+\subsection{Calibration Reliability}
 \label{sec:results-reliability}
 
 Figure~\ref{fig:reliability} tracks Brier score and expected calibration
