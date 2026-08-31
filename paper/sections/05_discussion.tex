@@ -1,9 +1,13 @@
 \section{Discussion}
 \label{sec:discussion}
 
-The results in Section~\ref{sec:results} answer the four questions posed
-in Section~\ref{sec:introduction}, but several patterns recur across them
-that are worth drawing out explicitly.
+We start with the clearest pattern across every result. The simplest
+correction tested is also the most robust one. We then turn to how
+corruption direction, not just its rate, changes which corrections stay
+safe, why the corrupted prior turns out not to be the main problem, and
+why balanced accuracy and calibration can disagree about the same
+correction. We close with what these results mean for imbalance
+correction under label noise more broadly.
 
 \subsection{Simplicity Outperforms Sophistication}
 \label{sec:discussion-simplicity}
@@ -61,9 +65,9 @@ one.
 \subsection{The Corrupted Prior Is Not the Main Failure Mode}
 \label{sec:discussion-prior}
 
-The most surprising result in Section~\ref{sec:results-rq4} is that mean
-PSG is negative for all three prior-dependent TabPFN methods in both
-directions. Handing a correction the true, uncorrupted prior, something no
+The most surprising result of this study is that mean PSG is negative for
+all three prior-dependent TabPFN methods in both directions. Handing a
+correction the true, uncorrupted prior, something no
 real deployment could ever do, does not reliably improve it over using the
 corrupted, observed prior, and under Direction A at high contamination the
 oracle variant of \texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t}
@@ -99,11 +103,11 @@ that only needs a correct label, such as most classification benchmarks,
 cares primarily about balanced accuracy or a related discrimination
 metric. A system that acts on a predicted probability (setting a risk
 threshold, allocating a limited budget, ranking cases by urgency) cares
-about calibration first. Reporting CHR and mean CG alone, as
-Section~\ref{sec:results-rq1} does for the headline comparisons, would
-miss that \texttt{tabpfn\_downsample} is uniquely bad at calibration under
-Direction A even though its balanced accuracy profile looks far more
-favorable there, the second-highest mean CG of any method. Evaluating a
+about calibration first. Reporting CHR and mean CG alone for the headline
+comparisons would miss that \texttt{tabpfn\_downsample} is uniquely bad
+at calibration under Direction A even though its balanced accuracy
+profile looks far more favorable there, the second-highest mean CG of
+any method. Evaluating a
 correction method for deployment requires checking both axes separately,
 not inferring one from the other.
 
