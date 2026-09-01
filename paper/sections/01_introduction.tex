@@ -52,7 +52,7 @@ corrupted prior instead of the true, oracle prior?
 
 Concretely, we audit seven correction methods across two widely deployed tabular
 model families, TabPFN and XGBoost~\cite{chen2016xgboost}, under two directed,
-asymmetric label-error mechanisms and a range of imbalance levels, using five real
+asymmetric label-error mechanisms and a range of imbalance levels, using ten real
 datasets drawn from the UCI Machine Learning Repository~\cite{kelly_uci}. The design
 holds the total amount of training evidence fixed across imbalance levels, so that
 imbalance and label noise can be varied independently rather than confounded with
@@ -90,7 +90,7 @@ an implementation error identified during this verification process
 Correction Gain, Correction Harm Rate, break-even contamination rate, and Prior
 Sensitivity Gap, designed to measure whether a correction remains net-beneficial
 once label noise is present, rather than measuring model accuracy alone.
-\item We show, across five real datasets, that every correction method tested can
+\item We show, across ten real datasets, that every correction method tested can
 underperform doing nothing at all once contamination reaches as little as 5\%, and
 that this failure is direction-dependent rather than uniform across methods or
 datasets.
