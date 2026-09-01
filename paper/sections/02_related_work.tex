@@ -16,7 +16,13 @@ entirely by the class distribution implicit in its pretraining prior together
 with the context it is given, its behavior under a training-time class
 distribution that differs from what the prior assumes is a distinct concern
 from that of a conventionally trained classifier, and has only recently begun
-to receive dedicated attention.
+to receive dedicated attention. Hu and Ghelichi~\cite{hu2026noiseimmunity}
+take a complementary approach, analyzing TabPFN's internal attention
+mechanisms directly under synthetic label-quality degradation and finding
+that its attention stays structured and its ROC-AUC stays high without any
+correction applied at all. Their analysis targets the model's internals
+rather than the correction methods practitioners actually deploy on top of
+it, the gap this paper's audit addresses.
 
 DistPFN~\cite{lee2026distpfn} is the newest instance of a much older idea:
 adjusting a classifier's output probabilities to match a known or assumed

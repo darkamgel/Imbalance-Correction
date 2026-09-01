@@ -32,7 +32,11 @@ regime but far from the scale where gradient-boosted methods are
 typically deployed. Whether the same robustness ranking holds on larger,
 higher-dimensional, or more categorical-heavy tabular data, or simply on
 a dataset whose minority class alone is large enough to push
-$N_{\text{common}}$ higher, is untested.
+$N_{\text{common}}$ higher, is untested. Every dataset audited is also a
+binary-classification problem. Whether the same corrections and the same
+robustness patterns extend to multi-class imbalance, where a correction
+may need to reweight several minority classes at once rather than one, is
+untested as well.
 
 The two corruption mechanisms audited are both
 class-conditional (Section~\ref{sec:methods-corruption}). The flip
@@ -44,7 +48,12 @@ study says nothing about whether the same methods stay robust under
 that kind of noise. The four tested contamination rates stop at 0.30,
 and results are never extrapolated beyond it
 (Section~\ref{sec:methods-contribution}). This study cannot say
-whether the same patterns hold at higher contamination.
+whether the same patterns hold at higher contamination. Each stress cell
+also applies exactly one corruption direction at a time, never a mixture
+of both within the same corrupted training set. Real-world label noise
+plausibly combines both directions at once, and this study does not test
+whether a correction's robustness under one direction in isolation
+predicts its robustness once both are present together.
 
 \subsection{Construct Validity}
 \label{sec:threats-construct}
