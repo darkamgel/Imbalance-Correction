@@ -4,10 +4,9 @@
 \subsection{Internal Validity}
 \label{sec:threats-internal}
 
-Every \texttt{tabpfn\_*} result in this paper comes from one checkpoint
-(\texttt{tabpfn-v3-classifier-v3\_default.ckpt}, verified by SHA-256
-hash, Section~\ref{sec:methods-implementation}), using Apple's Metal
-GPU backend. The whole study, XGBoost included, ran on one machine
+Every \texttt{tabpfn\_*} result in this paper comes from one checkpoint,
+verified by SHA-256 hash in Section~\ref{sec:methods-implementation},
+using Apple's Metal GPU backend. The whole study, XGBoost included, ran on one machine
 with every library forced to a single thread to avoid a documented
 XGBoost/PyTorch conflict. A different checkpoint, backend, or thread
 count could shift specific numbers, but there is no reason to expect
