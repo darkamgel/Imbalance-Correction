@@ -4,14 +4,15 @@
 \subsection{Internal Validity}
 \label{sec:threats-internal}
 
-Every result in this paper comes from one TabPFN checkpoint
+Every \texttt{tabpfn\_*} result in this paper comes from one checkpoint
 (\texttt{tabpfn-v3-classifier-v3\_default.ckpt}, verified by SHA-256
-hash, Section~\ref{sec:methods-implementation}) run on one machine,
-using Apple's Metal GPU backend with every library forced to a single
-thread to avoid a documented XGBoost/PyTorch conflict. A different
-checkpoint, backend, or thread count could shift specific numbers, but
-there is no reason to expect the broader pattern, that robustness
-varies by method and direction, to depend on any of them. Each stress
+hash, Section~\ref{sec:methods-implementation}), using Apple's Metal
+GPU backend. The whole study, XGBoost included, ran on one machine
+with every library forced to a single thread to avoid a documented
+XGBoost/PyTorch conflict. A different checkpoint, backend, or thread
+count could shift specific numbers, but there is no reason to expect
+the broader pattern, that robustness varies by method and direction,
+to depend on any of them. Each stress
 cell was repeated across three seeds. Three is enough for the
 significance tests reported in Section~\ref{sec:results-significance},
 but a study built specifically to estimate variance precisely would
