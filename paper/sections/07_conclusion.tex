@@ -6,10 +6,10 @@ remain worth applying once the labels they depend on cannot be
 trusted. Across ten datasets, seven correction methods spanning two
 model families, and two directed label-error mechanisms, every
 correction audited underperformed its matched uncorrected baseline in
-at least some tested condition. How often and how badly it does so,
-however, is neither uniform nor predictable from a single number. It
-depends on the method, on the direction of the label error, and on
-whether balanced accuracy or calibration is the metric being judged.
+at least some tested condition. How often and how badly it did so
+depended on the method, on the direction of the label error, and on
+whether balanced accuracy or calibration was the metric being judged,
+never on a single number alone.
 The simplest correction tested, a threshold shift keyed to the class
 prior, was consistently the most robust on discrimination, leading
 every other method on Correction Harm Rate and mean Correction Gain in
@@ -25,11 +25,11 @@ rather than resolve in either method's favor.
 The four contribution metrics introduced here, Correction Gain,
 Correction Harm Rate, Regret, and the break-even contamination rate,
 made this possible by separating whether a correction helps from how
-often and how badly it fails when it does not. The same framework
-surfaced a result this paper did not anticipate. The corrupted prior
-is not the primary reason TabPFN's posterior-rescaling corrections
-decline under contamination, since handing them the true prior did
-not reliably help, and on average even hurt slightly.
+often and how badly it fails when it does not. The same framework also
+surfaced a result this paper did not anticipate, that the corrupted
+prior is not the primary reason TabPFN's posterior-rescaling
+corrections decline under contamination, since handing them the true
+prior did not reliably help, and on average even hurt slightly.
 Section~\ref{sec:discussion-prior} offers one explanation, that these
 corrections never touch the mislabeled rows still sitting in TabPFN's
 in-context prompt, but confirming it would need an experiment this
