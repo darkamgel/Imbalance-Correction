@@ -1,3 +1,55 @@
 \section{Threats to Validity}
 \label{sec:threats}
-% PENDING
+
+\subsection{Internal Validity}
+\label{sec:threats-internal}
+
+Every result in this paper comes from one TabPFN checkpoint
+(\texttt{tabpfn-v3-classifier-v3\_default.ckpt}, verified by SHA-256
+hash, Section~\ref{sec:methods-implementation}) run on one machine,
+using Apple's Metal GPU backend with every library forced to a single
+thread to avoid a documented XGBoost/PyTorch conflict. A different
+checkpoint, backend, or thread count could shift specific numbers, but
+there is no reason to expect the broader pattern, that robustness
+varies by method and direction, to depend on any of them. Each stress
+cell was repeated across three seeds. Three is enough for the
+significance tests reported in Section~\ref{sec:results-significance},
+but a study built specifically to estimate variance precisely would
+likely use more.
+
+\subsection{External Validity}
+\label{sec:threats-external}
+
+The five datasets audited range from 569 to 4{,}601 rows
+(Table~\ref{tab:datasets}), well within TabPFN's intended
+small-tabular-data regime but far from the scale where gradient-boosted
+methods are typically deployed. Whether the same robustness ranking
+holds on larger, higher-dimensional, or more categorical-heavy tabular
+data is untested. The two corruption mechanisms audited are both
+class-conditional (Section~\ref{sec:methods-corruption}). The flip
+probability depends only on the true class, not on the specific
+feature values of the row being flipped. Real-world label noise is
+often instance-dependent instead, arising from cases that are
+genuinely ambiguous or that share features with the other class. This
+study says nothing about whether the same methods stay robust under
+that kind of noise. The four tested contamination rates stop at 0.30,
+and results are never extrapolated beyond it
+(Section~\ref{sec:methods-contribution}). This study cannot say
+whether the same patterns hold at higher contamination.
+
+\subsection{Construct Validity}
+\label{sec:threats-construct}
+
+Correction Gain, Correction Harm Rate, Regret, and the break-even rate
+are original to this paper. They are reported here only on balanced
+accuracy, not on the other nine metrics tracked in
+Section~\ref{sec:methods-metrics}. A correction ranked robust by CHR
+on balanced accuracy is not guaranteed to be equally robust by the
+same measure on AUPRC or minority recall, a point the calibration
+results in Section~\ref{sec:results-reliability} already illustrate
+for a different metric pair. The Prior Sensitivity Gap's oracle
+variant assumes access to the true, pre-corruption class prior,
+something no real deployment has. It is a diagnostic construct, not a
+claim about achievable performance, and Section~\ref{sec:results-rq4}
+found it is not even reliably better than the observed-prior variant
+it is meant to bound.
