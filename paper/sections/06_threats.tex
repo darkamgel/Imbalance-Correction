@@ -20,12 +20,21 @@ would likely use more.
 \subsection{External Validity}
 \label{sec:threats-external}
 
-The five datasets audited range from 569 to 4{,}601 rows
-(Table~\ref{tab:datasets}), well within TabPFN's intended
-small-tabular-data regime but far from the scale where gradient-boosted
-methods are typically deployed. Whether the same robustness ranking
-holds on larger, higher-dimensional, or more categorical-heavy tabular
-data is untested. The two corruption mechanisms audited are both
+The ten datasets audited range from 270 to 17{,}898 raw rows
+(Table~\ref{tab:datasets}), but the raw row count is not what any method
+actually fits on. The controlled training set every stress cell draws
+from is capped by $N_{\text{common}}$ (Section~\ref{sec:methods-ncommon}),
+which tops out at 2{,}622 rows even for HTRU2, the largest dataset,
+because minority availability at $r{=}0.50$ is the binding constraint
+regardless of how many majority rows the raw dataset has. Every condition
+tested therefore stays well within TabPFN's intended small-tabular-data
+regime but far from the scale where gradient-boosted methods are
+typically deployed. Whether the same robustness ranking holds on larger,
+higher-dimensional, or more categorical-heavy tabular data, or simply on
+a dataset whose minority class alone is large enough to push
+$N_{\text{common}}$ higher, is untested.
+
+The two corruption mechanisms audited are both
 class-conditional (Section~\ref{sec:methods-corruption}). The flip
 probability depends only on the true class, not on the specific
 feature values of the row being flipped. Real-world label noise is
