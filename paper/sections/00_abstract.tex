@@ -9,16 +9,16 @@ DistPFN~\cite{lee2026distpfn}, DistPFN-T, class-balanced downsampling) and
 XGBoost~\cite{chen2016xgboost} (cost-sensitive weighting, random oversampling,
 SMOTE~\cite{chawla2002smote}), we inject two directed, asymmetric label-error
 mechanisms (majority rows mislabeled as minority, and minority rows lost into the
-majority class) across five UCI datasets, at four imbalance ratios and five
+majority class) across ten UCI datasets, at four imbalance ratios and five
 contamination rates, holding the total training-set size fixed so that imbalance and
-label noise vary independently. Across 6{,}417 successfully completed model-condition
-evaluations, all seven corrections underperformed the uncorrected baseline in at
-least some tested conditions, with correction-harm rates ranging from 0.6\% to
-31.7\%, depending on the method and corruption direction. Under some
+label noise vary independently. Across 12{,}837 successfully completed
+model-condition evaluations, all seven corrections underperformed the uncorrected
+baseline in at least some tested conditions, with correction-harm rates ranging from
+1.6\% to 31.9\%, depending on the method and corruption direction. Under some
 dataset-imbalance settings, corrections reached their break-even point at only 5\%
 contamination. Correction-method performance differed significantly within both
 model families under both corruption directions (all four Friedman omnibus tests,
-$p < 10^{-11}$). No correction remained non-degrading across all tested conditions in
+$p < 10^{-23}$). No correction remained non-degrading across all tested conditions in
 both corruption directions. If label quality cannot be guaranteed, and in practice it
 rarely can be, imbalance correction should not be applied on the assumption that it
 is harmless.
