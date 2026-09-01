@@ -32,7 +32,7 @@ method per condition.
               text width=1.85cm, font=\footnotesize},
   arr/.style={-{Stealth[length=2mm]}, thick}
 ]
-\node[box] (data) {Dataset\\(1 of 5 UCI\\sources)};
+\node[box] (data) {Dataset\\(1 of 10 UCI\\sources)};
 \node[box, right=of data] (split) {Stratified\\80/20 split\\(test set\\held out)};
 \node[box, right=of split] (sample) {Controlled\\sample\\($N_{\text{common}}$,\\ratio $r$)};
 \node[box, right=of sample] (corrupt) {Inject label\\error ($c$,\\Direction A/B,\\or clean)};
@@ -58,12 +58,17 @@ fit and then scored against that same held-out test set.}
 \subsection{Datasets}
 \label{sec:methods-datasets}
 
-Five binary-classification datasets were drawn from the UCI Machine Learning
+Ten binary-classification datasets were drawn from the UCI Machine Learning
 Repository~\cite{kelly_uci}: Banknote Authentication~\cite{lohweg2012banknote},
 Blood Transfusion~\cite{yeh2008bloodtransfusion}, South German
 Credit~\cite{groemping2019germancredit}, Spambase~\cite{hopkins1999spambase},
-and Breast Cancer Wisconsin~\cite{wolberg1993breastcancer}, chosen so that no
-single result could be attributed to one dataset's idiosyncrasies.
+Breast Cancer Wisconsin~\cite{wolberg1993breastcancer},
+Ionosphere~\cite{sigillito1989ionosphere}, Haberman's
+Survival~\cite{haberman1999survival}, Statlog
+Heart~\cite{statlogheart}, HTRU2~\cite{lyon2015htru2}, and QSAR
+Biodegradation~\cite{mansouri2013qsar}, chosen so that no single result could
+be attributed to one dataset's idiosyncrasies and spanning finance, security,
+healthcare, signal processing, astronomy, and chemistry.
 Table~\ref{tab:datasets} summarizes their size and the meaning of the positive
 (minority) class in each.
 
@@ -80,22 +85,31 @@ Blood Transfusion             & 748    & 4  & Donated blood, target period \\
 South German Credit           & 1{,}000 & 20 & Bad credit risk \\
 Spambase                      & 4{,}601 & 57 & Spam email \\
 Breast Cancer Wisconsin       & 569    & 30 & Malignant diagnosis \\
+Ionosphere                    & 351    & 34 & No ionospheric structure \\
+Haberman's Survival           & 306    & 3  & Death within 5 years \\
+Statlog Heart                 & 270    & 13 & Heart disease present \\
+HTRU2                         & 17{,}898 & 8 & Pulsar candidate \\
+QSAR Biodegradation           & 1{,}055 & 41 & Ready biodegradable \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-No transformation altered the semantics of any feature. Only one
-transformation changed any feature's values at all, applied to Spambase and
-purely cosmetic: XGBoost's tree serialization format rejects the characters
-\texttt{[}, \texttt{]}, and \texttt{<} in feature names, so the column
-\texttt{char\_freq\_[} (the frequency of the \texttt{[} character in an
-email) was renamed to \texttt{char\_freq\_bracket\_open}, but its values are
-unchanged. The pipeline separately includes leakage-safe median imputation
-and one-hot encoding for missing or non-numeric columns, fit only on each
-stress condition's training rows. None of the five datasets contains a
+No transformation altered the semantics of any feature. The only
+transformations that changed any feature's values were column renames,
+purely cosmetic, applied to Spambase and QSAR Biodegradation: XGBoost's tree
+serialization format rejects the characters \texttt{[}, \texttt{]}, and
+\texttt{<} in feature names, so Spambase's \texttt{char\_freq\_[} (the
+frequency of the \texttt{[} character in an email) was renamed to
+\texttt{char\_freq\_bracket\_open}, and eight of QSAR Biodegradation's
+molecular-descriptor columns (e.g., \texttt{F01[N-N]}) had their brackets
+replaced with a hyphen (e.g., \texttt{F01\_N-N}), with the underlying values
+unchanged in both cases. The pipeline separately includes leakage-safe median
+imputation and one-hot encoding for missing or non-numeric columns, fit only
+on each stress condition's training rows. None of the ten datasets contains a
 missing value or a non-numeric feature column (South German Credit's twenty
-attributes are integer-coded and are treated as numeric throughout), so
-neither step alters any value for any dataset used in this study.
+attributes and Statlog Heart's categorical clinical measures are
+integer-coded and are treated as numeric throughout), so neither step alters
+any value for any dataset used in this study.
 
 Before any sampling or corruption, each dataset is split once with a
 stratified 80/20 train/test split, so both partitions preserve the dataset's
