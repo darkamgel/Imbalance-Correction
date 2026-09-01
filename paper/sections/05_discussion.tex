@@ -109,20 +109,15 @@ Related work on class imbalance and label noise as a joint problem has so
 far proposed new training-time algorithms, combining cleaning with
 resampling~\cite{koziarski2020ccr}, active learning with noisy-label
 training~\cite{khanal2024activelabel}, or class-balanced sample
-selection~\cite{liu2024imbalancednoisy}. This study takes a different
-approach. It asks whether the corrections practitioners are already using
-need replacing at all before anything new gets proposed. The answer is
-conditional. \texttt{tabpfn\_threshold}, the cheapest
-and simplest correction tested, remains net-beneficial through the full
-contamination range in half or more of the conditions tested, in both
-directions, which suggests that for at least some deployments, auditing
-which correction is already in use and switching to a simpler one may
-close most of the gap that a new joint training algorithm would otherwise
-be built to address. For the methods that do fail badly, particularly
-\texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t} under high
-contamination, the case for the kind of joint noise-and-imbalance-aware
-training these related works propose is stronger. Which situation a
-practitioner is in is not knowable without the kind of audit this study
-performs, which is itself an argument for making this kind of evaluation
-routine rather than assuming a published correction method is safe by
-default.
+selection~\cite{liu2024imbalancednoisy}. This study starts from a
+different question. It asks whether the corrections practitioners are
+already using need replacing at all. The answer depends on which
+correction is already in use. \texttt{tabpfn\_threshold} stays
+net-beneficial through the full contamination range in half or more of
+the conditions tested, in both directions, so switching to it may fix
+most of what a new algorithm would otherwise need to solve.
+\texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t} fail badly
+enough under high contamination that the case for joint
+noise-and-imbalance-aware training remains strong. Telling these two
+situations apart requires the kind of audit this study performs, not an
+assumption that a published correction is safe by default.
