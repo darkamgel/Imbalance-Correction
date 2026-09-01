@@ -4,3 +4,8 @@ blood_transfusion,176,748,4,178,570,donated blood in target period
 south_german_credit,522,1000,20,300,700,bad credit risk
 spambase,94,4601,57,1813,2788,spam email
 breast_cancer_wisconsin,17,569,30,212,357,malignant diagnosis
+ionosphere,52,351,34,126,225,radar return with no evidence of ionospheric structure
+haberman_survival,43,306,3,81,225,patient died within 5 years of surgery
+statlog_heart,145,270,13,120,150,presence of heart disease
+htru2,372,17898,8,1639,16259,pulsar candidate
+qsar_biodegradation,254,1055,41,356,699,ready biodegradable

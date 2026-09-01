@@ -1,7 +1,7 @@
 component,value
 python,3.13.5
 platform,macOS-26.5.1-arm64-arm-64bit-Mach-O
-numpy,2.5.2
+numpy,2.3.0
 pandas,3.0.5
 scikit-learn,1.9.0
 scipy,1.18.0
