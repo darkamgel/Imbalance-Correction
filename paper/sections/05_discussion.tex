@@ -7,17 +7,21 @@
 \texttt{tabpfn\_threshold} does less than any other correction tested. It
 shifts the decision boundary from 0.5 to the class prior and nothing more
 (Section~\ref{sec:methods-corrections}). Despite that, it is the most
-robust method in the study by nearly every measure. It has the lowest CHR
-and the highest mean CG in both directions, and it is the only TabPFN
-correction whose calibration never falls below its own baseline's. The
-one place it does not lead outright is break-even share, where several
-XGBoost corrections actually stay net-beneficial for longer, particularly
-under Direction B, a reminder that no single measure ranks every method
-the same way. \texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t}
-sit at the opposite end. Both rescale
-TabPFN's predictions against a prior and a temperature term, and both
-have the lowest mean CG and the highest regret of any method in either
-direction.
+robust method in the study on discrimination. It has the lowest CHR and
+the highest mean CG in both directions, and its calibration is identical
+to its own baseline's by construction, since a threshold shift never
+touches the underlying predicted probabilities
+(Section~\ref{sec:discussion-calibration} returns to why that is not the
+same as leading on calibration outright). The one place it does not lead
+on discrimination is break-even share, where \texttt{tabpfn\_downsample}
+and \texttt{xgb\_ros} tie or exceed it under Direction A, and
+\texttt{xgb\_smote} stays net-beneficial longer under Direction B, a
+reminder that no single measure ranks every method the same way.
+\texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t} sit at the
+opposite end on discrimination. Both rescale TabPFN's predictions against
+a prior and a temperature term, and \texttt{tabpfn\_distpfn} has the
+lowest mean CG and the highest regret of any method in both directions,
+with \texttt{tabpfn\_distpfn\_t} close behind on both.
 
 This finding builds on prior work rather than standing alone. Elor and
 Averbuch-Elor~\cite{elor2022smote} found that on clean, uncorrupted data, a
@@ -26,11 +30,14 @@ and can lose performance from it. This study's contribution is to show
 that the same pattern holds, and grows sharper, once label noise is added.
 A correction is not just sometimes unnecessary. It can actively backfire,
 and in this comparison the two most mathematically elaborate corrections,
-DistPFN and DistPFN-T, backfire hardest, while the simplest correction
-backfires least. A practitioner choosing a correction method for a TabPFN
-deployment under uncertain label quality has, based on this study's
-results, no clear reason to prefer a more elaborate posterior-rescaling
-method over a simple threshold shift.
+DistPFN and DistPFN-T, backfire hardest on discrimination, while the
+simplest correction backfires least. A practitioner choosing a correction
+method for a TabPFN deployment under uncertain label quality and
+optimizing for balanced accuracy has, based on this study's results, no
+clear reason to prefer a more elaborate posterior-rescaling method over a
+simple threshold shift. That recommendation does not extend to every
+deployment, however, a point Section~\ref{sec:discussion-calibration}
+returns to.
 
 \subsection{Direction Asymmetry Undercuts a Single Robustness Score}
 \label{sec:discussion-direction}
@@ -43,9 +50,9 @@ and asymmetric-noise formalizations
 predict in principle~\cite{natarajan2013noisylabels,scott2013asymmetricnoise},
 but this study's results show it is not a minor theoretical caveat. A
 method's CHR under one direction is a poor predictor of its CHR under the
-other. \texttt{tabpfn\_downsample}'s CHR is 31.7\% under Direction A and
-7.5\% under Direction B, a more than fourfold difference in the same
-method on the same datasets. A robustness claim validated under only one
+other. \texttt{tabpfn\_downsample}'s CHR is 21.7\% under Direction A and
+7.5\% under Direction B, nearly a threefold difference in the same method
+on the same datasets. A robustness claim validated under only one
 corruption mechanism, or under the symmetric random-flip noise more
 commonly studied, does not transfer to a directed, class-conditional error
 of the kind this study injects, and in practice the true direction of
@@ -85,22 +92,30 @@ fix that also removes the mislabeled rows from the context itself.
 Every XGBoost correction improves calibration over its baseline at every
 noise level tested, even the ones that sometimes hurt balanced accuracy.
 Under Direction A, \texttt{tabpfn\_downsample} is worse-calibrated than
-doing nothing at every noise level tested, and \texttt{tabpfn\_distpfn}
-and \texttt{tabpfn\_distpfn\_t} join it once contamination reaches 20\%.
-Balanced accuracy and calibration measure
-different properties of a classifier, and a correction that helps one can
-be neutral or harmful on the other. This matters for deployment. A system
-that only needs a correct label, such as most classification benchmarks,
+doing nothing at every noise level tested. \texttt{tabpfn\_distpfn} and
+\texttt{tabpfn\_distpfn\_t} take the opposite path entirely. The same two
+methods with the highest Correction Harm Rate in the whole study are also
+its two best-calibrated methods, correction or baseline, at nearly every
+noise level in both directions. A method that frequently classifies a row
+wrong can still be assigning that wrong classification a well-calibrated
+probability. Balanced accuracy and calibration measure different
+properties of a classifier, and this study's results show a correction
+can excel at one while failing badly at the other, not merely land
+somewhere middling on both. This matters for deployment. A system that
+only needs a correct label, such as most classification benchmarks,
 cares primarily about balanced accuracy or a related discrimination
-metric. A system that acts on a predicted probability (setting a risk
-threshold, allocating a limited budget, ranking cases by urgency) cares
-about calibration first. Reporting CHR and mean CG alone for the headline
-comparisons would miss that \texttt{tabpfn\_downsample} is uniquely bad
-at calibration under Direction A even though its balanced accuracy
-profile looks far more favorable there, the second-highest mean CG of
-any method. Evaluating a
+metric, and by that standard DistPFN and DistPFN-T are a poor choice
+under contamination. A system that acts on a predicted probability
+(setting a risk threshold, allocating a limited budget, ranking cases by
+urgency) cares about calibration first, and for that use case their poor
+CHR would be the wrong reason to rule them out. Reporting CHR and mean CG
+alone for the headline comparisons would also miss that
+\texttt{tabpfn\_downsample} is uniquely bad at calibration under
+Direction A even though its balanced accuracy profile looks far more
+favorable there, the second-highest mean CG of any method. Evaluating a
 correction method for deployment requires checking both axes separately,
-not inferring one from the other.
+not inferring one from the other, and not assuming a method's rank on one
+predicts its rank on the other.
 
 \subsection{Implications for Imbalance Correction Under Label Noise}
 \label{sec:discussion-implications}
@@ -117,7 +132,13 @@ net-beneficial through the full contamination range in half or more of
 the conditions tested, in both directions, so switching to it may fix
 most of what a new algorithm would otherwise need to solve.
 \texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t} fail badly
-enough under high contamination that the case for joint
-noise-and-imbalance-aware training remains strong. Telling these two
-situations apart requires the kind of audit this study performs, not an
-assumption that a published correction is safe by default.
+enough on discrimination under high contamination that the case for
+joint noise-and-imbalance-aware training remains strong, for a
+deployment that needs a correct label. A deployment that instead needs a
+well-calibrated probability is a different case entirely
+(Section~\ref{sec:discussion-calibration}), and swapping either DistPFN
+variant out for a different correction there could trade away its best
+property to fix its worst one. Telling these situations apart requires
+the kind of audit this study performs, not an assumption that a
+published correction is safe by default, or unsafe by default, on every
+axis a deployment might care about.
