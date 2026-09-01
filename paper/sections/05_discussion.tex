@@ -12,10 +12,9 @@ and the highest mean CG in both directions, and it is the only TabPFN
 correction whose calibration never falls below its own baseline's. The
 one place it does not lead outright is break-even share, where several
 XGBoost corrections actually stay net-beneficial for longer, particularly
-under Direction B. This is the same divide between failure frequency and
-failure severity that separates \texttt{tabpfn\_downsample} from
-\texttt{tabpfn\_distpfn} below. \texttt{tabpfn\_distpfn} and
-\texttt{tabpfn\_distpfn\_t} sit at the opposite end. Both rescale
+under Direction B, a reminder that no single measure ranks every method
+the same way. \texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t}
+sit at the opposite end. Both rescale
 TabPFN's predictions against a prior and a temperature term, and both
 have the lowest mean CG and the highest regret of any method in either
 direction.
@@ -84,9 +83,11 @@ fix that also removes the mislabeled rows from the context itself.
 \label{sec:discussion-calibration}
 
 Every XGBoost correction improves calibration over its baseline at every
-noise level tested, even the ones that sometimes hurt balanced accuracy,
-while three of four TabPFN corrections can make calibration worse than
-doing nothing under Direction A. Balanced accuracy and calibration measure
+noise level tested, even the ones that sometimes hurt balanced accuracy.
+Under Direction A, \texttt{tabpfn\_downsample} is worse-calibrated than
+doing nothing at every noise level tested, and \texttt{tabpfn\_distpfn}
+and \texttt{tabpfn\_distpfn\_t} join it once contamination reaches 20\%.
+Balanced accuracy and calibration measure
 different properties of a classifier, and a correction that helps one can
 be neutral or harmful on the other. This matters for deployment. A system
 that only needs a correct label, such as most classification benchmarks,
