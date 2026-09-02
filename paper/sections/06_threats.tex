@@ -43,11 +43,11 @@ class-conditional (Section~\ref{sec:methods-corruption}). The flip
 probability depends only on the true class, not on the specific
 feature values of the row being flipped. Real-world label noise is
 often instance-dependent instead, arising from cases that are
-genuinely ambiguous or that share features with the other class. This
-study says nothing about whether the same methods stay robust under
-that kind of noise. The four tested contamination rates stop at 0.30,
-and results are never extrapolated beyond it
-(Section~\ref{sec:methods-contribution}). This study cannot say
+genuinely ambiguous or that share features with the other class, and
+this study says nothing about whether the same methods stay robust
+under that kind of noise. The four tested contamination rates also stop
+at 0.30, with results never extrapolated beyond that point
+(Section~\ref{sec:methods-contribution}), so this study cannot say
 whether the same patterns hold at higher contamination. Each stress cell
 also applies exactly one corruption direction at a time, never a mixture
 of both within the same corrupted training set. Real-world label noise
