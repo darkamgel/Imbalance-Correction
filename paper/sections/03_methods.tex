@@ -117,6 +117,23 @@ original class ratio. The test partition is fixed for that seed and never
 altered by any later step. Every correction method, at every imbalance ratio
 and contamination level, is scored against exactly the same test rows.
 
+That fixed test partition has a consequence worth naming directly. Because
+it is never resampled, it keeps each dataset's natural minority prevalence
+throughout, while Section~\ref{sec:methods-ncommon} deliberately reshapes
+the training partition to $r$. Natural prevalence across the ten datasets
+ranges from $9.2\%$ to $44.5\%$, and none of the ten sit near the two
+lowest tested ratios. So at $r{=}0.05$ and $r{=}0.10$ especially, training
+and test are drawn from different class priors for every dataset in this
+study. The severe-imbalance conditions this study emphasizes are therefore
+not imbalance in isolation. They combine imbalance with a train/test prior
+shift, exactly the kind of mismatch DistPFN and DistPFN-T are built to
+correct (Section~\ref{sec:methods-corrections}), and the kind
+\texttt{tabpfn\_threshold}'s own threshold adjustment addresses as well.
+Section~\ref{sec:discussion-simplicity} returns to what this means for
+interpreting why the simplest corrections in this study lead, and
+Section~\ref{sec:threats-internal} states the resulting limitation on
+treating imbalance and prior shift as separable.
+
 \subsection{Controlled Imbalance: A Common Training Size}
 \label{sec:methods-ncommon}
 

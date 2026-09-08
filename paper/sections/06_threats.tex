@@ -32,6 +32,24 @@ candidates either require flipping more minority rows than exist at
 $r{=}0.05$, or introduce a new mismatch between directions that grows with
 $r$ instead of staying fixed, worse than the one already present.
 
+A related caveat applies to the imbalance ratio $r$ itself. The test
+partition is never resampled and keeps each dataset's natural class
+distribution (Section~\ref{sec:methods-datasets}), while training is
+deliberately pushed to $r$, so the low-$r$ conditions this study
+emphasizes combine imbalance with train and test prior shift rather than
+isolating imbalance alone. This is the standard evaluation paradigm
+across the class-imbalance literature. Training on a rebalanced set and
+testing on the natural population is what makes a correction's benefit
+deployment-relevant in the first place, but it means this study cannot
+cleanly attribute a method's robustness to tolerance of imbalance
+specifically as opposed to tolerance of prior shift. This matters most
+for \texttt{tabpfn\_threshold}, \texttt{tabpfn\_distpfn}, and
+\texttt{tabpfn\_distpfn\_t}, whose underlying mechanism directly targets
+prior mismatch (Section~\ref{sec:discussion-simplicity}). A design that
+resampled the test partition to match each tested $r$ would remove this
+coupling, at the cost of evaluating performance on a population that
+does not correspond to any dataset's actual distribution.
+
 \subsection{External Validity}
 \label{sec:threats-external}
 

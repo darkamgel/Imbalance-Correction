@@ -39,6 +39,24 @@ simple threshold shift. That recommendation does not extend to every
 deployment, however, a point Section~\ref{sec:discussion-calibration}
 returns to.
 
+There may be a second, more structural reason threshold correction leads
+here, not just a general case for simplicity. This study's
+severe-imbalance conditions combine imbalance with a real train and test
+prior mismatch, since the test partition keeps each dataset's natural
+class ratio while training is deliberately pushed down to $r$
+(Section~\ref{sec:methods-datasets}). Threshold correction is nothing but
+a prior-shift adjustment, and DistPFN and DistPFN-T target the same
+mismatch through a more elaborate mechanism. All three are therefore
+being tested in exactly the deployment scenario their underlying idea is
+built for, which may explain part of why prior-adjusting corrections
+outperform resampling and cost-sensitive weighting generally, separate
+from how well each one specifically tolerates label contamination on top
+of that shift. It does not explain why the two DistPFN variants fail so
+much more often than plain threshold correction while addressing a
+closely related problem. That gap is a matter of contamination
+robustness specifically, not of whether prior adjustment is the right
+tool for this design.
+
 \subsection{Direction Asymmetry Undercuts a Single Robustness Score}
 \label{sec:discussion-direction}
 
