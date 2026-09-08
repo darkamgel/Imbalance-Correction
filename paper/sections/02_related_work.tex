@@ -101,20 +101,20 @@ that assumption is violated.
 
 \subsection{The Understudied Intersection: Imbalance Correction Under Noisy Labels}
 
-An empirical audit of this kind has important precedent. Van Hulse and
+Empirically auditing whether imbalance corrections hold up under label
+noise has important precedent. Van Hulse and
 Khoshgoftaar~\cite{vanhulse2009knowledge} trained more than two million
 classifiers across seven datasets, eleven learners, and seven sampling
 techniques, including random oversampling and SMOTE, while varying the
-location and level of class noise. They showed that the class receiving
-the noise materially affects how learning and sampling procedures
-behave. Their study therefore establishes that imbalance mitigation can
-interact strongly with label noise in classical learning settings, a
-finding echoed by our results. Our study addresses a complementary
-setting: we control the total training-set size across imbalance ratios
-so that changes in training-set size are not confounded with changes in
-class imbalance, and we extend the analysis to tabular foundation models
-and recently proposed test-time posterior corrections such as DistPFN
-and DistPFN-T.
+location and level of class noise, showing that the class receiving the
+noise materially affects how learning and sampling procedures behave and
+establishing that imbalance mitigation can interact strongly with label
+noise in classical learning settings. Our study addresses a
+complementary setting: we control the total training-set size across
+imbalance ratios so that changes in training-set size are not confounded
+with changes in class imbalance, and we extend the analysis to tabular
+foundation models and recently proposed test-time posterior corrections
+such as DistPFN and DistPFN-T.
 
 A smaller body of work has begun to treat class imbalance and label noise as
 jointly occurring problems rather than independent ones. Koziarski et
