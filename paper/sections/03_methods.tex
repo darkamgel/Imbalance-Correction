@@ -193,6 +193,25 @@ label-noise formalization of Natarajan et al.~\cite{natarajan2013noisylabels}
 and Scott et al.~\cite{scott2013asymmetricnoise}, rather than symmetric random
 flipping.
 
+That difference in definition is not cosmetic. Direction A's $c$ describes
+contamination as it would be observed after the fact, the fraction of
+everything now labeled minority that is actually a mislabeled majority row,
+close to asking how many flagged cases turn out to be false alarms.
+Direction B's $c$ instead measures signal loss directly against the true
+minority count, the fraction of genuine minority rows destroyed. The two are
+natural for the process each direction represents, but they are not the
+same quantity. The same nominal $c$ therefore corresponds to a different
+flip count relative to $n_{\min}$ in each direction. At $c{=}0.30$,
+Direction A flips $k/n_{\min} = c/(1-c) = 42.9\%$ of $n_{\min}$'s worth of
+majority rows, while Direction B flips exactly $30\%$, a gap that widens
+with $c$ (from $5.3\%$ against $5.0\%$ at $c{=}0.05$) but stays independent
+of $r$, since both ratios are taken relative to $n_{\min}$ within their own
+direction's formula rather than against the majority count. Comparing
+directions at matched nominal $c$, as Section~\ref{sec:results-rq2} does,
+is therefore a comparison of each direction's own natural severity, not of
+an identical absolute flip count, a distinction
+Section~\ref{sec:threats-internal} returns to.
+
 \subsection{Correction Methods}
 \label{sec:methods-corrections}
 

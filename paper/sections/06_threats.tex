@@ -17,6 +17,21 @@ significance tests reported in Section~\ref{sec:results-significance},
 though a study built specifically to estimate variance precisely
 would likely use more.
 
+The claim that robustness varies by direction carries its own caveat.
+Direction A's and Direction B's contamination rate $c$ are defined against
+different reference points (Section~\ref{sec:methods-corruption}), so a
+matched nominal $c$ does not correspond to a matched absolute flip count
+between the two. Direction A flips a larger fraction of $n_{\min}$'s worth
+of rows than Direction B at every tested $c$ above zero. The finding that
+direction changes how often a correction fails should be read as a
+comparison between two distinct, realistically motivated corruption
+processes at their own natural severity levels, not as a
+magnitude-controlled manipulation of direction alone. A shared flip-count
+definition was considered and rejected, since the two most natural
+candidates either require flipping more minority rows than exist at
+$r{=}0.05$, or introduce a new mismatch between directions that grows with
+$r$ instead of staying fixed, worse than the one already present.
+
 \subsection{External Validity}
 \label{sec:threats-external}
 
