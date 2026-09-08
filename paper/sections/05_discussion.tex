@@ -12,16 +12,19 @@ the highest mean CG in both directions, and its calibration is identical
 to its own baseline's by construction, since a threshold shift never
 touches the underlying predicted probabilities
 (Section~\ref{sec:discussion-calibration} returns to why that is not the
-same as leading on calibration outright). The one place it does not lead
-on discrimination is break-even share, where \texttt{tabpfn\_downsample}
-and \texttt{xgb\_ros} tie or exceed it under Direction A, and
-\texttt{xgb\_smote} stays net-beneficial longer under Direction B, a
-reminder that no single measure ranks every method the same way.
-\texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t} sit at the
-opposite end on discrimination. Both rescale TabPFN's predictions against
-a prior and a temperature term, and \texttt{tabpfn\_distpfn} has the
-lowest mean CG and the highest regret of any method in both directions,
-with \texttt{tabpfn\_distpfn\_t} close behind on both.
+same as leading on calibration outright). It leads on break-even share
+too, staying net-beneficial through the full contamination range in a
+higher share of conditions than any other method in either direction
+(Section~\ref{sec:results-rq3}), so its advantage on discrimination is not
+confined to CHR and mean CG alone. \texttt{tabpfn\_distpfn} and
+\texttt{tabpfn\_distpfn\_t} sit at the opposite end on discrimination.
+Both rescale TabPFN's predictions against a prior and a temperature term,
+and together hold the highest CHR of any method under Direction B, with
+regret to match. Under Direction A their CHR is close to several other
+methods rather than uniquely worst, and their regret there is
+unremarkable too. It is Direction B where both variants pull clearly
+away from the rest of the field on CHR and regret alike
+(Section~\ref{sec:results-rq2}).
 
 This finding builds on prior work rather than standing alone. Elor and
 Averbuch-Elor~\cite{elor2022smote} found that on clean, uncorrupted data, a
@@ -146,9 +149,10 @@ selection~\cite{liu2024imbalancednoisy}. This study starts from a
 different question. It asks whether the corrections practitioners are
 already using need replacing at all. The answer depends on which
 correction is already in use. \texttt{tabpfn\_threshold} stays
-net-beneficial through the full contamination range in half or more of
-the conditions tested, in both directions, so switching to it may fix
-most of what a new algorithm would otherwise need to solve.
+net-beneficial through the full contamination range in 73\% to 83\% of
+the conditions tested, the highest share of any method in both
+directions, so switching to it may fix most of what a new algorithm
+would otherwise need to solve.
 \texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t} fail badly
 enough on discrimination under high contamination that the case for
 joint noise-and-imbalance-aware training remains strong, for a

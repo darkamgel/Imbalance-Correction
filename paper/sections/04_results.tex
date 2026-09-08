@@ -26,14 +26,16 @@ once label error is present, and how often this happens varies sharply
 by method. Table~\ref{tab:robustness} summarizes Correction Harm Rate (CHR) and
 mean Correction Gain (CG, on balanced accuracy) for every method in each
 direction. \texttt{tabpfn\_threshold} is the most robust method by both
-measures in both directions. Its CHR is 8.1\% under Direction A and 1.6\%
-under Direction B, roughly five times below the next-lowest correction under
-Direction B, and its mean CG (0.061 and 0.085) is the highest of any method
-in both directions. \texttt{tabpfn\_distpfn} sits at the other end, with
-the lowest mean CG under Direction A (0.016) and, together with
-\texttt{tabpfn\_distpfn\_t}, the highest CHR in both directions (23.4\% and
-31.9\% for \texttt{tabpfn\_distpfn}, 24.4\% and 30.9\% for
-\texttt{tabpfn\_distpfn\_t}).
+measures in both directions. Its CHR is 8.1\% under Direction A and 3.1\%
+under Direction B, less than half the next-lowest correction under
+Direction B, and its mean CG (0.067 and 0.090) is the highest of any method
+in both directions. The worst end of the table looks different by
+direction. Under Direction A, four methods cluster within half a point of
+each other for the highest CHR (\texttt{tabpfn\_downsample} at 21.7\%,
+\texttt{tabpfn\_distpfn}, \texttt{tabpfn\_distpfn\_t}, and
+\texttt{xgb\_smote} each at 21.3\%). Under Direction B,
+\texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t} separate clearly
+from the rest, tied at 29.4\%, more than double the next-highest method.
 
 \begin{table}[t]
 \centering
@@ -48,9 +50,9 @@ Method & Dir.\ A & Dir.\ B & Dir.\ A & Dir.\ B \\
 \texttt{xgb\_weighted}      & 0.169 & 0.094 & 0.020 & 0.029 \\
 \texttt{xgb\_ros}           & 0.188 & 0.125 & 0.018 & 0.030 \\
 \texttt{xgb\_smote}         & 0.213 & 0.081 & 0.024 & 0.040 \\
-\texttt{tabpfn\_threshold}  & 0.081 & 0.016 & 0.061 & 0.085 \\
-\texttt{tabpfn\_distpfn}    & 0.234 & 0.319 & 0.016 & 0.010 \\
-\texttt{tabpfn\_distpfn\_t} & 0.244 & 0.309 & 0.021 & 0.015 \\
+\texttt{tabpfn\_threshold}  & 0.081 & 0.031 & 0.067 & 0.090 \\
+\texttt{tabpfn\_distpfn}    & 0.213 & 0.294 & 0.021 & 0.020 \\
+\texttt{tabpfn\_distpfn\_t} & 0.213 & 0.294 & 0.026 & 0.023 \\
 \texttt{tabpfn\_downsample} & 0.217 & 0.075 & 0.051 & 0.071 \\
 \bottomrule
 \end{tabular}
@@ -98,22 +100,27 @@ every method, split by direction.
 \includegraphics[width=0.85\linewidth]{figures/chr_regret.png}
 \caption{Correction Harm Rate (left) and mean regret (right, $\max(0,-\text{CG})$)
 by method and direction, over noisy stress cells only. \texttt{tabpfn\_distpfn}
-has both a high CHR and the highest regret in both directions.
+and \texttt{tabpfn\_distpfn\_t} have the highest CHR under Direction B.
+Regret is less uniform: \texttt{tabpfn\_downsample} has the highest regret
+under Direction A despite a similar CHR to the DistPFN pair there, while
+\texttt{tabpfn\_distpfn\_t} has the highest regret under Direction B.
 \texttt{tabpfn\_threshold} has the lowest of both in both directions.}
 \label{fig:chr-regret}
 \end{figure*}
 
-Regret separates two methods that both have an elevated CHR under Direction
-A, \texttt{tabpfn\_downsample} (21.7\%) and \texttt{tabpfn\_distpfn}
-(23.4\%). Despite that similar failure frequency,
-\texttt{tabpfn\_downsample}'s mean regret (0.0045) is well under
-\texttt{tabpfn\_distpfn}'s (0.0073), and the gap widens sharply under
-Direction B, where \texttt{tabpfn\_downsample}'s failure rate drops to
-7.5\% while \texttt{tabpfn\_distpfn}'s rises to 31.9\%, and mean regret
-moves from 0.0003 to 0.0172. When \texttt{tabpfn\_downsample} fails, it
-tends to fail by a small margin regardless of direction.
-\texttt{tabpfn\_distpfn}'s failures are both more frequent and, on average,
-substantially larger.
+Regret shows a different split than CHR alone would suggest. Under
+Direction A, \texttt{tabpfn\_downsample} (21.7\% CHR) and
+\texttt{tabpfn\_distpfn} (21.3\% CHR) fail at almost the same rate, but
+\texttt{tabpfn\_downsample}'s mean regret (0.0045) is roughly three times
+\texttt{tabpfn\_distpfn}'s (0.0014) there, the opposite of what CHR alone
+would suggest. Under Direction B the picture reverses:
+\texttt{tabpfn\_downsample}'s failure rate drops to 7.5\% and its regret
+falls further still (0.0003), while \texttt{tabpfn\_distpfn}'s CHR rises to
+29.4\% and its regret to 0.0105, and \texttt{tabpfn\_distpfn\_t} is worse
+still on regret specifically (0.0117), despite an identical CHR to
+\texttt{tabpfn\_distpfn}. \texttt{tabpfn\_downsample}'s failures are
+consistently mild, whichever direction happens to produce more of them.
+The two DistPFN variants fail differently by direction, but never mildly.
 
 Part of this asymmetry traces back to the uncorrected baselines themselves.
 Comparing balanced accuracy at $c{=}0$ against $c{=}0.30$ for
@@ -135,21 +142,18 @@ of the 40 (dataset, $r$) combinations (30 for \texttt{tabpfn\_downsample}
 under Direction A, since its 10 combinations at $r{=}0.50$ have no completed
 runs to compute a break-even point from) whose seed-averaged Correction
 Gain never dropped to zero or below within the tested range, i.e., $c^*>0.30$.
-\texttt{tabpfn\_distpfn} remains the least likely of the seven to stay
-beneficial across the full contamination range. It remains net-beneficial
-through $c{=}0.30$ in only 35\% of conditions under Direction B, the lowest
-share in the table, and 38\% under Direction A, tied with
-\texttt{xgb\_smote} for the second-lowest. No single method leads at the
-high end of the table. \texttt{tabpfn\_downsample} leads Direction A at
-60\%, and \texttt{xgb\_smote} leads Direction B at 78\%.
-\texttt{tabpfn\_threshold} stays beneficial through the full range in 70\%
-of Direction B conditions, tied with \texttt{xgb\_ros} and
-\texttt{xgb\_weighted} and trailing \texttt{xgb\_smote}, despite having by
-far the lowest CHR and highest mean CG under that same direction. CHR
-counts every failing cell individually, while break-even share only asks
-whether a method's seed-averaged trend, aggregated within one (dataset,
-$r$) combination, ever crosses zero. A method can have a low CHR and still
-cross zero in many such combinations, which is exactly why
+\texttt{tabpfn\_threshold} leads here too, staying net-beneficial through
+the full range in 73\% of Direction A conditions and 83\% of Direction B
+conditions, the highest share of any method in both directions, extending
+its lead from CHR and mean CG to this measure as well.
+\texttt{tabpfn\_distpfn} and \texttt{tabpfn\_distpfn\_t} sit near the
+bottom in both directions, though the single lowest share belongs to a
+different method each time, \texttt{xgb\_smote} under Direction A (38\%)
+and \texttt{tabpfn\_distpfn\_t} under Direction B (40\%). CHR counts every
+failing cell individually, while break-even share only asks whether a
+method's seed-averaged trend, aggregated within one (dataset, $r$)
+combination, ever crosses zero, a coarser question that mostly, but not
+perfectly, agrees with CHR's answer. That distinction is exactly why
 Section~\ref{sec:methods-contribution} defines CHR, Regret, and $c^*$ as
 separate, complementary measures rather than collapsing robustness into one
 number.
@@ -167,9 +171,9 @@ Method & Dir.\ A & Dir.\ B \\
 \texttt{xgb\_weighted}      & 48\% & 70\% \\
 \texttt{xgb\_ros}           & 55\% & 70\% \\
 \texttt{xgb\_smote}         & 38\% & 78\% \\
-\texttt{tabpfn\_threshold}  & 55\% & 70\% \\
-\texttt{tabpfn\_distpfn}    & 38\% & 35\% \\
-\texttt{tabpfn\_distpfn\_t} & 40\% & 40\% \\
+\texttt{tabpfn\_threshold}  & 73\% & 83\% \\
+\texttt{tabpfn\_distpfn}    & 40\% & 43\% \\
+\texttt{tabpfn\_distpfn\_t} & 45\% & 40\% \\
 \texttt{tabpfn\_downsample} & 60\% & 70\% \\
 \bottomrule
 \end{tabular}
