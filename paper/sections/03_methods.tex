@@ -447,8 +447,12 @@ a single block ($n{=}10$), first averaging balanced accuracy within a
 family and direction across every tested $r$ and $c$ for that dataset,
 then applying the Friedman test to those ten dataset-level values per
 method, the standard practice for comparing algorithms across multiple
-datasets~\cite{demsar2006statistical}. Section~\ref{sec:results-significance}
-reports both versions.
+datasets~\cite{demsar2006statistical}. Every pairwise Wilcoxon comparison
+is repeated at this same dataset-level block, Holm-corrected separately
+from the (dataset, $r$, $c$) version, since a significant omnibus result
+does not by itself establish that every individual pairwise difference
+holds under the stricter standard. Section~\ref{sec:results-significance}
+reports all versions.
 
 \subsection{Implementation and Reproducibility}
 \label{sec:methods-implementation}

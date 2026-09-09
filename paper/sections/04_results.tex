@@ -301,9 +301,24 @@ only non-significant pairwise comparison in the entire study. Every other
 pairwise comparison, in both families and both directions, is statistically
 significant. These Wilcoxon comparisons use the same (dataset, $r$, $c$)
 blocks as the omnibus test above, so the same caveat about their
-independence applies here too. A dataset-level repeat of every pairwise
-test was not run, since the omnibus check already shows the qualitative
-picture holds under the stricter standard.
+independence applies here too. Repeating every pairwise comparison with
+each dataset as a single block ($n{=}10$) tells a less uniform story.
+Only 21 of the 32 pairwise comparisons remain significant.
+\texttt{tabpfn\_threshold} still differs significantly from every other
+TabPFN method in both directions, so the finding that it is the most
+robust method survives the stricter standard intact. Among the three
+XGBoost corrections, \texttt{xgb\_smote} becomes indistinguishable from
+both \texttt{xgb\_weighted} and \texttt{xgb\_ros} under Direction A, and
+all three become mutually indistinguishable under Direction B, though
+each still differs significantly from \texttt{xgb\_none} in both
+directions. Two of the ten baseline-versus-correction comparisons also
+lose significance at this stricter standard, \texttt{tabpfn\_distpfn}
+and \texttt{tabpfn\_distpfn\_t} against \texttt{tabpfn\_none}, both
+under Direction B. None of the descriptive measures behind these
+comparisons, CHR, mean CG, or break-even share, depend on this test.
+What changes is which pairwise differences a formal significance test
+can support at $n{=}10$, not the underlying data those tests were run
+on.
 
 \subsection{Calibration Reliability}
 \label{sec:results-reliability}
