@@ -13,9 +13,14 @@ XGBoost/PyTorch conflict. A different checkpoint, backend, or thread
 count could shift specific numbers, but there is no reason to expect
 the broader pattern, that robustness varies by method and direction,
 to depend on any of them. Each stress cell was repeated across three seeds, enough for the
-significance tests reported in Section~\ref{sec:results-significance},
-though a study built specifically to estimate variance precisely
-would likely use more.
+significance tests reported in Section~\ref{sec:results-significance}
+to reach the extremely low $p$-values reported there. Three
+repetitions give much weaker precision for a quantity that depends on
+whether a seed-averaged value crosses zero, however, and Correction
+Harm Rate and the break-even rate are both defined by exactly that
+kind of crossing. More seeds would tighten both estimates directly, a
+limitation Section~\ref{sec:threats-construct}'s break-even
+non-monotonicity finding may partly reflect.
 
 The claim that robustness varies by direction carries its own caveat.
 Direction A's and Direction B's contamination rate $c$ are defined against
