@@ -3,8 +3,8 @@ tabpfn_distpfn,majority_to_minority,0.7735455095305898,0.7984153963103646
 tabpfn_distpfn,minority_to_majority,0.7302820000947752,0.7984153963103646
 tabpfn_distpfn_t,majority_to_minority,0.7816665458850406,0.8020312654590243
 tabpfn_distpfn_t,minority_to_majority,0.7204630567771642,0.8020312654590243
-tabpfn_downsample,majority_to_minority,0.7977091813232854,0.8272486982013013
-tabpfn_downsample,minority_to_majority,0.8049152074720929,0.8272486982013013
+tabpfn_downsample,majority_to_minority,0.8061603738880357,0.8306240903417347
+tabpfn_downsample,minority_to_majority,0.8049152074720929,0.8306240903417347
 tabpfn_none,majority_to_minority,0.7473421834080815,0.7842830202810156
 tabpfn_none,minority_to_majority,0.7170269358680359,0.7842830202810156
 tabpfn_threshold,majority_to_minority,0.8300868723097737,0.845491482336176
