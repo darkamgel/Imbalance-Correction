@@ -69,9 +69,11 @@ the assumption that these corrections are safe by default, before label
 noise is introduced at all. All of these methods share a further, implicit
 assumption that is central to this paper: that the
 observed class labels used to compute the resampling ratio, the interpolation
-neighborhood, or the cost ratio are themselves trustworthy. None of the
-methods above were designed with, or have been systematically evaluated
-against, the possibility that a fraction of those labels are wrong.
+neighborhood, or the cost ratio are themselves trustworthy. These classical corrections were not originally designed for robustness
+to label noise. Subsequent empirical work, discussed later in this
+section, has evaluated several sampling approaches under noisy-label
+settings, but considerably less is known about the newer test-time
+posterior corrections built for tabular foundation models.
 
 \subsection{Learning Under Label Noise}
 
