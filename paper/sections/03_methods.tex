@@ -392,10 +392,13 @@ Regret.
 
 \textbf{Break-even contamination rate ($c^*$).} For a method, dataset, and
 imbalance ratio, $c^*$ is the smallest tested $c > 0$ at which the
-seed-averaged CG first drops to zero or below, i.e., the point past which the
-correction stops paying off. If CG never crosses zero within the tested
-range, $c^*$ is reported as greater than the largest tested $c$ (0.30) rather
-than extrapolated beyond what was actually measured.
+seed-averaged CG first drops to zero or below. This marks the first noise
+level a correction stops paying off, not necessarily the last, since CG is
+not guaranteed to stay negative at every higher $c$ afterward
+(Section~\ref{sec:threats-construct} quantifies how often it does not). If
+CG never crosses zero within the tested range, $c^*$ is reported as greater
+than the largest tested $c$ (0.30) rather than extrapolated beyond what was
+actually measured.
 
 \textbf{Prior Sensitivity Gap (PSG).} For the three prior-dependent TabPFN
 methods,

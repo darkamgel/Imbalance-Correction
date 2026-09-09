@@ -98,7 +98,15 @@ Section~\ref{sec:methods-metrics}. A correction ranked robust by CHR
 on balanced accuracy is not guaranteed to be equally robust by the
 same measure on AUPRC or minority recall, a point the calibration
 results in Section~\ref{sec:results-reliability} already illustrate
-for a different metric pair. The Prior Sensitivity Gap's oracle
+for a different metric pair. The break-even rate itself assumes a
+correction's gain declines monotonically as contamination rises, an
+assumption this study's own data does not fully support. Of the
+(method, dataset, ratio, direction) combinations with a defined
+break-even point, 25.6\% show the seed-averaged gain recover to
+positive at a higher contamination level after already crossing zero
+at a lower one. $c^*$ marks the first noise level a correction stops
+paying off, not a guarantee that it stays that way at every higher
+level tested. The Prior Sensitivity Gap's oracle
 variant assumes access to the true, pre-corruption class prior,
 something no real deployment has. It is a diagnostic construct, not a
 claim about achievable performance, and Section~\ref{sec:results-rq4}
