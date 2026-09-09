@@ -433,6 +433,18 @@ test~\cite{wilcoxon1945ranking}, and the resulting $p$-values are corrected
 for multiple comparisons with Holm's step-down
 procedure~\cite{holm1979sequential}.
 
+Blocking by (dataset, $r$, $c$) treats every tested ratio and noise level
+within one dataset as an independent unit of evidence, but conditions
+drawn from the same dataset share its underlying feature distribution and
+test set, so they are not fully independent of each other. As a more
+conservative check, the same comparison is repeated with each dataset as
+a single block ($n{=}10$), first averaging balanced accuracy within a
+family and direction across every tested $r$ and $c$ for that dataset,
+then applying the Friedman test to those ten dataset-level values per
+method, the standard practice for comparing algorithms across multiple
+datasets~\cite{demsar2006statistical}. Section~\ref{sec:results-significance}
+reports both versions.
+
 \subsection{Implementation and Reproducibility}
 \label{sec:methods-implementation}
 

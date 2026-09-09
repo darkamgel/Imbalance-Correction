@@ -259,6 +259,37 @@ TabPFN  & Dir.\ B & 332.7 & 160 \\
 \end{tabular}
 \end{table}
 
+Blocking by (dataset, $r$, $c$) treats conditions drawn from the same
+dataset as independent evidence, though they share that dataset's
+underlying feature distribution and test set. Table~\ref{tab:friedman-dataset}
+repeats the same comparison with each dataset as a single block ($n{=}10$)
+instead, the more conservative standard for comparing algorithms across
+multiple datasets (Section~\ref{sec:methods-statistics}). The $p$-values
+shrink by several orders of magnitude under this stricter treatment, from
+below $10^{-23}$ to between $10^{-6}$ and $10^{-4}$, but all four tests
+remain significant well below the conventional $p<0.05$ threshold. Method
+identity affects balanced accuracy either way. The (dataset, $r$, $c$)
+version overstates how strong that evidence is, not whether it exists.
+
+\begin{table}[t]
+\centering
+\caption{Friedman omnibus test statistics using dataset-level blocks
+($n{=}10$, one per dataset, mean balanced accuracy pooled across every
+tested ratio and noise level within that dataset), a more conservative
+robustness check on Table~\ref{tab:friedman}.}
+\label{tab:friedman-dataset}
+\begin{tabular}{@{}llrr@{}}
+\toprule
+Family & Direction & $\chi^2$ & $p$ \\
+\midrule
+XGBoost & Dir.\ A & 20.5 & $1.3\times10^{-4}$ \\
+XGBoost & Dir.\ B & 21.5 & $8.4\times10^{-5}$ \\
+TabPFN  & Dir.\ A & 29.4 & $6.6\times10^{-6}$ \\
+TabPFN  & Dir.\ B & 31.0 & $3.0\times10^{-6}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 Every uncorrected baseline differs significantly from every correction in
 its family, in both directions (Holm-corrected $p<0.001$ throughout). The
 corrections are having a measurable effect, even though
@@ -270,7 +301,11 @@ Not every pair of corrections is distinguishable from each other, however.
 indistinguishable under Direction B ($p_{\text{Holm}}=0.95$). This is the
 only non-significant pairwise comparison in the entire study. Every other
 pairwise comparison, in both families and both directions, is statistically
-significant.
+significant. These Wilcoxon comparisons use the same (dataset, $r$, $c$)
+blocks as the omnibus test above, so the same caveat about their
+independence applies here too. A dataset-level repeat of every pairwise
+test was not run, since the omnibus check already shows the qualitative
+picture holds under the stricter standard.
 
 \subsection{Calibration Reliability}
 \label{sec:results-reliability}
