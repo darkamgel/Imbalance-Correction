@@ -58,6 +58,23 @@ Method & Dir.\ A & Dir.\ B & Dir.\ A & Dir.\ B \\
 \end{tabular}
 \end{table}
 
+Table~\ref{tab:robustness}'s CHR counts any negative gain as a failure,
+including differences too small to plausibly reflect anything but
+measurement noise. Requiring at least a 0.01 balanced-accuracy-point drop
+before counting a cell as harmful changes the picture substantially.
+\texttt{tabpfn\_threshold}'s Direction A CHR falls to 0\%, and every other
+method's harm rate drops by half or more under Direction A except
+\texttt{tabpfn\_downsample}, whose harm rate (13.3\%) remains far above the
+rest. That clarifies what the four-way near-tie reported above actually
+is, mostly a raw-count artifact. Once magnitude is required,
+\texttt{tabpfn\_downsample} is the one method still failing meaningfully
+often under Direction A, not \texttt{tabpfn\_distpfn} or
+\texttt{tabpfn\_distpfn\_t}, whose rates fall to 3.8\% and 1.3\%. Under
+Direction B the DistPFN pair's separation from the field, already the
+clearest pattern in the raw table, gets clearer still. Their harm rate
+stays at 16.3\% and 13.1\% after the same threshold, four to five times
+any other method's, which by then sits at 3.1\% or below.
+
 Figure~\ref{fig:gain-heatmap} makes the same contrast spatially, comparing
 \texttt{tabpfn\_threshold} (top row) against \texttt{tabpfn\_distpfn}
 (bottom row) across every tested combination of imbalance ratio $r$ and

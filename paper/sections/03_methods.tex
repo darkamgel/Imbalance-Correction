@@ -372,6 +372,12 @@ method,
 \text{CHR} = \frac{\#\{\text{cells with CG} < 0\}}{\#\{\text{cells tested}\}}.
 \label{eq:chr}
 \end{equation}
+This counts any negative gain as harmful, including differences too small
+to distinguish from measurement noise. Section~\ref{sec:results-rq1} also
+reports a stricter variant that only counts a cell as harmful once CG
+falls below $-0.01$ on balanced accuracy, a sensitivity check on how much
+of the headline rate reflects negligible differences rather than a
+meaningful failure.
 
 \textbf{Regret.} How large the harm is when a correction does fail, zero
 otherwise:
