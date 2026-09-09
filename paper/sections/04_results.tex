@@ -3,9 +3,13 @@
 
 Across the ten datasets, three seeds, four imbalance ratios, and five
 contamination rates (the shared clean condition plus four noise levels in
-each of the two directions), the full matrix produced 12{,}960 per-seed
-runs over the nine methods (seven corrections plus the two uncorrected
-baselines), seed-averaged into 4{,}320 method-condition rows. Every run
+each of the two directions), each combination forms one of 1{,}080 stress
+cells. Nine methods (seven corrections plus the two uncorrected baselines)
+are scored on every cell, giving 9{,}720 evaluations. The three
+prior-dependent TabPFN corrections are additionally scored with the oracle
+prior for diagnostic purposes (Section~\ref{sec:methods-corrections}),
+adding 3{,}240 more, for 12{,}960 model-condition evaluations in total,
+seed-averaged into 4{,}320 method-condition rows. Every evaluation
 completed. All results below are computed over the full matrix, with no
 excluded or incomplete blocks.
 
