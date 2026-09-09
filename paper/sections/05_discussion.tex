@@ -119,9 +119,10 @@ and on Brier score at every level but the highest.
 \texttt{tabpfn\_distpfn\_t} take the opposite path entirely. The same two
 methods with the highest Correction Harm Rate in the whole study are also
 its two best-calibrated methods, correction or baseline, at nearly every
-noise level in both directions. A method that frequently classifies a row
-wrong can still be assigning that wrong classification a well-calibrated
-probability. Balanced accuracy and calibration measure different
+noise level in both directions. A method that more often underperforms
+its own uncorrected baseline on discrimination can still be assigning its
+predictions a well-calibrated probability. Balanced accuracy and
+calibration measure different
 properties of a classifier, and this study's results show a correction
 can excel at one while failing badly at the other, not merely land
 somewhere middling on both. This matters for deployment. A system that

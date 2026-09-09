@@ -329,8 +329,9 @@ under Direction B except the highest tested, $c{=}0.30$, where
 \texttt{tabpfn\_downsample} overtakes them on both metrics. This holds
 despite the same two methods having the highest Correction Harm Rate in the
 study on balanced accuracy (Section~\ref{sec:results-rq1}): a DistPFN
-correction that frequently makes the wrong call can still be assigning that
-call a well-calibrated probability, discrimination and calibration are not
+correction that more frequently underperforms its own uncorrected baseline
+on balanced accuracy can still be assigning its predictions a
+well-calibrated probability, discrimination and calibration are not
 the same failure mode. \texttt{tabpfn\_threshold} remains consistent with
 its standing as the most robust method on balanced accuracy
 (Sections~\ref{sec:results-rq1} and~\ref{sec:results-rq2}), but on raw
