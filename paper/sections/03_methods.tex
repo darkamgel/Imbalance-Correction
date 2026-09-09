@@ -69,27 +69,30 @@ Heart~\cite{statlogheart}, HTRU2~\cite{lyon2015htru2}, and QSAR
 Biodegradation~\cite{mansouri2013qsar}, chosen so that no single result could
 be attributed to one dataset's idiosyncrasies and spanning finance, security,
 healthcare, signal processing, astronomy, and chemistry.
-Table~\ref{tab:datasets} summarizes their size and the meaning of the positive
-(minority) class in each.
+Table~\ref{tab:datasets} summarizes their size, the controlled training
+size $N_{\text{common}}$ every stress cell actually draws from, and the
+meaning of the positive (minority) class in each.
 
 \begin{table}[t]
 \centering
-\caption{Dataset characteristics.}
+\caption{Dataset characteristics. $N_{\text{common}}$ (Section~\ref{sec:methods-ncommon})
+is the controlled training size every stress cell actually draws from, not
+the raw row count.}
 \label{tab:datasets}
-\begin{tabular}{@{}lrrl@{}}
+\begin{tabular}{@{}lrrrl@{}}
 \toprule
-Dataset & Rows & Feat. & Minority meaning \\
+Dataset & Rows & Feat. & $N_{\text{common}}$ & Minority meaning \\
 \midrule
-Banknote Authentication      & 1{,}372 & 4  & Forged banknote \\
-Blood Transfusion             & 748    & 4  & Donated blood, target period \\
-South German Credit           & 1{,}000 & 20 & Bad credit risk \\
-Spambase                      & 4{,}601 & 57 & Spam email \\
-Breast Cancer Wisconsin       & 569    & 30 & Malignant diagnosis \\
-Ionosphere                    & 351    & 34 & No ionospheric structure \\
-Haberman's Survival           & 306    & 3  & Death within 5 years \\
-Statlog Heart                 & 270    & 13 & Heart disease present \\
-HTRU2                         & 17{,}898 & 8 & Pulsar candidate \\
-QSAR Biodegradation           & 1{,}055 & 41 & Ready biodegradable \\
+Banknote Authentication      & 1{,}372 & 4  & 641   & Forged banknote \\
+Blood Transfusion             & 748    & 4  & 284   & Donated blood, target period \\
+South German Credit           & 1{,}000 & 20 & 480   & Bad credit risk \\
+Spambase                      & 4{,}601 & 57 & 2{,}347 & Spam email \\
+Breast Cancer Wisconsin       & 569    & 30 & 300   & Malignant diagnosis \\
+Ionosphere                    & 351    & 34 & 189   & No ionospheric structure \\
+Haberman's Survival           & 306    & 3  & 128   & Death within 5 years \\
+Statlog Heart                 & 270    & 13 & 126   & Heart disease present \\
+HTRU2                         & 17{,}898 & 8 & 2{,}622 & Pulsar candidate \\
+QSAR Biodegradation           & 1{,}055 & 41 & 568   & Ready biodegradable \\
 \bottomrule
 \end{tabular}
 \end{table}
