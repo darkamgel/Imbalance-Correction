@@ -71,7 +71,7 @@ and asymmetric-noise formalizations
 predict in principle~\cite{natarajan2013noisylabels,scott2013asymmetricnoise},
 but this study's results show it is not a minor theoretical caveat. A
 method's CHR under one direction is a poor predictor of its CHR under the
-other. \texttt{tabpfn\_downsample}'s CHR is 21.7\% under Direction A and
+other. \texttt{tabpfn\_downsample}'s CHR is 20.6\% under Direction A and
 7.5\% under Direction B, nearly a threefold difference in the same method
 on the same datasets. A robustness claim validated under only one
 corruption mechanism, or under the symmetric random-flip noise more
@@ -113,7 +113,9 @@ fix that also removes the mislabeled rows from the context itself.
 Every XGBoost correction improves calibration over its baseline at every
 noise level tested, even the ones that sometimes hurt balanced accuracy.
 Under Direction A, \texttt{tabpfn\_downsample} is worse-calibrated than
-doing nothing at every noise level tested. \texttt{tabpfn\_distpfn} and
+doing nothing on expected calibration error at every noise level tested,
+and on Brier score at every level but the highest.
+\texttt{tabpfn\_distpfn} and
 \texttt{tabpfn\_distpfn\_t} take the opposite path entirely. The same two
 methods with the highest Correction Harm Rate in the whole study are also
 its two best-calibrated methods, correction or baseline, at nearly every

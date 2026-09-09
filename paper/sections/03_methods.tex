@@ -309,15 +309,15 @@ produce a DistPFN-T score for a two-class problem. Equation~\ref{eq:distpfnt}
 implements the algorithm's evident intent, with that shape bug corrected
 rather than reproduced.
 
-\texttt{tabpfn\_downsample} is the family's one data-level correction: the
-majority class is randomly downsampled, without replacement, to match the
-observed minority count exactly, and TabPFN reads the resulting balanced set
-as its prompt. Because it requires the observed majority count to be at least
-as large as the observed minority count, it can fail when Direction A
-contamination or rounding pushes the observed minority count above the
-observed majority count at $r{=}0.50$. This is a documented limitation of the
-method, not a pipeline error, and every such failure is logged rather than
-silently skipped (Section~\ref{sec:methods-implementation}).
+\texttt{tabpfn\_downsample} is the family's one data-level correction:
+whichever class has more observed rows is randomly downsampled, without
+replacement, to match the observed count of the smaller class, and TabPFN
+reads the resulting balanced set as its prompt. Identifying the larger
+class from the observed labels directly, rather than assuming a fixed
+encoding stays the larger one, means this never fails regardless of how
+contamination shifts the observed class balance, including at $r{=}0.50$
+under Direction A, where relabeling majority rows as minority can push
+the observed minority count above the observed majority count.
 
 For prior-dependent methods (\texttt{tabpfn\_threshold},
 \texttt{tabpfn\_distpfn}, \texttt{tabpfn\_distpfn\_t}), every stress cell
@@ -451,11 +451,11 @@ reports both versions.
 Every stress cell (one dataset, seed, ratio, contamination rate, and
 direction) is repeated across three seeds, $\{13, 37, 73\}$, so no result
 depends on one particular random split or one particular set of flipped
-rows. A method failing on one stress cell (for example,
-\texttt{tabpfn\_downsample} at the edge case described in
-Section~\ref{sec:methods-corrections}) is logged with its error and does not
-stop any other method or any later cell. Results are never backfilled or
-silently dropped. Table~\ref{tab:config} records the exact software
+rows. A method failing on a given stress cell would be logged with its
+error rather than silently skipped, and would not stop any other method
+or any later cell, though no method actually failed on any of the
+$12{,}960$ cells in the final run (Section~\ref{sec:results}).
+Table~\ref{tab:config} records the exact software
 versions, platform, and the frozen XGBoost configuration used throughout.
 The TabPFN checkpoint used was \texttt{tabpfn-v3-classifier-v3\_default.ckpt}
 (SHA-256~\texttt{d0d865d5\ldots8f3988}), and TabPFN inference used Apple's
