@@ -55,8 +55,8 @@ model families, TabPFN and XGBoost~\cite{chen2016xgboost}, under two directed,
 asymmetric label-error mechanisms and a range of imbalance levels, using ten real
 datasets drawn from the UCI Machine Learning Repository~\cite{kelly_uci}. The design
 holds the total amount of training evidence fixed across imbalance levels, so that
-imbalance and label noise can be varied independently rather than confounded with
-one another. Section~\ref{sec:methods} gives the full experimental setup, including
+changes in imbalance are not confounded by changes in how much training evidence a
+method receives. Section~\ref{sec:methods} gives the full experimental setup, including
 the exact corruption procedure and every configuration tested.
 
 To answer these questions, we judge whether a correction helps or hurts, rather
@@ -80,9 +80,9 @@ Our contributions are as follows.
 
 \begin{itemize}
 \item We introduce a controlled experimental design that holds total training-set
-size fixed across imbalance ratios and injects two directed, asymmetric
-label-error mechanisms on top of it, isolating the effect of label noise from the
-effect of imbalance itself.
+size fixed across imbalance ratios, so that changes in training-set size are not
+confounded with changes in class imbalance, and injects two directed, asymmetric
+label-error mechanisms at every tested ratio.
 \item We audit seven correction methods across two widely used model families,
 including DistPFN and DistPFN-T~\cite{lee2026distpfn}. We validate our DistPFN and
 DistPFN-T implementation against the authors' published reference code and document
