@@ -34,8 +34,11 @@ processes at their own natural severity levels, not as a
 magnitude-controlled manipulation of direction alone. A shared flip-count
 definition was considered and rejected, since the two most natural
 candidates either require flipping more minority rows than exist at
-$r{=}0.05$, or introduce a new mismatch between directions that grows with
-$r$ instead of staying fixed, worse than the one already present.
+$r{=}0.05$, or introduce an $r$-dependent mismatch between directions
+that grows increasingly severe as $r$ decreases. That mismatch would be
+worst precisely at the most imbalanced settings this study emphasizes,
+worse than the fixed, $r$-independent gap the current design carries at
+every tested $r$.
 
 A related caveat applies to the imbalance ratio $r$ itself. The test
 partition is never resampled and keeps each dataset's natural class
