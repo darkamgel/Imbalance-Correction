@@ -124,10 +124,12 @@ That fixed test partition has a consequence worth naming directly. Because
 it is never resampled, it keeps each dataset's natural minority prevalence
 throughout, while Section~\ref{sec:methods-ncommon} deliberately reshapes
 the training partition to $r$. Natural prevalence across the ten datasets
-ranges from $9.2\%$ to $44.5\%$, and none of the ten sit near the two
-lowest tested ratios. So at $r{=}0.05$ and $r{=}0.10$ especially, training
-and test are drawn from different class priors for every dataset in this
-study. The severe-imbalance conditions this study emphasizes are therefore
+ranges from $9.2\%$ (HTRU2) to $44.5\%$ (Banknote Authentication).
+$r{=}0.05$ falls below every dataset's natural prevalence, while
+$r{=}0.10$ sits close only to HTRU2, the lowest of the ten, with the
+remaining nine well above it. So at $r{=}0.05$ and $r{=}0.10$ especially,
+training and test are drawn from different class priors for every
+dataset in this study. The severe-imbalance conditions this study emphasizes are therefore
 not imbalance in isolation. They combine imbalance with a train/test prior
 shift, exactly the kind of mismatch DistPFN and DistPFN-T are built to
 correct (Section~\ref{sec:methods-corrections}), and the kind
