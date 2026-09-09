@@ -60,11 +60,13 @@ one another. Section~\ref{sec:methods} gives the full experimental setup, includ
 the exact corruption procedure and every configuration tested.
 
 To answer these questions, we judge whether a correction helps or hurts, rather
-than only how accurate it is, using four purpose-built metrics. Correction Gain and
+than only how accurate it is, using five purpose-built metrics. Correction Gain and
 Correction Harm Rate answer RQ1 and RQ2, measuring whether and how often a
 correction underperforms its uncorrected baseline. The break-even contamination
-rate answers RQ3, and the Prior Sensitivity Gap answers RQ4. Each metric is
-defined precisely in Section~\ref{sec:methods}.
+rate answers RQ3, and the Prior Sensitivity Gap answers RQ4. A fifth metric,
+Regret, does not map onto a single research question. It measures how severe a
+failure is when one occurs, complementing Correction Harm Rate's count of how
+often one does. Each metric is defined precisely in Section~\ref{sec:methods}.
 
 Our central finding is that every correction method tested underperforms its
 matched uncorrected baseline in at least some conditions. How often this happens
@@ -86,10 +88,11 @@ including DistPFN and DistPFN-T~\cite{lee2026distpfn}. We validate our DistPFN a
 DistPFN-T implementation against the authors' published reference code and document
 an implementation error identified during this verification process
 (Section~\ref{sec:methods}).
-\item We operationalize correction robustness using four complementary measures,
-Correction Gain, Correction Harm Rate, break-even contamination rate, and Prior
-Sensitivity Gap, designed to measure whether a correction remains net-beneficial
-once label noise is present, rather than measuring model accuracy alone.
+\item We operationalize correction robustness using five complementary measures,
+Correction Gain, Correction Harm Rate, Regret, break-even contamination rate,
+and Prior Sensitivity Gap, designed to measure whether a correction remains
+net-beneficial once label noise is present, rather than measuring model
+accuracy alone.
 \item We show, across ten real datasets, that every correction method tested can
 underperform doing nothing at all once contamination reaches as little as 5\%, and
 that this failure is direction-dependent rather than uniform across methods or

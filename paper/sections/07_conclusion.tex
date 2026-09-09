@@ -14,18 +14,21 @@ The simplest correction tested, a threshold shift keyed to the class
 prior, was consistently the most robust on discrimination, leading
 every other method on Correction Harm Rate and mean Correction Gain in
 both directions. The two most mathematically involved corrections,
-DistPFN and DistPFN-T, were consistently the least robust by that same
-standard, the opposite of what their added sophistication might
-suggest, yet those same two corrections were also the best-calibrated
+DistPFN and DistPFN-T, held the highest Correction Harm Rate of any
+method under Direction B, more than double the next-highest method's
+rate, the opposite of what their added sophistication might suggest,
+yet those same two corrections were also the best-calibrated
 methods in the entire study. A correction that gets the classification
 wrong most often can still be assigning that wrong classification the
 most trustworthy probability, a split this paper's results surface
 rather than resolve in either method's favor.
 
-The four contribution metrics introduced here, Correction Gain,
-Correction Harm Rate, Regret, and the break-even contamination rate,
-made this possible by separating whether a correction helps from how
-often and how badly it fails when it does not. The same framework also
+The five contribution metrics introduced here, Correction Gain,
+Correction Harm Rate, Regret, the break-even contamination rate, and
+the Prior Sensitivity Gap, made this possible, separating whether a
+correction helps from how often it fails, how badly it fails when it
+does, and how much of that failure traces to the corrupted prior
+specifically. The same framework also
 surfaced a result this paper did not anticipate, that the corrupted
 prior is not the primary reason TabPFN's posterior-rescaling
 corrections decline under contamination, since handing them the true

@@ -130,7 +130,9 @@ falls further still (0.0003), while \texttt{tabpfn\_distpfn}'s CHR rises to
 still on regret specifically (0.0117), despite an identical CHR to
 \texttt{tabpfn\_distpfn}. \texttt{tabpfn\_downsample}'s failures are
 consistently mild, whichever direction happens to produce more of them.
-The two DistPFN variants fail differently by direction, but never mildly.
+The two DistPFN variants show the reverse pattern: mild regret under
+Direction A, on par with several other methods, and by far the worst
+regret of any method in the study under Direction B, where they fail most.
 
 Part of this asymmetry traces back to the uncorrected baselines themselves.
 Comparing balanced accuracy at $c{=}0$ against $c{=}0.30$ for
