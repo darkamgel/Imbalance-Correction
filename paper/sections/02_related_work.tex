@@ -119,8 +119,13 @@ such as DistPFN and DistPFN-T.
 A smaller body of work has begun to treat class imbalance and label noise as
 jointly occurring problems rather than independent ones. Koziarski et
 al.~\cite{koziarski2020ccr} combine a resampling step with a label-cleaning step
-specifically for multi-class imbalanced data known to contain label noise, and
-Khanal et al.~\cite{khanal2024activelabel} combine active learning with
+specifically for multi-class imbalanced data known to contain label noise.
+Chen et al.~\cite{chen2021rsmote} and Li et al.~\cite{li2024wrnd} take a
+related but more direct approach, redesigning SMOTE itself so that its
+neighborhood-based interpolation is weighted by local sample density and
+downweights or filters out likely-noisy minority points, rather than pairing
+an unmodified SMOTE with a separate cleaning stage. Khanal et
+al.~\cite{khanal2024activelabel} combine active learning with
 noisy-label training to handle both problems together in imbalanced medical
 image classification. Liu et al.~\cite{liu2024imbalancednoisy} observe that
 standard loss-based sample selection for noisy-label training is itself biased
