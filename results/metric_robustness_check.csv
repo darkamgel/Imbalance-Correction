@@ -1,0 +1,15 @@
+method,direction,n,auprc_mean_CHR,auprc_mean_mean_CG,minority_recall_mean_CHR,minority_recall_mean_mean_CG
+xgb_weighted,majority_to_minority,160,0.51875,-0.0022777661161779684,0.1625,0.04752539397399515
+xgb_weighted,minority_to_majority,160,0.46875,-0.002507520311335295,0.025,0.07522664463554454
+xgb_ros,majority_to_minority,160,0.625,-0.003853659847896386,0.16875,0.04746307249226948
+xgb_ros,minority_to_majority,160,0.525,-0.003838872462604629,0.04375,0.07747026188342562
+xgb_smote,majority_to_minority,160,0.61875,-0.0023514762574397417,0.1625,0.06076017673507339
+xgb_smote,minority_to_majority,160,0.5625,-0.00056701173497203,0.05,0.09558234126478156
+tabpfn_threshold,majority_to_minority,160,0.0,0.0,0.20625,0.19639450911680778
+tabpfn_threshold,minority_to_majority,160,0.0,0.0,0.0,0.2828358273349482
+tabpfn_distpfn,majority_to_minority,160,0.00625,0.0,0.2625,0.03721584563775693
+tabpfn_distpfn,minority_to_majority,160,0.0,0.0,0.3,0.040771896857772806
+tabpfn_distpfn_t,majority_to_minority,160,0.0,0.0,0.3,0.04862517850698136
+tabpfn_distpfn_t,minority_to_majority,160,0.0,0.0,0.2875,0.051850903729819806
+tabpfn_downsample,majority_to_minority,160,0.725,-0.02461152423674463,0.20625,0.2039159172424112
+tabpfn_downsample,minority_to_majority,160,0.775,-0.023170389055780165,0.0125,0.2848812920348971

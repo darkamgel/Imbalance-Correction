@@ -352,6 +352,22 @@ All ten are computed identically for every method and condition using
 scikit-learn's implementations~\cite{pedregosa2011scikitlearn}, so no
 method is scored on a different basis than any other.
 
+Not every metric receives equal treatment in Section~\ref{sec:results}.
+Balanced accuracy is reported as the discrimination measure throughout.
+Worst-class recall, AUPRC, and macro F1 correlate with it at 0.966, 0.892,
+and 0.987 respectively (Pearson, computed across the full result set) and
+largely reproduce the same ranking rather than adding independent
+evidence. Minority precision, minority recall, and AUROC are computed as
+secondary diagnostics, available for a targeted check but not used to
+support a headline claim on their own. Brier score and expected
+calibration error are reported separately in
+Section~\ref{sec:results-reliability} because together they reveal a
+divergence from the discrimination results that balanced accuracy alone
+does not show (Section~\ref{sec:discussion-calibration}). Log loss is
+computed identically to the other nine metrics but is not separately
+reported, since its correlation with Brier score, 0.949, is comparably
+high and does not add evidence beyond it.
+
 \subsection{Contribution Metrics}
 \label{sec:methods-contribution}
 
