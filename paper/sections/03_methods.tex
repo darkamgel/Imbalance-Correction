@@ -26,6 +26,7 @@ method per condition.
 
 \begin{figure*}[t]
 \centering
+\resizebox{\linewidth}{!}{%
 \begin{tikzpicture}[
   node distance=0.35cm,
   box/.style={draw, rounded corners, align=center, minimum height=1.15cm,
@@ -46,7 +47,8 @@ method per condition.
 \draw[arr] (corrupt) -- (fit);
 \draw[arr] (fit) -- (predict);
 \draw[arr] (predict) -- (score);
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \caption{The stress-cell pipeline applied to every dataset, seed, imbalance
 ratio, contamination rate, and direction. The test set is held out once, at
 the initial split, and stays fixed and clean for the entire run. Only the

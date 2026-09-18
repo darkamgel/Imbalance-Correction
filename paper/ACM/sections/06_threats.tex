@@ -1,0 +1,162 @@
+\section{Threats to Validity}
+\label{sec:threats}
+
+\subsection{Internal Validity}
+\label{sec:threats-internal}
+
+Every \texttt{tabpfn\_*} result in this paper comes from one checkpoint,
+verified by SHA-256 hash (Section~\ref{sec:methods-implementation}),
+and uses Apple's Metal GPU backend for inference. The whole study,
+XGBoost included, ran on one machine
+with every library forced to a single thread to avoid a documented
+XGBoost/PyTorch conflict. A different checkpoint, backend, or thread
+count could shift specific numbers, but there is no reason to expect
+the broader pattern, that robustness varies by method and direction,
+to depend on any of them. Each (dataset, ratio, contamination rate,
+direction) combination was repeated across ten seeds to reduce
+dependence on a single train/test split or
+corruption realization. Ten repetitions still provide only limited
+precision for quantities determined by whether a
+seed-averaged value crosses zero, including Correction Harm Rate and
+the break-even rate. Additional seeds would further improve
+uncertainty characterization of both measures, a limitation
+Section~\ref{sec:threats-construct}'s break-even non-monotonicity
+finding may partly reflect.
+
+The claim that robustness varies by direction carries its own caveat.
+Direction A's and Direction B's contamination rate $c$ are defined against
+different reference points (Section~\ref{sec:methods-corruption}), so a
+matched nominal $c$ does not correspond to a matched absolute flip count
+between the two. Direction A flips a larger fraction of $n_{\min}$'s worth
+of rows than Direction B at every tested $c$ above zero. The finding that
+direction changes how often a correction fails should be read as a
+comparison between two distinct, realistically motivated corruption
+processes at their own natural severity levels, not as a
+magnitude-controlled manipulation of direction alone. A shared flip-count
+definition was considered and rejected, since the two most natural
+candidates either require flipping more minority rows than exist at
+$r{=}0.05$, or introduce an $r$-dependent mismatch between directions
+that grows increasingly severe as $r$ decreases. That mismatch would be
+worst precisely at the most imbalanced settings this study emphasizes,
+worse than the fixed, $r$-independent gap the current design carries at
+every tested $r$.
+
+A related caveat applies to the imbalance ratio $r$ itself. The test
+partition is never resampled and keeps each dataset's natural class
+distribution (Section~\ref{sec:methods-datasets}), while training is
+deliberately pushed to $r$, so the low-$r$ conditions this study
+emphasizes combine imbalance with train and test prior shift rather than
+isolating imbalance alone. This is the standard evaluation paradigm
+across the class-imbalance literature. Training on a rebalanced set and
+testing on the natural population is what makes a correction's benefit
+deployment-relevant in the first place, but it means this study cannot
+cleanly attribute a method's robustness to tolerance of imbalance
+specifically as opposed to tolerance of prior shift. This matters most
+for \texttt{tabpfn\_threshold}, \texttt{tabpfn\_distpfn}, and
+\texttt{tabpfn\_distpfn\_t}, whose underlying mechanism directly targets
+prior mismatch (Section~\ref{sec:discussion-simplicity}). A design that
+resampled the test partition to match each tested $r$ would remove this
+coupling, at the cost of evaluating performance on a population that
+does not correspond to any dataset's actual distribution. Consequently,
+the present results should be read as robustness under the joint
+imbalance/prior-shift setting that rebalanced training and
+natural-distribution testing together induce, not as a causal estimate
+of imbalance tolerance in isolation.
+Section~\ref{sec:results-r050} partially addresses a related but distinct
+concern, whether the balanced ratio $r{=}0.50$ (not imbalanced even
+before contamination) was itself driving the pooled headline numbers, by
+recomputing every contribution metric and statistical test with
+$r{=}0.50$ isolated from $r \in \{0.20, 0.10, 0.05\}$. The results
+confirm that a substantial share of the DistPFN pair's apparent harm
+under Direction B is concentrated at that one ratio. This does not
+resolve the train/test prior-shift coupling described above, which
+remains present within the $r{\neq}0.50$ subset itself, but it does rule
+out $r{=}0.50$ specifically as an unexamined confound in the headline
+comparisons.
+
+One correction method's construction interacts with a subset of datasets
+in a way worth naming directly. \texttt{xgb\_smote} synthesizes new
+minority rows by interpolating in the feature space actually presented to
+it, the already-imputed, one-hot-encoded representation
+(Section~\ref{sec:methods-datasets}), not the raw categorical values. For
+the seven datasets with genuinely categorical columns, this means a
+synthetic row can carry a fractional value for what should be a one-hot
+indicator, e.g.\ 0.37 rather than 0 or 1, mathematically usable by
+XGBoost's tree splits but not a valid category membership.
+\texttt{xgb\_ros} is unaffected, since it duplicates real rows rather than
+interpolating between them. This is standard practice for applying
+off-the-shelf SMOTE to mixed-type data, not an implementation error
+specific to this study, and auditing correction methods as they are
+commonly deployed, rather than in a bespoke mixed-type-aware variant, is
+consistent with this study's stated aim
+(Section~\ref{sec:methods-corrections}). Restricting \texttt{xgb\_smote}'s
+headline numbers to the 19 datasets with no categorical columns changes
+them only slightly: CHR moves from 13.5\%/7.2\% (pooled,
+Table~\ref{tab:robustness}) to 13.5\%/6.2\%, and mean CG from
+0.023/0.033 to 0.026/0.037, so the categorical datasets are not driving
+this method's measured robustness.
+
+\subsection{External Validity}
+\label{sec:threats-external}
+
+The 26 datasets audited range from 270 to 60{,}000 raw rows
+(Table~\ref{tab:datasets}), but the raw row count is not what any method
+actually fits on. The controlled training set every stress cell draws
+from is capped by $N_{\text{common}}$ (Section~\ref{sec:methods-ncommon}),
+which tops out at 18{,}698 rows even for Adult, the dataset with the
+largest minority class in raw terms, because minority availability at
+$r{=}0.50$ is the binding constraint regardless of how many majority rows
+the raw dataset has. Every condition
+tested therefore stays well within TabPFN's intended small-tabular-data
+regime but far from the scale where gradient-boosted methods are
+typically deployed. Whether the same robustness ranking holds on larger,
+higher-dimensional, or more categorical-heavy tabular data, or simply on
+a dataset whose minority class alone is large enough to push
+$N_{\text{common}}$ higher, is untested. Every dataset audited is also a
+binary-classification problem. Whether the same corrections and the same
+robustness patterns extend to multi-class imbalance, where a correction
+may need to reweight several minority classes at once rather than one, is
+untested as well.
+
+The two corruption mechanisms audited are both
+class-conditional (Section~\ref{sec:methods-corruption}). The flip
+probability depends only on the true class, not on the specific
+feature values of the row being flipped. Real-world label noise is
+often instance-dependent instead, arising from cases that are
+genuinely ambiguous or that share features with the other class, and
+this study says nothing about whether the same methods stay robust
+under that kind of noise. The four tested contamination rates also stop
+at 0.30, with results never extrapolated beyond that point
+(Section~\ref{sec:methods-contribution}), so this study cannot say
+whether the same patterns hold at higher contamination. Each stress cell
+also applies exactly one corruption direction at a time, never a mixture
+of both within the same corrupted training set. Real-world label noise
+plausibly combines both directions at once, and this study does not test
+whether a correction's robustness under one direction in isolation
+predicts its robustness once both are present together.
+
+\subsection{Construct Validity}
+\label{sec:threats-construct}
+
+Correction Gain, Correction Harm Rate, Regret, and the break-even rate
+are original to this paper. They are reported here only on balanced
+accuracy, not on the other nine metrics tracked in
+Section~\ref{sec:methods-metrics}. A correction ranked robust by CHR
+on balanced accuracy is not guaranteed to be equally robust by the
+same measure on AUPRC or minority recall, a point the calibration
+results in Section~\ref{sec:results-reliability} already illustrate
+for a different metric pair. The break-even rate itself assumes a
+correction's gain declines monotonically as contamination rises, an
+assumption this study's own data does not fully support. Of the 522
+(method, dataset, ratio, direction) combinations with a defined
+break-even point, 54.6\% show the seed-averaged gain recover to
+positive at a higher contamination level after already crossing zero
+at a lower one, a majority, not a minority, of defined break-even
+points. $c^*$ marks the first noise level a correction stops
+paying off, not a guarantee that it stays that way at every higher
+level tested. The Prior Sensitivity Gap's oracle
+variant assumes access to the true, pre-corruption class prior,
+something no real deployment has. It is a diagnostic construct, not a
+claim about achievable performance, and Section~\ref{sec:results-rq4}
+found it is not even reliably better than the observed-prior variant
+it is meant to bound.

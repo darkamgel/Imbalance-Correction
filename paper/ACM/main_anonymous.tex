@@ -1,0 +1,79 @@
+\documentclass[acmsmall,screen,anonymous,review]{acmart}
+
+%% acmart already loads amsmath (via amsart) and amssymb-equivalent symbols
+%% (via newtxmath); loading amssymb again here conflicts with newtxmath's
+%% \Bbbk definition, so it is deliberately omitted.
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
+
+%% ACM Transactions on Knowledge Discovery from Data (TKDD) metadata.
+%% acmJournal/acmDOI/acmArticle etc. are placeholders until acceptance --
+%% the venue's production team assigns real values at that point.
+\acmJournal{TKDD}
+\copyrightyear{2026}
+\acmYear{2026}
+\setcopyright{acmlicensed}
+\acmDOI{XXXXXXX.XXXXXXX}
+\acmSubmissionID{XXX}
+
+\title{When Imbalance Correction Backfires: Robustness of Tabular Imbalance
+Mitigation Under Minority-Label Contamination}
+
+%% anonymous,review (double-blind mode) suppresses author identity in the
+%% typeset output regardless of what is given here, but acmart still
+%% requires at least one \author/\affiliation pair to build the title block.
+\author{Anonymous Author(s)}
+\affiliation{%
+  \institution{Anonymous Institution}
+  \city{Anonymous City}
+  \country{Anonymous Country}
+}
+
+\renewcommand{\shortauthors}{Anonymous et al.}
+
+%% CCS concepts: placeholders generated from the standard 2012 ACM CCS tree.
+%% Verify/regenerate via https://dl.acm.org/ccs before final submission.
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10010147.10010257.10010293.10010294</concept_id>
+<concept_desc>Computing methodologies~Supervised learning by classification</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10010147.10010257</concept_id>
+<concept_desc>Computing methodologies~Machine learning</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Computing methodologies~Supervised learning by classification}
+\ccsdesc[300]{Computing methodologies~Machine learning}
+
+\keywords{class imbalance, label noise, imbalance correction, TabPFN, XGBoost, calibration}
+
+\begin{document}
+
+\begin{abstract}
+\input{sections/00_abstract}
+\end{abstract}
+
+\maketitle
+
+\input{sections/01_introduction}
+
+\input{sections/02_related_work}
+
+\input{sections/03_methods}
+
+\input{sections/04_results}
+
+\input{sections/06_threats}
+
+\input{sections/07_conclusion}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
+
+\end{document}
