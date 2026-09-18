@@ -1,0 +1,5 @@
+scope,direction,n_datasets,n_blocks,CHR,mean_CG
+pooled_26,majority_to_minority,26,416,0.1346153846153846,0.0229543300868253
+pooled_26,minority_to_majority,26,416,0.07211538461538461,0.03257673767607832
+numeric_only_19,majority_to_minority,19,304,0.13486842105263158,0.026236655279084697
+numeric_only_19,minority_to_majority,19,304,0.0625,0.03732296209699667

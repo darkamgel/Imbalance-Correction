@@ -12,8 +12,9 @@ with every library forced to a single thread to avoid a documented
 XGBoost/PyTorch conflict. A different checkpoint, backend, or thread
 count could shift specific numbers, but there is no reason to expect
 the broader pattern, that robustness varies by method and direction,
-to depend on any of them. Each stress cell was repeated across ten
-seeds to reduce dependence on a single train/test split or
+to depend on any of them. Each (dataset, ratio, contamination rate,
+direction) combination was repeated across ten seeds to reduce
+dependence on a single train/test split or
 corruption realization. Ten repetitions still provide only limited
 precision for quantities determined by whether a
 seed-averaged value crosses zero, including Correction Harm Rate and
@@ -72,6 +73,28 @@ resolve the train/test prior-shift coupling described above, which
 remains present within the $r{\neq}0.50$ subset itself, but it does rule
 out $r{=}0.50$ specifically as an unexamined confound in the headline
 comparisons.
+
+One correction method's construction interacts with a subset of datasets
+in a way worth naming directly. \texttt{xgb\_smote} synthesizes new
+minority rows by interpolating in the feature space actually presented to
+it, the already-imputed, one-hot-encoded representation
+(Section~\ref{sec:methods-datasets}), not the raw categorical values. For
+the seven datasets with genuinely categorical columns, this means a
+synthetic row can carry a fractional value for what should be a one-hot
+indicator, e.g.\ 0.37 rather than 0 or 1, mathematically usable by
+XGBoost's tree splits but not a valid category membership.
+\texttt{xgb\_ros} is unaffected, since it duplicates real rows rather than
+interpolating between them. This is standard practice for applying
+off-the-shelf SMOTE to mixed-type data, not an implementation error
+specific to this study, and auditing correction methods as they are
+commonly deployed, rather than in a bespoke mixed-type-aware variant, is
+consistent with this study's stated aim
+(Section~\ref{sec:methods-corrections}). Restricting \texttt{xgb\_smote}'s
+headline numbers to the 19 datasets with no categorical columns changes
+them only slightly: CHR moves from 13.5\%/7.2\% (pooled,
+Table~\ref{tab:robustness}) to 13.5\%/6.2\%, and mean CG from
+0.023/0.033 to 0.026/0.037, so the categorical datasets are not driving
+this method's measured robustness.
 
 \subsection{External Validity}
 \label{sec:threats-external}

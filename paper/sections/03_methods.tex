@@ -83,14 +83,20 @@ Seismic-Bumps~\cite{sikora2010seismic}, and APS Failure at Scania
 Trucks~\cite{scania2016apsfailure}, chosen so that no single result could be
 attributed to one dataset's idiosyncrasies, spanning finance, security,
 healthcare, signal processing, astronomy, chemistry, industrial
-manufacturing, retail behavior, and political science. Together they range
+manufacturing, retail behavior, and political science. Each dataset
+designates one binary class as its positive, or target, class
+(Table~\ref{tab:datasets}); in the controlled training sets built in
+Section~\ref{sec:methods-ncommon}, this class's prevalence is fixed to
+$r$, so it is the minority class at every ratio below $r{=}0.50$ and
+exactly balanced at $r{=}0.50$, regardless of how common or rare it is
+in the original, unmodified dataset. Together they range
 from 270 to 60,000 raw rows and from 3 to 1{,}558 raw features, and their
-natural minority prevalence ranges from $1.7\%$ (APS Failure) to $62.5\%$
-(Chronic Kidney Disease, the one dataset in this study where the clinically
-``positive'' class is the natural majority). Table~\ref{tab:datasets}
+natural positive-class prevalence ranges from $1.7\%$ (APS Failure) to
+$62.5\%$ (Chronic Kidney Disease, the one dataset in this study where the
+positive class is the natural majority). Table~\ref{tab:datasets}
 summarizes all 26 datasets' size, the controlled training size
 $N_{\text{common}}$ every stress cell actually draws from, and the meaning
-of the positive (minority) class in each.
+of the positive class in each.
 
 \begin{table*}[t]
 \centering
@@ -103,7 +109,7 @@ rounding. Feature counts marked $\to$100 are capped
 \label{tab:datasets}
 \begin{tabular}{@{}lrrrl@{}}
 \toprule
-Dataset & Rows & Feat. & $N_{\text{common}}$ & Minority meaning \\
+Dataset & Rows & Feat. & $N_{\text{common}}$ & Positive class \\
 \midrule
 Banknote Authentication      & 1{,}372 & 4  & 641   & Forged banknote \\
 Blood Transfusion             & 748    & 4  & 284   & Blood donated in target period \\
@@ -180,8 +186,8 @@ altered by any later step. Every correction method, at every imbalance ratio
 and contamination level, is scored against exactly the same test rows.
 
 That fixed test partition has a consequence worth naming directly. Because
-it is never resampled, it keeps each dataset's natural minority prevalence
-throughout, while Section~\ref{sec:methods-ncommon} deliberately reshapes
+it is never resampled, it keeps each dataset's natural positive-class
+prevalence throughout, while Section~\ref{sec:methods-ncommon} deliberately reshapes
 the training partition to $r$. Natural prevalence across the 26 datasets
 ranges from $1.7\%$ (APS Failure) to $62.5\%$ (Chronic Kidney Disease).
 Seven datasets sit at or below the two most severe tested ratios: APS
@@ -216,8 +222,12 @@ $N_{\text{common}}$ is computed for each dataset and seed and used at every
 tested ratio. Only the split between minority and majority rows within that
 fixed total changes as $r$ changes.
 
-Let $n_{\min}$ and $n_{\max}$ denote the number of minority and majority rows
-available in the training pool for a given dataset and seed. At ratio $r$, a
+Let $n_{\min}$ and $n_{\max}$ denote the number of positive-class and
+other-class rows available in the training pool for a given dataset and
+seed (named for their role in the controlled sample below, not for which
+is numerically larger in the raw pool; Chronic Kidney Disease's positive
+class is the raw pool's natural majority, Section~\ref{sec:methods-datasets}).
+At ratio $r$, a
 total training size of $N$ requires $rN$ minority rows and $(1-r)N$ majority
 rows, so the largest $N$ achievable at that ratio is bounded by whichever
 class runs out first:
@@ -489,7 +499,7 @@ otherwise:
 \label{eq:regret}
 \end{equation}
 CHR answers how often a correction backfires. Regret answers how bad it is
-when it does, so a method with low CHR but large Regret on the cells where it
+when it does, so a method with low CHR but large Regret on the blocks where it
 fails carries a different practical risk than one with high CHR but small
 Regret.
 
@@ -538,8 +548,12 @@ method in that family. For the three prior-dependent TabPFN methods, only
 the observed-prior variant, the same deployable score reported everywhere
 else in this study, enters the comparison. The oracle-prior rows are
 excluded so that a method's column reflects its deployable score alone, not
-an average of its observed and oracle variants. Blocks with fewer than ten
-complete rows are excluded as too few for a meaningful omnibus test. When
+an average of its observed and oracle variants. A family/direction
+combination is tested only when at least ten complete blocks are
+available; every combination in this study clears that bar by a wide
+margin (416 condition-level blocks, 26 dataset-level blocks, per
+family and direction), so the rule never excludes a comparison here but
+is stated for reproducibility on a different data cut. When
 the Friedman test is
 significant at $p<0.05$, every pairwise comparison of methods within that
 family and direction is tested with the Wilcoxon signed-rank
@@ -566,10 +580,11 @@ reports all versions.
 \subsection{Implementation and Reproducibility}
 \label{sec:methods-implementation}
 
-Every stress cell (one dataset, seed, ratio, contamination rate, and
-direction) is repeated across ten seeds, $\{13, 37, 73, 5, 11, 17, 19, 23,
-29, 31\}$, so no result depends on one particular random split or one
-particular set of flipped rows. A method failing on a given stress cell is
+Every (dataset, ratio, contamination rate, direction) combination is
+repeated across all ten seeds, $\{13, 37, 73, 5, 11, 17, 19, 23,
+29, 31\}$, producing one stress cell per seed, so no result depends on
+one particular random split or one particular set of flipped rows. A
+method failing on a given stress cell is
 logged with its error rather than silently skipped, and does not stop any
 other method or any later cell: one such failure occurred in the final run,
 \texttt{tabpfn\_downsample} on APS Failure (seed 19, $r{=}0.10$,
