@@ -1,4 +1,4 @@
-\documentclass[acmsmall,screen,anonymous,review]{acmart}
+\documentclass[manuscript,screen,anonymous,review]{acmart}
 
 %% acmart already loads amsmath (via amsart) and amssymb-equivalent symbols
 %% (via newtxmath); loading amssymb again here conflicts with newtxmath's
@@ -7,14 +7,24 @@
 \usetikzlibrary{positioning,arrows.meta}
 
 %% ACM Transactions on Knowledge Discovery from Data (TKDD) metadata.
-%% acmJournal/acmDOI/acmArticle etc. are placeholders until acceptance --
-%% the venue's production team assigns real values at that point.
+%% This is the double-blind REVIEW copy. The "manuscript" format option
+%% (as opposed to "acmsmall", used in main.tex) is ACM's own dedicated
+%% pre-acceptance format: verified directly in acmart.cls that it replaces
+%% every DOI/volume/issue/article-number/publication-date/copyright field
+%% -- both in the front-page block and in the per-page running footer --
+%% with the plain, honest "Manuscript submitted to ACM", since none of
+%% that production metadata exists yet. acmsmall has no equivalent switch;
+%% it always fills those fields with class defaults (e.g. Vol. 1, No. 1)
+%% that read as real values. TKDD's own submission instructions take
+%% priority over this if they specify otherwise.
 \acmJournal{TKDD}
-\copyrightyear{2026}
-\acmYear{2026}
-\setcopyright{acmlicensed}
-\acmDOI{XXXXXXX.XXXXXXX}
 \acmSubmissionID{XXX}
+%% manuscript mode replaces the copyright block and running footer with
+%% "Manuscript submitted to ACM" automatically, but the separate front-page
+%% "ACM Reference Format:" preview citation (with its own placeholder
+%% Vol./No./date/DOI) is a different piece of the template, not gated by
+%% manuscript mode -- printacmref=false suppresses that block specifically.
+\settopmatter{printacmref=false}
 
 \title{When Imbalance Correction Backfires: Robustness of Tabular Imbalance
 Mitigation Under Minority-Label Contamination}
