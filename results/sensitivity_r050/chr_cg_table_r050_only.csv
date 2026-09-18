@@ -1,0 +1,15 @@
+method,direction,CHR,mean_CG,n_cells
+tabpfn_distpfn,majority_to_minority,0.25,0.012698033310035836,40
+tabpfn_distpfn,minority_to_majority,0.85,-0.03714562261165382,40
+tabpfn_distpfn_t,majority_to_minority,0.225,0.019476679547598214,40
+tabpfn_distpfn_t,minority_to_majority,0.75,-0.01889363718434125,40
+tabpfn_downsample,majority_to_minority,0.175,0.03372391775138493,40
+tabpfn_downsample,minority_to_majority,0.2,0.012118455932592498,40
+tabpfn_threshold,majority_to_minority,0.15,0.03206052212666749,40
+tabpfn_threshold,minority_to_majority,0.125,0.012774031220845177,40
+xgb_ros,majority_to_minority,0.25,0.007894557561345392,40
+xgb_ros,minority_to_majority,0.35,0.005317280620271226,40
+xgb_smote,majority_to_minority,0.275,0.015630666685782064,40
+xgb_smote,minority_to_majority,0.25,0.007140893723730968,40
+xgb_weighted,majority_to_minority,0.175,0.015383013046021205,40
+xgb_weighted,minority_to_majority,0.225,0.0061516481096897,40

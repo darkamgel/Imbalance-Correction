@@ -9,7 +9,7 @@ xgboost,3.4.1
 imbalanced-learn,0.14.2
 statsmodels,0.14.6
 tabpfn,8.3.0
-seeds,"[13, 37, 73]"
+seeds,"[13, 37, 73, 5, 11, 17, 19, 23, 29, 31]"
 xgboost.n_estimators,500
 xgboost.max_depth,6
 xgboost.learning_rate,0.05

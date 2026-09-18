@@ -9,3 +9,19 @@ haberman_survival,43,306,3,81,225,patient died within 5 years of surgery
 statlog_heart,145,270,13,120,150,presence of heart disease
 htru2,372,17898,8,1639,16259,pulsar candidate
 qsar_biodegradation,254,1055,41,356,699,ready biodegradable
+adult,2,48842,14,11687,37155,income exceeds $50K/year
+bank_marketing,222,45211,16,5289,39922,client subscribed to a term deposit
+magic_gamma_telescope,159,19020,10,6688,12332,hadron (background) event
+online_shoppers,468,12330,17,1908,10422,session ended in a completed purchase
+congressional_voting,105,435,16,168,267,Republican representative
+chronic_kidney_disease,336,400,24,250,150,chronic kidney disease present
+default_credit_card,350,30000,23,6636,23364,default on payment next month
+taiwanese_bankruptcy,572,6819,95,220,6599,company went bankrupt
+polish_bankruptcy,365,43405,65,2091,41314,company went bankrupt within the forecast period
+mushroom,73,8124,22,3916,4208,poisonous mushroom
+cervical_cancer,383,858,32,55,803,biopsy-confirmed cervical abnormality
+secom,179,1567,590,104,1463,semiconductor manufacturing test fail
+arrhythmia,5,452,279,207,245,cardiac arrhythmia present (any of 15 types)
+internet_advertisements,51,3279,1558,459,2820,image is an advertisement
+seismic_bumps,266,2584,18,170,2414,hazardous seismic state next shift
+aps_failure,421,60000,170,1000,59000,APS (air pressure system) component failure

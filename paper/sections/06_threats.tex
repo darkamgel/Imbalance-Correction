@@ -12,13 +12,13 @@ with every library forced to a single thread to avoid a documented
 XGBoost/PyTorch conflict. A different checkpoint, backend, or thread
 count could shift specific numbers, but there is no reason to expect
 the broader pattern, that robustness varies by method and direction,
-to depend on any of them. Each stress cell was repeated across three
+to depend on any of them. Each stress cell was repeated across ten
 seeds to reduce dependence on a single train/test split or
-corruption realization. Three repetitions nevertheless provide
-limited precision for quantities determined by whether a
+corruption realization. Ten repetitions still provide only limited
+precision for quantities determined by whether a
 seed-averaged value crosses zero, including Correction Harm Rate and
-the break-even rate. Additional seeds would improve uncertainty
-characterization of both measures, a limitation
+the break-even rate. Additional seeds would further improve
+uncertainty characterization of both measures, a limitation
 Section~\ref{sec:threats-construct}'s break-even non-monotonicity
 finding may partly reflect.
 
@@ -56,18 +56,34 @@ for \texttt{tabpfn\_threshold}, \texttt{tabpfn\_distpfn}, and
 prior mismatch (Section~\ref{sec:discussion-simplicity}). A design that
 resampled the test partition to match each tested $r$ would remove this
 coupling, at the cost of evaluating performance on a population that
-does not correspond to any dataset's actual distribution.
+does not correspond to any dataset's actual distribution. Consequently,
+the present results should be read as robustness under the joint
+imbalance/prior-shift setting that rebalanced training and
+natural-distribution testing together induce, not as a causal estimate
+of imbalance tolerance in isolation.
+Section~\ref{sec:results-r050} partially addresses a related but distinct
+concern, whether the balanced ratio $r{=}0.50$ (not imbalanced even
+before contamination) was itself driving the pooled headline numbers, by
+recomputing every contribution metric and statistical test with
+$r{=}0.50$ isolated from $r \in \{0.20, 0.10, 0.05\}$. The results
+confirm that a substantial share of the DistPFN pair's apparent harm
+under Direction B is concentrated at that one ratio. This does not
+resolve the train/test prior-shift coupling described above, which
+remains present within the $r{\neq}0.50$ subset itself, but it does rule
+out $r{=}0.50$ specifically as an unexamined confound in the headline
+comparisons.
 
 \subsection{External Validity}
 \label{sec:threats-external}
 
-The ten datasets audited range from 270 to 17{,}898 raw rows
+The 26 datasets audited range from 270 to 60{,}000 raw rows
 (Table~\ref{tab:datasets}), but the raw row count is not what any method
 actually fits on. The controlled training set every stress cell draws
 from is capped by $N_{\text{common}}$ (Section~\ref{sec:methods-ncommon}),
-which tops out at 2{,}622 rows even for HTRU2, the largest dataset,
-because minority availability at $r{=}0.50$ is the binding constraint
-regardless of how many majority rows the raw dataset has. Every condition
+which tops out at 18{,}698 rows even for Adult, the dataset with the
+largest minority class in raw terms, because minority availability at
+$r{=}0.50$ is the binding constraint regardless of how many majority rows
+the raw dataset has. Every condition
 tested therefore stays well within TabPFN's intended small-tabular-data
 regime but far from the scale where gradient-boosted methods are
 typically deployed. Whether the same robustness ranking holds on larger,
@@ -108,11 +124,12 @@ same measure on AUPRC or minority recall, a point the calibration
 results in Section~\ref{sec:results-reliability} already illustrate
 for a different metric pair. The break-even rate itself assumes a
 correction's gain declines monotonically as contamination rises, an
-assumption this study's own data does not fully support. Of the
+assumption this study's own data does not fully support. Of the 522
 (method, dataset, ratio, direction) combinations with a defined
-break-even point, 25.6\% show the seed-averaged gain recover to
+break-even point, 54.6\% show the seed-averaged gain recover to
 positive at a higher contamination level after already crossing zero
-at a lower one. $c^*$ marks the first noise level a correction stops
+at a lower one, a majority, not a minority, of defined break-even
+points. $c^*$ marks the first noise level a correction stops
 paying off, not a guarantee that it stays that way at every higher
 level tested. The Prior Sensitivity Gap's oracle
 variant assumes access to the true, pre-corruption class prior,

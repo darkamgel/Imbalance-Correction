@@ -1,0 +1,7 @@
+method,direction,mean_PSG
+tabpfn_distpfn,majority_to_minority,-0.06235130822798701
+tabpfn_distpfn,minority_to_majority,-0.04259920172777237
+tabpfn_distpfn_t,majority_to_minority,-0.06157172698891108
+tabpfn_distpfn_t,minority_to_majority,-0.026376428331875434
+tabpfn_threshold,majority_to_minority,-0.03203812069297573
+tabpfn_threshold,minority_to_majority,-0.012766564076281262

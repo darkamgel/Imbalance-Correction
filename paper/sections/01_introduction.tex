@@ -14,7 +14,7 @@ Cost-sensitive reweighting~\cite{elkan2001costsensitive} instead leaves the data
 untouched and penalizes mistakes on the minority class more heavily during
 training. A third kind, threshold and posterior-probability correction such as
 DistPFN~\cite{lee2026distpfn}, is suited to tabular foundation models such as
-TabPFN~\cite{hollmann2023tabpfn,hollmann2025tabpfnv2}: instead of touching the data
+TabPFN~\cite{hollmann2023tabpfn,hollmann2025tabpfnv2}. Instead of touching the data
 or the training process, it adjusts the model's predictions after they have
 already been made.
 
@@ -52,7 +52,7 @@ corrupted prior instead of the true, oracle prior?
 
 Concretely, we audit seven correction methods across two widely deployed tabular
 model families, TabPFN and XGBoost~\cite{chen2016xgboost}, under two directed,
-asymmetric label-error mechanisms and a range of imbalance levels, using ten real
+asymmetric label-error mechanisms and a range of imbalance levels, using 26 real
 datasets drawn from the UCI Machine Learning Repository~\cite{kelly_uci}. The design
 holds the total amount of training evidence fixed across imbalance levels, so that
 changes in imbalance are not confounded by changes in how much training evidence a
@@ -93,7 +93,7 @@ Correction Gain, Correction Harm Rate, Regret, break-even contamination rate,
 and Prior Sensitivity Gap, designed to measure whether a correction remains
 net-beneficial once label noise is present, rather than measuring model
 accuracy alone.
-\item We show, across ten real datasets, that every correction method tested can
+\item We show, across 26 real datasets, that every correction method tested can
 underperform doing nothing at all once contamination reaches as little as 5\%, and
 that this failure is direction-dependent rather than uniform across methods or
 datasets.

@@ -1,0 +1,73 @@
+family,direction,test,pair,stat,p,p_holm,significant,n_blocks,block_level
+xgboost,majority_to_minority,friedman,,111.12935954343703,6.270139897018386e-24,,True,160,condition
+xgboost,majority_to_minority,wilcoxon,xgb_none vs xgb_weighted,,5.874429390253967e-19,3.52465763415238e-18,True,160,condition
+xgboost,majority_to_minority,wilcoxon,xgb_none vs xgb_ros,,3.777702698302349e-17,1.5110810793209395e-16,True,160,condition
+xgboost,majority_to_minority,wilcoxon,xgb_none vs xgb_smote,,1.9888538150315677e-17,9.944269075157838e-17,True,160,condition
+xgboost,majority_to_minority,wilcoxon,xgb_weighted vs xgb_ros,,0.012017845294048807,0.024035690588097614,True,160,condition
+xgboost,majority_to_minority,wilcoxon,xgb_weighted vs xgb_smote,,0.017228735425484677,0.024035690588097614,True,160,condition
+xgboost,majority_to_minority,wilcoxon,xgb_ros vs xgb_smote,,0.000596367597037402,0.001789102791112206,True,160,condition
+xgboost,majority_to_minority,friedman,,20.519999999999982,0.00013242352335825197,,True,10,dataset
+xgboost,majority_to_minority,wilcoxon,xgb_none vs xgb_weighted,,0.001953125,0.01171875,True,10,dataset
+xgboost,majority_to_minority,wilcoxon,xgb_none vs xgb_ros,,0.001953125,0.01171875,True,10,dataset
+xgboost,majority_to_minority,wilcoxon,xgb_none vs xgb_smote,,0.001953125,0.01171875,True,10,dataset
+xgboost,majority_to_minority,wilcoxon,xgb_weighted vs xgb_ros,,0.009765625,0.029296875,True,10,dataset
+xgboost,majority_to_minority,wilcoxon,xgb_weighted vs xgb_smote,,0.193359375,0.2109375,False,10,dataset
+xgboost,majority_to_minority,wilcoxon,xgb_ros vs xgb_smote,,0.10546875,0.2109375,False,10,dataset
+xgboost,minority_to_majority,friedman,,198.87809523809534,7.371762865711852e-43,,True,160,condition
+xgboost,minority_to_majority,wilcoxon,xgb_none vs xgb_weighted,,2.3770615628015064e-24,1.1885307814007532e-23,True,160,condition
+xgboost,minority_to_majority,wilcoxon,xgb_none vs xgb_ros,,5.874471767160796e-24,2.3497887068643184e-23,True,160,condition
+xgboost,minority_to_majority,wilcoxon,xgb_none vs xgb_smote,,2.2341938924371136e-25,1.3405163354622682e-24,True,160,condition
+xgboost,minority_to_majority,wilcoxon,xgb_weighted vs xgb_ros,,0.9475780605900026,0.9475780605900026,False,160,condition
+xgboost,minority_to_majority,wilcoxon,xgb_weighted vs xgb_smote,,2.6930620733035206e-08,8.079186219910562e-08,True,160,condition
+xgboost,minority_to_majority,wilcoxon,xgb_ros vs xgb_smote,,1.4770366367570587e-07,2.9540732735141175e-07,True,160,condition
+xgboost,minority_to_majority,friedman,,21.484848484848467,8.348178373726313e-05,,True,10,dataset
+xgboost,minority_to_majority,wilcoxon,xgb_none vs xgb_weighted,,0.001953125,0.01171875,True,10,dataset
+xgboost,minority_to_majority,wilcoxon,xgb_none vs xgb_ros,,0.001953125,0.01171875,True,10,dataset
+xgboost,minority_to_majority,wilcoxon,xgb_none vs xgb_smote,,0.001953125,0.01171875,True,10,dataset
+xgboost,minority_to_majority,wilcoxon,xgb_weighted vs xgb_ros,,0.8203125,0.8203125,False,10,dataset
+xgboost,minority_to_majority,wilcoxon,xgb_weighted vs xgb_smote,,0.01953125,0.05859375,False,10,dataset
+xgboost,minority_to_majority,wilcoxon,xgb_ros vs xgb_smote,,0.048828125,0.09765625,False,10,dataset
+tabpfn,majority_to_minority,friedman,,203.9662276258022,5.273056719434421e-43,,True,160,condition
+tabpfn,majority_to_minority,wilcoxon,tabpfn_none vs tabpfn_threshold,,4.058812215529534e-25,4.058812215529534e-24,True,160,condition
+tabpfn,majority_to_minority,wilcoxon,tabpfn_none vs tabpfn_distpfn,,1.7265256599540083e-13,6.906102639816033e-13,True,160,condition
+tabpfn,majority_to_minority,wilcoxon,tabpfn_none vs tabpfn_distpfn_t,,2.0312854985049267e-15,1.2187712991029561e-14,True,160,condition
+tabpfn,majority_to_minority,wilcoxon,tabpfn_none vs tabpfn_downsample,,9.581106364717261e-16,6.706774455302083e-15,True,160,condition
+tabpfn,majority_to_minority,wilcoxon,tabpfn_threshold vs tabpfn_distpfn,,1.6852041020227818e-20,1.5166836918205037e-19,True,160,condition
+tabpfn,majority_to_minority,wilcoxon,tabpfn_threshold vs tabpfn_distpfn_t,,2.5463614471246847e-18,2.0370891576997478e-17,True,160,condition
+tabpfn,majority_to_minority,wilcoxon,tabpfn_threshold vs tabpfn_downsample,,4.5786509931265417e-14,2.289325496563271e-13,True,160,condition
+tabpfn,majority_to_minority,wilcoxon,tabpfn_distpfn vs tabpfn_distpfn_t,,6.093277888446297e-09,1.8279833665338893e-08,True,160,condition
+tabpfn,majority_to_minority,wilcoxon,tabpfn_distpfn vs tabpfn_downsample,,4.500207152962888e-05,9.000414305925776e-05,True,160,condition
+tabpfn,majority_to_minority,wilcoxon,tabpfn_distpfn_t vs tabpfn_downsample,,0.0013171102975086293,0.0013171102975086293,True,160,condition
+tabpfn,majority_to_minority,friedman,,29.680000000000007,5.686238425356918e-06,,True,10,dataset
+tabpfn,majority_to_minority,wilcoxon,tabpfn_none vs tabpfn_threshold,,0.001953125,0.01953125,True,10,dataset
+tabpfn,majority_to_minority,wilcoxon,tabpfn_none vs tabpfn_distpfn,,0.005859375,0.029296875,True,10,dataset
+tabpfn,majority_to_minority,wilcoxon,tabpfn_none vs tabpfn_distpfn_t,,0.001953125,0.01953125,True,10,dataset
+tabpfn,majority_to_minority,wilcoxon,tabpfn_none vs tabpfn_downsample,,0.009765625,0.0390625,True,10,dataset
+tabpfn,majority_to_minority,wilcoxon,tabpfn_threshold vs tabpfn_distpfn,,0.001953125,0.01953125,True,10,dataset
+tabpfn,majority_to_minority,wilcoxon,tabpfn_threshold vs tabpfn_distpfn_t,,0.001953125,0.01953125,True,10,dataset
+tabpfn,majority_to_minority,wilcoxon,tabpfn_threshold vs tabpfn_downsample,,0.001953125,0.01953125,True,10,dataset
+tabpfn,majority_to_minority,wilcoxon,tabpfn_distpfn vs tabpfn_distpfn_t,,0.009765625,0.0390625,True,10,dataset
+tabpfn,majority_to_minority,wilcoxon,tabpfn_distpfn vs tabpfn_downsample,,0.232421875,0.46484375,False,10,dataset
+tabpfn,majority_to_minority,wilcoxon,tabpfn_distpfn_t vs tabpfn_downsample,,0.431640625,0.46484375,False,10,dataset
+tabpfn,minority_to_majority,friedman,,332.65314541079425,9.746578742530456e-71,,True,160,condition
+tabpfn,minority_to_majority,wilcoxon,tabpfn_none vs tabpfn_threshold,,2.308551482356318e-25,2.308551482356318e-24,True,160,condition
+tabpfn,minority_to_majority,wilcoxon,tabpfn_none vs tabpfn_distpfn,,3.1325793782706955e-06,3.1325793782706955e-06,True,160,condition
+tabpfn,minority_to_majority,wilcoxon,tabpfn_none vs tabpfn_distpfn_t,,7.241612613363792e-07,1.4483225226727584e-06,True,160,condition
+tabpfn,minority_to_majority,wilcoxon,tabpfn_none vs tabpfn_downsample,,3.851275474552589e-25,3.46614792709733e-24,True,160,condition
+tabpfn,minority_to_majority,wilcoxon,tabpfn_threshold vs tabpfn_distpfn,,4.377937047117344e-25,3.5023496376938756e-24,True,160,condition
+tabpfn,minority_to_majority,wilcoxon,tabpfn_threshold vs tabpfn_distpfn_t,,2.033617118989417e-24,1.423531983292592e-23,True,160,condition
+tabpfn,minority_to_majority,wilcoxon,tabpfn_threshold vs tabpfn_downsample,,5.767733172974397e-14,2.3070932691897587e-13,True,160,condition
+tabpfn,minority_to_majority,wilcoxon,tabpfn_distpfn vs tabpfn_distpfn_t,,5.741491330606871e-08,1.7224473991820613e-07,True,160,condition
+tabpfn,minority_to_majority,wilcoxon,tabpfn_distpfn vs tabpfn_downsample,,8.154402715995646e-19,4.892641629597388e-18,True,160,condition
+tabpfn,minority_to_majority,wilcoxon,tabpfn_distpfn_t vs tabpfn_downsample,,1.9580819315983784e-14,9.790409657991893e-14,True,160,condition
+tabpfn,minority_to_majority,friedman,,31.039999999999992,3.004413355270855e-06,,True,10,dataset
+tabpfn,minority_to_majority,wilcoxon,tabpfn_none vs tabpfn_threshold,,0.001953125,0.01953125,True,10,dataset
+tabpfn,minority_to_majority,wilcoxon,tabpfn_none vs tabpfn_distpfn,,0.193359375,0.26171875,False,10,dataset
+tabpfn,minority_to_majority,wilcoxon,tabpfn_none vs tabpfn_distpfn_t,,0.130859375,0.26171875,False,10,dataset
+tabpfn,minority_to_majority,wilcoxon,tabpfn_none vs tabpfn_downsample,,0.001953125,0.01953125,True,10,dataset
+tabpfn,minority_to_majority,wilcoxon,tabpfn_threshold vs tabpfn_distpfn,,0.001953125,0.01953125,True,10,dataset
+tabpfn,minority_to_majority,wilcoxon,tabpfn_threshold vs tabpfn_distpfn_t,,0.001953125,0.01953125,True,10,dataset
+tabpfn,minority_to_majority,wilcoxon,tabpfn_threshold vs tabpfn_downsample,,0.001953125,0.01953125,True,10,dataset
+tabpfn,minority_to_majority,wilcoxon,tabpfn_distpfn vs tabpfn_distpfn_t,,0.083984375,0.251953125,False,10,dataset
+tabpfn,minority_to_majority,wilcoxon,tabpfn_distpfn vs tabpfn_downsample,,0.00390625,0.01953125,True,10,dataset
+tabpfn,minority_to_majority,wilcoxon,tabpfn_distpfn_t vs tabpfn_downsample,,0.037109375,0.1484375,False,10,dataset

@@ -32,7 +32,7 @@ method per condition.
               text width=1.85cm, font=\footnotesize},
   arr/.style={-{Stealth[length=2mm]}, thick}
 ]
-\node[box] (data) {Dataset\\(1 of 10 UCI\\sources)};
+\node[box] (data) {Dataset\\(1 of 26 UCI\\sources)};
 \node[box, right=of data] (split) {Stratified\\80/20 split\\(test set\\held out)};
 \node[box, right=of split] (sample) {Controlled\\sample\\($N_{\text{common}}$,\\ratio $r$)};
 \node[box, right=of sample] (corrupt) {Inject label\\error ($c$,\\Direction A/B,\\or clean)};
@@ -58,26 +58,48 @@ fit and then scored against that same held-out test set.}
 \subsection{Datasets}
 \label{sec:methods-datasets}
 
-Ten binary-classification datasets were drawn from the UCI Machine Learning
-Repository~\cite{kelly_uci}: Banknote Authentication~\cite{lohweg2012banknote},
+Twenty-six binary-classification datasets were drawn from the UCI Machine
+Learning Repository~\cite{kelly_uci}: Banknote
+Authentication~\cite{lohweg2012banknote},
 Blood Transfusion~\cite{yeh2008bloodtransfusion}, South German
 Credit~\cite{groemping2019germancredit}, Spambase~\cite{hopkins1999spambase},
 Breast Cancer Wisconsin~\cite{wolberg1993breastcancer},
 Ionosphere~\cite{sigillito1989ionosphere}, Haberman's
 Survival~\cite{haberman1999survival}, Statlog
-Heart~\cite{statlogheart}, HTRU2~\cite{lyon2015htru2}, and QSAR
-Biodegradation~\cite{mansouri2013qsar}, chosen so that no single result could
-be attributed to one dataset's idiosyncrasies and spanning finance, security,
-healthcare, signal processing, astronomy, and chemistry.
-Table~\ref{tab:datasets} summarizes their size, the controlled training
-size $N_{\text{common}}$ every stress cell actually draws from, and the
-meaning of the positive (minority) class in each.
+Heart~\cite{statlogheart}, HTRU2~\cite{lyon2015htru2}, QSAR
+Biodegradation~\cite{mansouri2013qsar}, Adult~\cite{becker1996adult},
+Bank Marketing~\cite{moro2014bankmarketing}, MAGIC Gamma
+Telescope~\cite{bock2004magic}, Online Shoppers Purchasing
+Intention~\cite{sakar2018onlineshoppers}, Congressional Voting
+Records~\cite{uci1987congressionalvoting}, Chronic Kidney
+Disease~\cite{rubini2015ckd}, Default of Credit Card
+Clients~\cite{yeh2009creditcard}, Taiwanese Bankruptcy
+Prediction~\cite{uci2020taiwanbankruptcy}, Polish Companies
+Bankruptcy~\cite{tomczak2016polishbankruptcy}, Mushroom~\cite{uci1981mushroom},
+Cervical Cancer (Risk Factors)~\cite{fernandes2017cervical},
+SECOM~\cite{mccann2008secom}, Arrhythmia~\cite{guvenir1997arrhythmia},
+Internet Advertisements~\cite{kushmerick1999internetads},
+Seismic-Bumps~\cite{sikora2010seismic}, and APS Failure at Scania
+Trucks~\cite{scania2016apsfailure}, chosen so that no single result could be
+attributed to one dataset's idiosyncrasies, spanning finance, security,
+healthcare, signal processing, astronomy, chemistry, industrial
+manufacturing, retail behavior, and political science. Together they range
+from 270 to 60,000 raw rows and from 3 to 1{,}558 raw features, and their
+natural minority prevalence ranges from $1.7\%$ (APS Failure) to $62.5\%$
+(Chronic Kidney Disease, the one dataset in this study where the clinically
+``positive'' class is the natural majority). Table~\ref{tab:datasets}
+summarizes all 26 datasets' size, the controlled training size
+$N_{\text{common}}$ every stress cell actually draws from, and the meaning
+of the positive (minority) class in each.
 
 \begin{table*}[t]
 \centering
-\caption{Dataset characteristics. $N_{\text{common}}$ (Section~\ref{sec:methods-ncommon})
-is the controlled training size every stress cell actually draws from, not
-the raw row count.}
+\caption{Dataset characteristics, all 26 datasets. $N_{\text{common}}$
+(Section~\ref{sec:methods-ncommon}) is the controlled training size every
+stress cell actually draws from, not the raw row count, computed at seed 13;
+seed-to-seed variation is at most a few rows due to stratified-split
+rounding. Feature counts marked $\to$100 are capped
+(Section~\ref{sec:methods-datasets}).}
 \label{tab:datasets}
 \begin{tabular}{@{}lrrrl@{}}
 \toprule
@@ -93,26 +115,63 @@ Haberman's Survival           & 306    & 3  & 128   & Death within 5 years \\
 Statlog Heart                 & 270    & 13 & 126   & Heart disease present \\
 HTRU2                         & 17{,}898 & 8 & 2{,}622 & Pulsar candidate \\
 QSAR Biodegradation           & 1{,}055 & 41 & 568   & Ready biodegradable \\
+Adult                          & 48{,}842 & 14 & 18{,}698 & Income exceeds \$50K/year \\
+Bank Marketing                 & 45{,}211 & 16 & 8{,}462  & Client subscribed to term deposit \\
+MAGIC Gamma Telescope          & 19{,}020 & 10 & 10{,}385 & Hadron (background) event \\
+Online Shoppers                & 12{,}330 & 17 & 3{,}052  & Session ended in completed purchase \\
+Congressional Voting           & 435     & 16 & 225    & Republican representative \\
+Chronic Kidney Disease         & 400     & 24 & 126    & Chronic kidney disease present \\
+Default of Credit Card Clients & 30{,}000 & 23 & 10{,}618 & Default on payment next month \\
+Taiwanese Bankruptcy           & 6{,}819  & 95 & 352    & Company went bankrupt \\
+Polish Companies Bankruptcy    & 43{,}405 & 65 & 3{,}346  & Bankrupt within forecast period \\
+Mushroom                       & 8{,}124  & 22 & 3{,}543  & Poisonous mushroom \\
+Cervical Cancer (Risk Factors) & 858     & 32 & 88     & Biopsy-confirmed abnormality \\
+SECOM                          & 1{,}567  & 590$\to$100 & 166 & Semiconductor test fail \\
+Arrhythmia                     & 452     & 279$\to$100 & 206 & Cardiac arrhythmia present \\
+Internet Advertisements        & 3{,}279  & 1{,}558$\to$100 & 734 & Image is an advertisement \\
+Seismic-Bumps                  & 2{,}584  & 18 & 272    & Hazardous seismic state next shift \\
+APS Failure at Scania Trucks   & 60{,}000 & 170$\to$100 & 1{,}600 & APS component failure \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-No transformation altered the semantics of any feature. The only
-transformations that changed any feature's values were column renames,
-purely cosmetic, applied to Spambase and QSAR Biodegradation: XGBoost's tree
-serialization format rejects the characters \texttt{[}, \texttt{]}, and
-\texttt{<} in feature names, so Spambase's \texttt{char\_freq\_[} (the
-frequency of the \texttt{[} character in an email) was renamed to
+No transformation altered the semantics of any feature. Two categories of
+transformation changed feature values or feature counts, neither altering
+what a feature means. First, column renames, purely cosmetic, applied to
+Spambase and QSAR Biodegradation: XGBoost's tree serialization format
+rejects the characters \texttt{[}, \texttt{]}, and \texttt{<} in feature
+names, so Spambase's \texttt{char\_freq\_[} (the frequency of the
+\texttt{[} character in an email) was renamed to
 \texttt{char\_freq\_bracket\_open}, and eight of QSAR Biodegradation's
 molecular-descriptor columns (e.g., \texttt{F01[N-N]}) had their brackets
 replaced with a hyphen (e.g., \texttt{F01\_N-N}), with the underlying values
-unchanged in both cases. The pipeline separately includes leakage-safe median
-imputation and one-hot encoding for missing or non-numeric columns, fit only
-on each stress condition's training rows. None of the ten datasets contains a
-missing value or a non-numeric feature column (South German Credit's twenty
+unchanged in both cases. Second, a feature cap applied to the four datasets
+with more than 100 raw features, SECOM (590), Arrhythmia (279), Internet
+Advertisements (1{,}558), and APS Failure (170): each is capped to a
+deterministic random subsample of 100 columns (fixed seed, sorted for a
+stable, reviewable column order), so that no method's training cost scales
+with raw feature count rather than with the imbalance and noise conditions
+actually under test. The columns kept are fixed once per dataset and
+identical across every seed, ratio, and contamination level tested on it.
+
+The pipeline separately includes leakage-safe median imputation for numeric
+columns and most-frequent-value imputation followed by one-hot encoding for
+categorical columns, fit only on each stress condition's training rows.
+Ten of the 26 datasets, Banknote Authentication, Blood Transfusion, South
+German Credit, Spambase, Breast Cancer Wisconsin, Ionosphere, Haberman's
+Survival, Statlog Heart, HTRU2, and QSAR Biodegradation, contain no missing
+values and no non-numeric feature column (South German Credit's twenty
 attributes and Statlog Heart's categorical clinical measures are
-integer-coded and are treated as numeric throughout), so neither step alters
-any value for any dataset used in this study.
+integer-coded and are treated as numeric throughout), so neither step
+alters any value for those ten. Of the remaining sixteen, eleven contain at
+least one column with missing values (Adult, Bank Marketing, Congressional
+Voting, Chronic Kidney Disease, Polish Companies Bankruptcy, Mushroom,
+Cervical Cancer, SECOM, Arrhythmia, Internet Advertisements, and APS
+Failure) and seven contain genuinely categorical, non-numeric columns
+(Adult, Bank Marketing, Online Shoppers, Congressional Voting, Chronic
+Kidney Disease, Mushroom, and Seismic-Bumps), so both imputation steps and
+the one-hot encoding step are genuinely exercised in this study, rather
+than being present in the pipeline but never triggered.
 
 Before any sampling or corruption, each dataset is split once with a
 stratified 80/20 train/test split, so both partitions preserve the dataset's
@@ -123,16 +182,20 @@ and contamination level, is scored against exactly the same test rows.
 That fixed test partition has a consequence worth naming directly. Because
 it is never resampled, it keeps each dataset's natural minority prevalence
 throughout, while Section~\ref{sec:methods-ncommon} deliberately reshapes
-the training partition to $r$. Natural prevalence across the ten datasets
-ranges from $9.2\%$ (HTRU2) to $44.5\%$ (Banknote Authentication).
-$r{=}0.05$ falls below every dataset's natural prevalence, while
-$r{=}0.10$ sits close only to HTRU2, the lowest of the ten, with the
-remaining nine well above it. So at $r{=}0.05$ and $r{=}0.10$ especially,
-training and test are drawn from different class priors for every
-dataset in this study. The severe-imbalance conditions this study emphasizes are therefore
-not imbalance in isolation. They combine imbalance with a train/test prior
-shift, exactly the kind of mismatch DistPFN and DistPFN-T are built to
-correct (Section~\ref{sec:methods-corrections}), and the kind
+the training partition to $r$. Natural prevalence across the 26 datasets
+ranges from $1.7\%$ (APS Failure) to $62.5\%$ (Chronic Kidney Disease).
+Seven datasets sit at or below the two most severe tested ratios: APS
+Failure ($1.7\%$) and Taiwanese Bankruptcy ($3.2\%$) fall below even
+$r{=}0.05$; Polish Companies Bankruptcy ($4.8\%$) sits almost exactly on
+it; and Cervical Cancer ($6.4\%$), Seismic-Bumps ($6.6\%$), SECOM
+($6.6\%$), and HTRU2 ($9.2\%$) all sit close to $r{=}0.10$. So at
+$r{=}0.05$ and $r{=}0.10$ especially, training and test are drawn from
+different class priors for a substantial share of the datasets in this
+study. The severe-imbalance conditions this study emphasizes are therefore
+not imbalance in isolation. They combine
+imbalance with a train/test prior shift, exactly the kind of mismatch
+DistPFN and DistPFN-T are built to correct
+(Section~\ref{sec:methods-corrections}), and the kind
 \texttt{tabpfn\_threshold}'s own threshold adjustment addresses as well.
 Section~\ref{sec:discussion-simplicity} returns to what this means for
 interpreting why the simplest corrections in this study lead, and
@@ -303,16 +366,14 @@ $\tau$ before the same final step:
 \end{equation}
 with $\bar{p}_T$ substituted for $\bar{p}$ in Equation~\ref{eq:distpfn}. Both
 formulas were verified directly against the authors' official reference
-implementation before use in this study. That verification surfaced two
-findings, reported here rather than left implicit: an earlier draft of our
-own implementation had mistranscribed Equation~\ref{eq:distpfn}, using
-$p^2$ in place of $p \cdot \bar{p}$, and the authors' own published
-DistPFN-T reference driver raises a shape error (\texttt{numpy}'s
-\texttt{AxisError}) for binary classification, which its own exception
-handling silently swallows, so the reference driver as published cannot
-produce a DistPFN-T score for a two-class problem. Equation~\ref{eq:distpfnt}
-implements the algorithm's evident intent, with that shape bug corrected
-rather than reproduced.
+implementation before use in this study. That verification surfaced a
+defect in the reference implementation itself, reported here rather than
+left implicit: the authors' own published DistPFN-T reference driver
+raises a shape error (\texttt{numpy}'s \texttt{AxisError}) for binary
+classification, which its own exception handling silently swallows, so the
+reference driver as published cannot produce a DistPFN-T score for a
+two-class problem. Equation~\ref{eq:distpfnt} implements the algorithm's
+evident intent, with that shape bug corrected rather than reproduced.
 
 \texttt{tabpfn\_downsample} is the family's one data-level correction:
 whichever class has more observed rows is randomly downsampled, without
@@ -354,10 +415,14 @@ method is scored on a different basis than any other.
 
 Not every metric receives equal treatment in Section~\ref{sec:results}.
 Balanced accuracy is reported as the discrimination measure throughout.
-Worst-class recall, AUPRC, and macro F1 correlate with it at 0.966, 0.892,
-and 0.987 respectively (Pearson, computed across the full result set) and
+Worst-class recall, AUPRC, and macro F1 correlate with it at 0.968, 0.781,
+and 0.919 respectively (Pearson, computed across the full result set) and
 largely reproduce the same ranking rather than adding independent
-evidence. Minority precision, minority recall, and AUROC are computed as
+evidence. AUPRC's correlation is the loosest of the three, consistent with
+this study's wide range of natural imbalance producing real divergence
+between the two metrics, but not loose enough to promote it from a
+secondary diagnostic to a headline measure on its own. Minority precision,
+minority recall, and AUROC are computed as
 secondary diagnostics, available for a targeted check but not used to
 support a headline claim on their own. Brier score and expected
 calibration error are reported separately in
@@ -365,7 +430,7 @@ Section~\ref{sec:results-reliability} because together they reveal a
 divergence from the discrimination results that balanced accuracy alone
 does not show (Section~\ref{sec:discussion-calibration}). Log loss is
 computed identically to the other nine metrics but is not separately
-reported, since its correlation with Brier score, 0.949, is comparably
+reported, since its correlation with Brier score, 0.959, is comparably
 high and does not add evidence beyond it.
 
 \subsection{Contribution Metrics}
@@ -378,24 +443,41 @@ to doing nothing at all. All five compare a corrected method against its
 matching uncorrected baseline (\texttt{xgb\_none} or \texttt{tabpfn\_none})
 at the \emph{same} dataset, seed, ratio, contamination rate, and direction.
 
-\textbf{Correction Gain (CG).} For a metric score $S$,
+\textbf{Correction Gain (CG).} $S$ is first computed per seed, then
+averaged across the ten seeds within each (dataset, $r$, $c$, direction)
+block, for the corrected method and its uncorrected baseline separately.
+CG is the difference of those two seed-averaged scores,
 \begin{equation}
-\text{CG} = S_{\text{corrected}} - S_{\text{uncorrected}},
+\text{CG} = \bar{S}_{\text{corrected}} - \bar{S}_{\text{uncorrected}},
 \label{eq:cg}
 \end{equation}
 sign-adjusted so that positive always means the correction helped: unchanged
 for metrics where higher is better (balanced accuracy, AUPRC), and negated
-for loss-type metrics where lower is better (Brier score, log loss).
+for loss-type metrics where lower is better (Brier score, log loss). CG,
+and every metric built from it below, therefore has one value per (method,
+dataset, $r$, $c$, direction) block, not one value per stress cell; a
+single seed's evaluation never counts as a unit of evidence on its own.
+For the one block affected by the failure disclosed in
+Section~\ref{sec:methods-implementation} (\texttt{tabpfn\_downsample} on
+APS Failure, $r{=}0.10$, $c{=}0.05$, Direction A), $\bar{S}_{\text{corrected}}$
+averages the nine seeds that completed rather than ten, while
+$\bar{S}_{\text{uncorrected}}$ for that same block still averages all ten,
+since the failure was specific to the corrected method's fit, not the
+baseline's; this affects one of 416 blocks for that method and direction.
 
-\textbf{Correction Harm Rate (CHR).} Across every stress cell tested for one
-method,
+\textbf{Correction Harm Rate (CHR).} Across every (dataset, $r$, $c$,
+direction) block tested for one method,
 \begin{equation}
-\text{CHR} = \frac{\#\{\text{cells with CG} < 0\}}{\#\{\text{cells tested}\}}.
+\text{CHR} = \frac{\#\{\text{blocks with CG} < 0\}}{\#\{\text{blocks tested}\}}.
 \label{eq:chr}
 \end{equation}
-This counts any negative gain as harmful, including differences too small
-to distinguish from measurement noise. Section~\ref{sec:results-rq1} also
-reports a stricter variant that only counts a cell as harmful once CG
+With 26 datasets, four ratios, and four nonzero contamination rates, this
+is 416 blocks per method and direction (Table~\ref{tab:robustness}), not
+the 4,160 individual seed-level evaluations a per-seed count would give.
+CHR counts any negative seed-averaged gain as harmful, including
+differences too small to distinguish from measurement noise.
+Section~\ref{sec:results-rq1} also
+reports a stricter variant that only counts a block as harmful once CG
 falls below $-0.01$ on balanced accuracy, a sensitivity check on how much
 of the headline rate reflects negligible differences rather than a
 meaningful failure.
@@ -433,6 +515,17 @@ means most of a correction's failure traces specifically to the prior being
 wrong. A small PSG despite otherwise poor performance means the failure comes
 from elsewhere.
 
+As a robustness check on whether pooling the balanced condition
+$r{=}0.50$ together with the three genuinely imbalanced ratios biases
+these headline contribution metrics, Section~\ref{sec:results-r050}
+recomputes CHR, mean CG, break-even share, PSG, and every statistical
+test in Section~\ref{sec:methods-statistics} three times: once on the
+full pooled set (as everywhere else in this paper), once restricted to
+$r \in \{0.20, 0.10, 0.05\}$, and once restricted to $r{=}0.50$ alone.
+All three use the identical formulas defined above, applied to the same
+already-collected evaluations; no additional model fitting or scoring
+was performed.
+
 \subsection{Statistical Testing}
 \label{sec:methods-statistics}
 
@@ -459,9 +552,9 @@ within one dataset as an independent unit of evidence, but conditions
 drawn from the same dataset share its underlying feature distribution and
 test set, so they are not fully independent of each other. As a more
 conservative check, the same comparison is repeated with each dataset as
-a single block ($n{=}10$), first averaging balanced accuracy within a
+a single block ($n{=}26$), first averaging balanced accuracy within a
 family and direction across every tested $r$ and $c$ for that dataset,
-then applying the Friedman test to those ten dataset-level values per
+then applying the Friedman test to those 26 dataset-level values per
 method, the standard practice for comparing algorithms across multiple
 datasets~\cite{demsar2006statistical}. Every pairwise Wilcoxon comparison
 is repeated at this same dataset-level block, Holm-corrected separately
@@ -474,12 +567,17 @@ reports all versions.
 \label{sec:methods-implementation}
 
 Every stress cell (one dataset, seed, ratio, contamination rate, and
-direction) is repeated across three seeds, $\{13, 37, 73\}$, so no result
-depends on one particular random split or one particular set of flipped
-rows. A method failing on a given stress cell would be logged with its
-error rather than silently skipped, and would not stop any other method
-or any later cell, though no method actually failed on any of the
-$12{,}960$ evaluations in the final run (Section~\ref{sec:results}).
+direction) is repeated across ten seeds, $\{13, 37, 73, 5, 11, 17, 19, 23,
+29, 31\}$, so no result depends on one particular random split or one
+particular set of flipped rows. A method failing on a given stress cell is
+logged with its error rather than silently skipped, and does not stop any
+other method or any later cell: one such failure occurred in the final run,
+\texttt{tabpfn\_downsample} on APS Failure (seed 19, $r{=}0.10$,
+$c{=}0.05$, Direction A) raised a singular-value decomposition
+non-convergence error on that specific resampled training set, reproducibly
+across repeated attempts, and is reported as a failure rather than
+interpolated or dropped (Section~\ref{sec:results}). All other
+$112{,}319$ of the $112{,}320$ planned evaluations completed.
 Table~\ref{tab:config} records the exact software
 versions, platform, and the frozen XGBoost configuration used throughout.
 The TabPFN checkpoint used was \texttt{tabpfn-v3-classifier-v3\_default.ckpt}
@@ -511,7 +609,7 @@ XGBoost & 3.4.1 \\
 imbalanced-learn & 0.14.2 \\
 statsmodels & 0.14.6 \\
 TabPFN & 8.3.0 \\
-Seeds & 13, 37, 73 \\
+Seeds & 13, 37, 73, 5, 11, 17, 19, 23, 29, 31 \\
 \midrule
 \multicolumn{2}{@{}l}{\textit{XGBoost configuration (frozen, all variants)}} \\
 \texttt{n\_estimators} & 500 \\

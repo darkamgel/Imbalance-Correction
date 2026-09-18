@@ -1,9 +1,9 @@
-\section{Conclusion}
+\section{Conclusion and Future Work}
 \label{sec:conclusion}
 
 This paper set out to test whether standard imbalance corrections
 remain worth applying once the labels they depend on cannot be
-trusted. Across ten datasets, seven correction methods spanning two
+trusted. Across 26 datasets, seven correction methods spanning two
 model families, and two directed label-error mechanisms, every
 correction audited underperformed its matched uncorrected baseline in
 at least some tested condition. How often and how badly it did so
@@ -15,13 +15,20 @@ prior, was consistently the most robust on discrimination, leading
 every other method on Correction Harm Rate and mean Correction Gain in
 both directions. The two most mathematically involved corrections,
 DistPFN and DistPFN-T, held the highest Correction Harm Rate of any
-method under Direction B, more than double the next-highest method's
-rate, the opposite of what their added sophistication might suggest,
-yet those same two corrections were also the best-calibrated
-methods in the entire study. A correction that more frequently degrades
-discrimination relative to its uncorrected baseline can nevertheless
-produce better-calibrated probabilities, a split this paper's results
-surface rather than resolve in either method's favor.
+method under both directions, more than five times the next-highest
+method's rate under Direction B, the opposite of what their added
+sophistication might suggest, yet those same two corrections were also
+the best-calibrated methods in the entire study. A robustness check
+restricted to genuinely imbalanced training sets, excluding the
+balanced $r{=}0.50$ control, shows a real share, though not the
+majority, of that harm rate concentrated at the balanced condition
+specifically: the DistPFN pair's Direction B Correction Harm Rate
+falls from 43.8\%/47.4\% to 29.8\%/37.8\% once $r{=}0.50$ is excluded,
+while \texttt{tabpfn\_threshold}'s lead over the rest of the field
+holds or strengthens throughout. A correction that more frequently
+degrades discrimination relative to its uncorrected baseline can
+nevertheless produce better-calibrated probabilities, a split this
+paper's results surface rather than resolve in either method's favor.
 
 The five contribution metrics introduced here, Correction Gain,
 Correction Harm Rate, Regret, the break-even contamination rate, and
@@ -35,11 +42,26 @@ corrections decline under contamination, since handing them the true
 prior did not reliably help, and on average even hurt slightly.
 Section~\ref{sec:discussion-prior} offers one explanation, that these
 corrections never touch the mislabeled rows still sitting in TabPFN's
-in-context prompt, but confirming it would need an experiment this
-paper did not run, one that cleans the context directly rather than
-only adjusting the prior applied to it. That experiment, together with
-testing whether the same robustness ranking holds on a dataset whose
-minority class alone is large enough to permit a larger controlled
-training set, under instance-dependent noise, and on tabular
-foundation models beyond TabPFN, is the most direct way to build on
-what is reported here.
+in-context prompt.
+
+Several directions follow from what this study leaves open. Confirming
+the explanation above would need an experiment that cleans the
+mislabeled rows from TabPFN's in-context prompt directly, rather than
+only adjusting the prior applied to it; separately, because training
+here is deliberately pushed to each tested ratio while the test
+partition keeps each dataset's natural class distribution, a complementary
+matched-prior evaluation regime, resampling the test partition to match
+each tested $r$ rather than keeping it at the dataset's natural
+prevalence, would isolate how much of a prior-adjusting method's
+robustness, particularly \texttt{tabpfn\_threshold}'s, reflects imbalance
+tolerance specifically rather than the train/test prior mismatch the
+present design creates; it targets a different, less deployment-oriented
+question than the one this study poses, so it belongs alongside these
+results as a complementary direction rather than as an outstanding gap in
+them. Beyond those two, testing whether
+the same robustness ranking holds on a dataset whose minority class
+alone permits a larger controlled training set, on tabular foundation
+models other than TabPFN, under multi-class imbalance, and under
+instance-dependent or simultaneous-direction label noise rather than
+the class-conditional, single-direction mechanisms audited here, are
+the most direct ways to extend this audit.

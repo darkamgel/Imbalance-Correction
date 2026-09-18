@@ -1,0 +1,7 @@
+method,direction,mean_PSG_pooled,mean_PSG_c030
+tabpfn_distpfn,majority_to_minority,-0.0071233540183630786,-0.0331619512821869
+tabpfn_distpfn,minority_to_majority,-0.0201887478169635,-0.04245798306214254
+tabpfn_distpfn_t,majority_to_minority,-0.008324882259604746,-0.035868922360290274
+tabpfn_distpfn_t,minority_to_majority,-0.014028292701543436,-0.032588764532031425
+tabpfn_threshold,majority_to_minority,-0.011804692102045353,-0.036633167253278254
+tabpfn_threshold,minority_to_majority,-0.0076030724726762755,-0.0187924495401196

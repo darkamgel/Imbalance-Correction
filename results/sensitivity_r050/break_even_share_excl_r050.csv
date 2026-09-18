@@ -1,0 +1,15 @@
+method,direction,n_pairs,pct_never_broke_even
+tabpfn_distpfn,majority_to_minority,30,50.0
+tabpfn_distpfn,minority_to_majority,30,56.7
+tabpfn_distpfn_t,majority_to_minority,30,53.3
+tabpfn_distpfn_t,minority_to_majority,30,53.3
+tabpfn_downsample,majority_to_minority,30,60.0
+tabpfn_downsample,minority_to_majority,30,83.3
+tabpfn_threshold,majority_to_minority,30,83.3
+tabpfn_threshold,minority_to_majority,30,93.3
+xgb_ros,majority_to_minority,30,63.3
+xgb_ros,minority_to_majority,30,83.3
+xgb_smote,majority_to_minority,30,50.0
+xgb_smote,minority_to_majority,30,90.0
+xgb_weighted,majority_to_minority,30,56.7
+xgb_weighted,minority_to_majority,30,80.0

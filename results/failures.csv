@@ -1,1 +1,3 @@
 dataset,seed,r,c,direction,method,error
+aps_failure,19,0.1,0.05,majority_to_minority,tabpfn_downsample,linalg.svd: The algorithm failed to converge because the input matrix is ill-conditioned or has too many repeated singular values (error code: 1).
+aps_failure,19,0.1,0.05,majority_to_minority,tabpfn_downsample,linalg.svd: The algorithm failed to converge because the input matrix is ill-conditioned or has too many repeated singular values (error code: 1).
