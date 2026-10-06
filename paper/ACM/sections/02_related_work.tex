@@ -132,8 +132,8 @@ A smaller body of work has begun to treat class imbalance and label noise as
 jointly occurring problems rather than independent ones. Koziarski et
 al.~\cite{koziarski2020ccr} combine a resampling step with a label-cleaning step
 specifically for multi-class imbalanced data known to contain label noise.
-Chen et al.~\cite{chen2021rsmote} and Li et al.~\cite{li2024wrnd} take a
-related but more direct approach, redesigning SMOTE itself so that its
+Chen et al.~\cite{chen2021rsmote} take a related but more direct
+approach, redesigning SMOTE itself so that its
 neighborhood-based interpolation is weighted by local sample density and
 downweights or filters out likely-noisy minority points, rather than pairing
 an unmodified SMOTE with a separate cleaning stage. Khanal et

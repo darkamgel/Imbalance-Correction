@@ -1,37 +1,21 @@
-\documentclass[manuscript,screen,anonymous,review]{acmart}
+% \documentclass[manuscript,screen,anonymous,review]{acmart}
+\documentclass[acmsmall,screen,anonymous,review]{acmart}
 
-%% acmart already loads amsmath (via amsart) and amssymb-equivalent symbols
-%% (via newtxmath); loading amssymb again here conflicts with newtxmath's
-%% \Bbbk definition, so it is deliberately omitted.
+%% acmart already loads the required math support.
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta}
 
-%% ACM Transactions on Knowledge Discovery from Data (TKDD) metadata.
-%% This is the double-blind REVIEW copy. The "manuscript" format option
-%% (as opposed to "acmsmall", used in main.tex) is ACM's own dedicated
-%% pre-acceptance format: verified directly in acmart.cls that it replaces
-%% every DOI/volume/issue/article-number/publication-date/copyright field
-%% -- both in the front-page block and in the per-page running footer --
-%% with the plain, honest "Manuscript submitted to ACM", since none of
-%% that production metadata exists yet. acmsmall has no equivalent switch;
-%% it always fills those fields with class defaults (e.g. Vol. 1, No. 1)
-%% that read as real values. TKDD's own submission instructions take
-%% priority over this if they specify otherwise.
+%% ACM Transactions on Knowledge Discovery from Data
 \acmJournal{TKDD}
-\acmSubmissionID{XXX}
-%% manuscript mode replaces the copyright block and running footer with
-%% "Manuscript submitted to ACM" automatically, but the separate front-page
-%% "ACM Reference Format:" preview citation (with its own placeholder
-%% Vol./No./date/DOI) is a different piece of the template, not gated by
-%% manuscript mode -- printacmref=false suppresses that block specifically.
-\settopmatter{printacmref=false}
 
-\title{When Imbalance Correction Backfires: Robustness of Tabular Imbalance
-Mitigation Under Minority-Label Contamination}
+%% Uncomment only when you have the actual submission ID.
+% \acmSubmissionID{XXX}
 
-%% anonymous,review (double-blind mode) suppresses author identity in the
-%% typeset output regardless of what is given here, but acmart still
-%% requires at least one \author/\affiliation pair to build the title block.
+\begin{document}
+
+\title{When Imbalance Correction Backfires: Machine Learning Robustness of Tabular
+Imbalance Mitigation Under Minority-Label Contamination}
+
 \author{Anonymous Author(s)}
 \affiliation{%
   \institution{Anonymous Institution}
@@ -41,8 +25,10 @@ Mitigation Under Minority-Label Contamination}
 
 \renewcommand{\shortauthors}{Anonymous et al.}
 
-%% CCS concepts: placeholders generated from the standard 2012 ACM CCS tree.
-%% Verify/regenerate via https://dl.acm.org/ccs before final submission.
+\begin{abstract}
+\input{sections/00_abstract}
+\end{abstract}
+
 \begin{CCSXML}
 <ccs2012>
 <concept>
@@ -61,26 +47,16 @@ Mitigation Under Minority-Label Contamination}
 \ccsdesc[500]{Computing methodologies~Supervised learning by classification}
 \ccsdesc[300]{Computing methodologies~Machine learning}
 
-\keywords{class imbalance, label noise, imbalance correction, TabPFN, XGBoost, calibration}
-
-\begin{document}
-
-\begin{abstract}
-\input{sections/00_abstract}
-\end{abstract}
+\keywords{class imbalance, label noise, imbalance correction,
+TabPFN, XGBoost, calibration}
 
 \maketitle
 
 \input{sections/01_introduction}
-
 \input{sections/02_related_work}
-
 \input{sections/03_methods}
-
 \input{sections/04_results}
-
 \input{sections/06_threats}
-
 \input{sections/07_conclusion}
 
 \bibliographystyle{ACM-Reference-Format}

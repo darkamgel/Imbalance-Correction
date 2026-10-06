@@ -1,29 +1,29 @@
-Imbalance-correction methods (resampling, cost-sensitive reweighting, and, for
-tabular foundation models, test-time posterior rescaling) are usually assumed to be
-safe. They might not always help much, but they are not supposed to hurt. That
-assumption is almost never tested under label noise. It is validated on clean data,
-then deployed into systems where labels are not clean. We test it directly, using
-TabPFN~\cite{hollmann2023tabpfn,hollmann2025tabpfnv2} (threshold correction,
-DistPFN~\cite{lee2026distpfn}, DistPFN-T, class-balanced downsampling) and
-XGBoost~\cite{chen2016xgboost} (cost-sensitive weighting, random oversampling,
-SMOTE~\cite{chawla2002smote}), we inject two directed, asymmetric label-error
-mechanisms (majority rows mislabeled as minority, and minority rows lost into the
-majority class) across 26 UCI datasets, at four imbalance ratios and five
-contamination rates, holding total training-set size fixed so that changes in
-class ratio are not confounded by changes in the amount of training data.
-Across 112{,}319 successfully completed
-model-condition evaluations (one additional evaluation failed to converge
-numerically and is reported separately), all seven corrections underperformed the
-uncorrected baseline in at least some tested conditions, with correction-harm rates
-ranging from 2.4\% to 47.4\%, depending on the method and corruption direction. A
-robustness check isolating the balanced ($r{=}0.50$) control condition from the
-genuinely imbalanced ratios shows the upper end of that range falls to 37.8\% once
-restricted to actual imbalance, while the most robust method's advantage is
-unaffected or strengthened. Under some
-dataset-imbalance settings, corrections first became non-beneficial at only 5\%
-contamination. Correction-method performance differed significantly within both
-model families under both corruption directions in the conservative, dataset-level
-Friedman analysis (all four omnibus tests, $p < 10^{-9}$). No correction remained non-degrading across all tested conditions in
-both corruption directions. If label quality cannot be guaranteed, and in practice it
-rarely can, imbalance correction should not be applied on the assumption that it
-is harmless.
+Under severe class imbalance, a classifier can achieve high overall accuracy
+while performing poorly on the minority class that imbalance-correction
+methods are intended to protect. Methods such as resampling, cost-sensitive
+reweighting, and TabPFN posterior rescaling are typically evaluated under the
+assumption of reliable labels, yet they may be deployed in settings where
+labels are imperfect. Considerably less is known about whether these methods
+remain beneficial when minority labels are corrupted. This paper addresses
+that gap through a controlled audit of seven correction methods across TabPFN
+(threshold correction, DistPFN, DistPFN-T, and downsampling) and XGBoost
+(cost-sensitive weighting, random oversampling, and SMOTE). Two directed
+label-noise mechanisms, majority-to-minority mislabeling and minority loss,
+are injected across 26 UCI datasets, four imbalance ratios, five contamination
+levels, and 10 seeds. Five metrics proposed in this paper assess correction
+performance, while dataset-level Friedman and pairwise Wilcoxon tests assess
+statistical significance. Across 112{,}319 evaluations, every correction
+underperformed its baseline under some conditions, with harm rates ranging
+from 2.4\% to 47.4\%. Excluding the balanced control lowers the maximum harm
+rate to 37.8\%. Some corrections became non-beneficial at contamination levels
+as low as 5\%, and method differences were significant in both model families
+and both noise directions ($p < 10^{-9}$). TabPFN threshold correction was the
+most robust, with the lowest harm rate and the highest mean gain in both
+directions. Providing TabPFN's rescaling procedure with the true prior did not
+consistently improve performance, suggesting that mislabeled context examples
+may drive degradation. Resampling methods duplicate mislabeled examples, while
+cost-sensitive and rescaling methods inherit the corrupted class ratio.
+Scientifically, the study contributes a design that holds training size fixed,
+preventing class ratio from being confounded with data volume. Practically,
+the findings suggest that imbalance corrections should be evaluated under
+realistic label noise before deployment.

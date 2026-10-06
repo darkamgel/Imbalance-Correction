@@ -1,11 +1,18 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Class imbalance arises when one class is substantially less frequent than the
-other, often degrading a model's ability to recognize the minority class. Under
-severe skew, a classifier may achieve deceptively high overall accuracy while
-exhibiting poor minority-class recall, because majority predictions dominate the
-evaluation.
+In supervised classification, a model learns to predict a label, or class, for
+each example from its features. Many practical
+classification tasks have unequal class distributions. Examples in this study
+include credit default, bankruptcy, and failures of Scania trucks (APS Failure),
+where the rare outcome is the one the system is intended to detect. Misclassifying
+a rare outcome can cost more than misclassifying a common one
+\cite{elkan2001costsensitive}, which is why recognizing the minority class
+matters. This situation is known as class imbalance: one class is substantially less frequent
+than the other, which can degrade the model's ability to recognize the minority
+class. Under severe skew, a classifier may achieve deceptively high overall
+accuracy while exhibiting poor minority-class recall, because correct
+predictions on the majority class can dominate the aggregate evaluation metric.
 
 To address this, practitioners commonly turn to three kinds of correction.
 Data-level resampling techniques, such as SMOTE~\cite{chawla2002smote} and random

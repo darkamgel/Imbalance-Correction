@@ -11,7 +11,9 @@ metrics used to score them, and the statistical tests used to compare them.
 
 Figure~\ref{fig:pipeline} summarizes the pipeline applied to every dataset. A
 dataset is split once into a training pool and a held-out test set, which stays
-fixed and clean for the rest of that seed's run. A controlled sample is drawn
+fixed and clean for the rest of that seed's run. Only the training side is
+resampled and corrupted, and each correction method is fit on that side and
+scored against the same held-out test set. A controlled sample is drawn
 from the training pool at a target minority ratio $r$ and a fixed total size
 $N_{\text{common}}$ (Section~\ref{sec:methods-ncommon}). A directed label error
 is then injected into that sample at a contamination rate $c$, in one of two
@@ -49,11 +51,8 @@ method per condition.
 \draw[arr] (predict) -- (score);
 \end{tikzpicture}%
 }
-\caption{The stress-cell pipeline applied to every dataset, seed, imbalance
-ratio, contamination rate, and direction. The test set is held out once, at
-the initial split, and stays fixed and clean for the entire run. Only the
-training side is resampled and corrupted before each correction method is
-fit and then scored against that same held-out test set.}
+\caption{Stress-cell pipeline, applied to each dataset, seed, ratio,
+contamination rate, and direction.}
 \label{fig:pipeline}
 \end{figure*}
 
@@ -98,16 +97,15 @@ $62.5\%$ (Chronic Kidney Disease, the one dataset in this study where the
 positive class is the natural majority). Table~\ref{tab:datasets}
 summarizes all 26 datasets' size, the controlled training size
 $N_{\text{common}}$ every stress cell actually draws from, and the meaning
-of the positive class in each.
+of the positive class in each. The $N_{\text{common}}$ column is the
+controlled training size (Section~\ref{sec:methods-ncommon}) that every stress
+cell draws from, not the raw row count. It is computed at seed 13, and
+seed-to-seed variation is at most a few rows from stratified-split rounding.
+Feature counts marked $\to$100 are capped (Section~\ref{sec:methods-datasets}).
 
 \begin{table*}[t]
 \centering
-\caption{Dataset characteristics, all 26 datasets. $N_{\text{common}}$
-(Section~\ref{sec:methods-ncommon}) is the controlled training size every
-stress cell actually draws from, not the raw row count, computed at seed 13;
-seed-to-seed variation is at most a few rows due to stratified-split
-rounding. Feature counts marked $\to$100 are capped
-(Section~\ref{sec:methods-datasets}).}
+\caption{Dataset characteristics for all 26 datasets.}
 \label{tab:datasets}
 \begin{tabular}{@{}lrrrl@{}}
 \toprule
@@ -449,9 +447,10 @@ high and does not add evidence beyond it.
 \label{sec:methods-contribution}
 
 The ten metrics above measure how good a method is in isolation. The
-following five metrics answer the question this study is actually about:
-whether a correction is worth applying once label noise is present, relative
-to doing nothing at all. All five compare a corrected method against its
+following five metrics are proposed in this paper. They are defined here for
+this study, not taken from prior work, and they answer the question this study
+is actually about: whether a correction is worth applying once label noise is
+present, relative to doing nothing at all. All five compare a corrected method against its
 matching uncorrected baseline (\texttt{xgb\_none} or \texttt{tabpfn\_none})
 at the \emph{same} dataset, seed, ratio, contamination rate, and direction.
 
@@ -583,9 +582,9 @@ reports all versions.
 \label{sec:methods-implementation}
 
 Every (dataset, ratio, contamination rate, direction) combination is
-repeated across all ten seeds, $\{13, 37, 73, 5, 11, 17, 19, 23,
-29, 31\}$, producing one stress cell per seed, so no result depends on
-one particular random split or one particular set of flipped rows. A
+repeated across all ten seeds (13, 37, 73, 5, 11, 17, 19, 23, 29, and 31),
+producing one stress cell per seed, so no result depends on one particular
+random split or one particular set of flipped rows. A
 method failing on a given stress cell is
 logged with its error rather than silently skipped, and does not stop any
 other method or any later cell: one such failure occurred in the final run,
