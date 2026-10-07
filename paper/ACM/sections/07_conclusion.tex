@@ -1,67 +1,54 @@
 \section{Conclusion and Future Work}
 \label{sec:conclusion}
 
-This paper set out to test whether standard imbalance corrections
-remain worth applying once the labels they depend on cannot be
-trusted. Across 26 datasets, seven correction methods spanning two
-model families, and two directed label-error mechanisms, every
-correction audited underperformed its matched uncorrected baseline in
-at least some tested condition. How often and how badly it did so
-depended on the method, on the direction of the label error, and on
-whether balanced accuracy or calibration was the metric being judged,
-never on a single number alone.
-The simplest correction tested, a threshold shift keyed to the class
-prior, was consistently the most robust on discrimination, leading
-every other method on Correction Harm Rate and mean Correction Gain in
-both directions. The two most mathematically involved corrections,
-DistPFN and DistPFN-T, held the highest Correction Harm Rate of any
-method under both directions, more than five times the next-highest
-method's rate under Direction B, the opposite of what their added
-sophistication might suggest, yet those same two corrections were also
-the best-calibrated methods in the entire study. A robustness check
-restricted to genuinely imbalanced training sets, excluding the
-balanced $r{=}0.50$ control, shows a real share, though not the
-majority, of that harm rate concentrated at the balanced condition
-specifically: the DistPFN pair's Direction B Correction Harm Rate
-falls from 43.8\%/47.4\% to 29.8\%/37.8\% once $r{=}0.50$ is excluded,
-while \texttt{tabpfn\_threshold}'s lead over the rest of the field
-holds or strengthens throughout. A correction that more frequently
-degrades discrimination relative to its uncorrected baseline can
-nevertheless produce better-calibrated probabilities, a split this
-paper's results surface rather than resolve in either method's favor.
+This paper asked whether standard imbalance corrections remain worth applying
+once the labels they depend on cannot be trusted. Across 26 datasets, seven
+correction methods in two model families, and two directed label-error
+mechanisms, every correction underperformed its matched uncorrected baseline in
+at least some tested condition. How often and how severely this occurred
+depended on the method, the direction of label error, and whether performance
+was judged by balanced accuracy or calibration. No single metric fully
+characterizes this behavior.
 
-The five contribution metrics introduced here, Correction Gain,
-Correction Harm Rate, Regret, the break-even contamination rate, and
-the Prior Sensitivity Gap, made this possible, separating whether a
-correction helps from how often it fails, how badly it fails when it
-does, and how much of that failure traces to the corrupted prior
-specifically. The same framework also
-surfaced a result this paper did not anticipate, that the corrupted
-prior is not the primary reason TabPFN's posterior-rescaling
-corrections decline under contamination, since handing them the true
-prior did not reliably help, and on average even hurt slightly.
-Section~\ref{sec:discussion-prior} offers one explanation, that these
-corrections never touch the mislabeled rows still sitting in TabPFN's
-in-context prompt.
+The simplest correction, a threshold shift based on the class prior, was the
+most robust in terms of discrimination, leading every other method on
+Correction Harm Rate and mean Correction Gain in both directions. The DistPFN
+and DistPFN-T corrections had the highest Correction Harm Rate under both
+directions, exceeding the next-highest method's rate by more than a factor of
+five under Direction B. Greater correction complexity therefore did not
+translate into greater robustness. At the same time, these methods produced the
+best-calibrated probabilities in the study. Excluding the balanced $r{=}0.50$
+control shows that part of their discrimination loss is concentrated there: the
+DistPFN pair's Direction B Correction Harm Rate falls from 43.8\%/47.4\% to
+29.8\%/37.8\%, while the threshold method's advantage holds or strengthens. A
+correction can therefore degrade discrimination relative to its baseline while
+still improving probability calibration. The results surface this split without
+resolving it in either method's favor.
 
-Several directions follow from what this study leaves open. Confirming
-the explanation above would need an experiment that cleans the
-mislabeled rows from TabPFN's in-context prompt directly, rather than
-only adjusting the prior applied to it; separately, because training
-here is deliberately pushed to each tested ratio while the test
-partition keeps each dataset's natural class distribution, a complementary
-matched-prior evaluation regime, resampling the test partition to match
-each tested $r$ rather than keeping it at the dataset's natural
-prevalence, would isolate how much of a prior-adjusting method's
-robustness, particularly \texttt{tabpfn\_threshold}'s, reflects imbalance
-tolerance specifically rather than the train/test prior mismatch the
-present design creates; it targets a different, less deployment-oriented
-question than the one this study poses, so it belongs alongside these
-results as a complementary direction rather than as an outstanding gap in
-them. Beyond those two, testing whether
-the same robustness ranking holds on a dataset whose minority class
-alone permits a larger controlled training set, on tabular foundation
-models other than TabPFN, under multi-class imbalance, and under
-instance-dependent or simultaneous-direction label noise rather than
-the class-conditional, single-direction mechanisms audited here, are
-the most direct ways to extend this audit.
+The five proposed metrics provide a structured way to characterize these
+effects. They distinguish the magnitude of a correction's benefit from how
+often it becomes harmful, how severe that harm is, and how much of the observed
+degradation can be attributed to corruption of the class prior. Applying these
+metrics also revealed an unexpected result: corruption of the prior does not
+appear to be the primary cause of the degradation observed in TabPFN's
+posterior-rescaling corrections. Providing these methods with the true
+pre-corruption prior did not reliably improve performance and, on average,
+produced a small additional degradation. Section~\ref{sec:discussion-prior}
+offers one explanation: these corrections modify the prior but do not alter the
+mislabeled examples that remain in TabPFN's in-context prompt.
+
+Several directions follow from these findings. Confirming this explanation
+would require removing or correcting mislabeled examples in the in-context
+prompt directly rather than only adjusting the prior applied to it. A
+complementary matched-prior regime, in which the test partition is resampled to
+each tested $r$, would help separate robustness to class imbalance from
+robustness to the train/test prior mismatch induced by the present design. Such
+an experiment would complement the deployment-oriented evaluation used here by
+isolating these two effects.
+
+Further work should also test whether the observed robustness ranking persists
+when substantially larger controlled training sets are available and when
+tabular foundation models other than TabPFN are used. Extending the evaluation
+to multiclass imbalance, instance-dependent label noise, and corruption acting
+simultaneously in both directions would further establish the generality of the
+findings.
