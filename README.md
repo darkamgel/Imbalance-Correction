@@ -2,7 +2,9 @@
 
 Robustness of tabular imbalance mitigation under minority-label contamination.
 
-This repository holds the study code, the processed UCI datasets, the archived model evaluations, and the manuscript (`paper/main.tex`, with an ACM copy in `paper/ACM/`). Reviewers can check every reported table against the files below. A full refit is optional and is not required to verify the paper.
+The study lives in [`backup.ipynb`](backup.ipynb): data preparation, the stress-cell pipeline, the metric definitions, and the analysis that turns the evaluation log into the paper tables and figures. [`run_full_matrix.py`](run_full_matrix.py) is that same matrix loop copied out of the notebook so the 26-dataset run could be resumed from the shell. The published log, `results/raw_runs.csv`, was produced by the script.
+
+This repository also holds the processed UCI datasets, the archived evaluations, and the manuscript (`paper/main.tex`, with an ACM copy in `paper/ACM/`). Reviewers can check every reported table against the files below. A full refit is optional and is not required to verify the paper.
 
 ## Verify the tables without rerunning
 
@@ -229,7 +231,8 @@ The APS Failure `tabpfn_downsample` cell above fails the same way on a repeat. L
 
 | Path | Contents |
 |---|---|
-| `run_full_matrix.py` | Full stress-cell matrix |
+| `backup.ipynb` | Full study notebook: pipeline, metrics, and table/figure analysis |
+| `run_full_matrix.py` | Notebook matrix loop, extracted for the resumable 26-dataset run |
 | `backfill_missing_cells.py` | Replay of four incomplete `tabpfn_downsample` cells |
 | `data/manifest.json` | Dataset audit: sizes, class meaning, file paths |
 | `data/processed/` | Matrices the runner loads |
