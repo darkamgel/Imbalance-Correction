@@ -196,15 +196,16 @@ Recorded environment (manuscript configuration table):
 | statsmodels | 0.14.6 |
 | TabPFN | 8.3.0 |
 
-`tables/table2_configurations.csv` records NumPy 2.3.0. The manuscript table records 2.5.2. The published run used macOS 26.5.1 (arm64), the TabPFN checkpoint `tabpfn-v3-classifier-v3_default.ckpt` (SHA-256 prefix `d0d865d5`, suffix `8f3988`), and Apple's Metal backend. OpenMP and BLAS were pinned to one thread inside `run_full_matrix.py`, because XGBoost and PyTorch otherwise deadlock in the same process. Scores can shift on CPU or on another GPU. Compare a new run to `results/raw_runs.csv` rather than expecting bitwise equality.
+The fitting environment is NumPy 2.5.2. `run_with_retry.sh` launches `run_full_matrix.py` inside `.venv_notebook`, and the 15 September 2026 continuation log printed `numpy: 2.5.2` with the other versions in the table above. That virtualenv still has NumPy 2.5.2, installed 16 August 2026, before those September runs. The manuscript configuration table matches this environment.
+
+`tables/table2_configurations.csv` originally listed NumPy 2.3.0. That value came from the Jupyter kernel, Homebrew Python 3.13, which still reports NumPy 2.3.0. The notebook's environment cell on 11 September 2026 printed 2.3.0, and the CSV copied it. Every other row in that CSV already matched the fitting virtualenv. The NumPy row is now 2.5.2 so the file matches the environment that produced the model runs. The surviving shell log begins after 19 datasets were already complete, so it does not by itself print the version used for those earlier datasets. The virtualenv that the runner activates has been NumPy 2.5.2 since before that continuation.
+
+The published run used macOS 26.5.1 (arm64), the TabPFN checkpoint `tabpfn-v3-classifier-v3_default.ckpt` (SHA-256 prefix `d0d865d5`, suffix `8f3988`), and Apple's Metal backend. OpenMP and BLAS were pinned to one thread inside `run_full_matrix.py`, because XGBoost and PyTorch otherwise deadlock in the same process. Scores can shift on CPU or on another GPU. Compare a new run to `results/raw_runs.csv` rather than expecting bitwise equality.
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install \
-  "numpy==2.5.2" "pandas==3.0.5" "scikit-learn==1.9.0" "scipy==1.18.0" \
-  "xgboost==3.4.1" "imbalanced-learn==0.14.2" "statsmodels==0.14.6" \
-  "tabpfn==8.3.0"
+pip install -r requirements.txt
 ```
 
 TabPFN needs a Prior Labs license token. Put it in a gitignored `.env` file at the repository root:
@@ -221,11 +222,11 @@ mv results/failures.csv results/failures.archived.csv
 python3 run_full_matrix.py
 ```
 
-The script checkpoints both CSVs after each dataset, so an interrupted run can be continued by executing the same command again. `run_with_retry.sh` loops that command until all 26 datasets have ten seeds. Its `cd` path is absolute to the original machine; edit that line before using the shell script.
+The script checkpoints both CSVs after each dataset, so an interrupted run can be continued by executing the same command again. `run_with_retry.sh` loops that command until all 26 datasets have ten seeds. It changes to its own directory and activates `.venv_notebook` when that environment exists, otherwise `.venv`.
 
 The APS Failure `tabpfn_downsample` cell above fails the same way on a repeat. Leave it as a logged failure. `backfill_missing_cells.py` replays four specific `tabpfn_downsample` cells against an existing log, preserving the shared random stream so the corrupted training set matches the other methods in that cell. The archived `raw_runs.csv` already contains the three cells that completed. The fourth is the SVD failure.
 
-`results/sensitivity_r050/build_sensitivity_r050.py` recomputes CHR, Correction Gain, break-even, PSG, and the Friedman–Wilcoxon tests on three slices of `raw_runs.csv` (all ratios, \(r \neq 0.50\), and \(r = 0.50\) only). It writes under `results/sensitivity_r050/` and `figures/sensitivity_r050/`. The script currently sets `PROJECT_ROOT` to an absolute path; point that path at your clone before running it.
+`results/sensitivity_r050/build_sensitivity_r050.py` recomputes CHR, Correction Gain, break-even, PSG, and the Friedman–Wilcoxon tests on three slices of `raw_runs.csv` (all ratios, \(r \neq 0.50\), and \(r = 0.50\) only). It locates the repository from its own file path and writes under `results/sensitivity_r050/` and `figures/sensitivity_r050/`. Run it from any working directory with `python3 results/sensitivity_r050/build_sensitivity_r050.py`.
 
 ## Repository layout
 
@@ -242,4 +243,18 @@ The APS Failure `tabpfn_downsample` cell above fails the same way on a repeat. L
 | `tables/` | CSV copies of the paper tables |
 | `figures/` | Figure images |
 | `paper/` | IEEE manuscript |
-| `paper/ACM/` | ACM manuscript |
+| `paper/ACM/` | ACM manuscript, including `main_anonymous.tex` |
+| `requirements.txt` | Pinned fitting environment |
+| `LICENSE` | MIT for code and manuscript source; UCI data stays CC BY 4.0 |
+
+## License
+
+Code, notebooks, figures, and manuscript source are under the MIT license in [`LICENSE`](LICENSE).
+
+`data/raw/` and `data/processed/` are UCI Machine Learning Repository datasets and tables derived from them. UCI distributes those datasets under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Cite the repository and the dataset entries in `paper/references.bib`. The license badge on each page linked from `data/manifest.json` governs that file.
+
+## TKDD double-anonymous review
+
+ACM TKDD requires double-anonymous review for regular submissions. Author names, affiliations, and funding must not appear in the submission, and a paper that reveals the authors' identity can be rejected. The current guidelines are at <https://dl.acm.org/journal/tkdd/author-guidelines>.
+
+This repository identifies the authors: `paper/main.tex` and `paper/ACM/main.tex` name them, and a public GitHub account does too. Do not put this repository's URL in an anonymized TKDD manuscript or cover letter. Submit `paper/ACM/main_anonymous.tex` for review. If reviewers need the code during review, upload it as anonymous supplementary material or through an anonymized host, and add the public URL after acceptance. Conference-extension papers are the exception stated in the TKDD guidelines.

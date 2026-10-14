@@ -3,8 +3,12 @@
 # (crash, whatever killed the kernel before) before all 26 datasets are complete.
 # The resume-skip guard inside the script means each relaunch picks up where the
 # last one left off, never redoing a completed dataset.
-cd "/Users/sanju/Desktop/AI new papoer"
-source .venv_notebook/bin/activate
+cd "$(dirname "$0")"
+if [ -f .venv_notebook/bin/activate ]; then
+  source .venv_notebook/bin/activate
+elif [ -f .venv/bin/activate ]; then
+  source .venv/bin/activate
+fi
 
 while true; do
   DONE=$(python3 -c "

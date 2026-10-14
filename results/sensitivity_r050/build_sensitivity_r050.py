@@ -31,7 +31,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-PROJECT_ROOT = Path("/Users/sanju/Desktop/AI new papoer")
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 RESULTS_DIR = PROJECT_ROOT / "results"
 OUT_DIR = RESULTS_DIR / "sensitivity_r050"
 FIG_DIR = PROJECT_ROOT / "figures" / "sensitivity_r050"
