@@ -33,7 +33,6 @@ __pycache__/
 paper_overleaf_upload/
 
 # Local working copies, not part of the public paper
-backup.ipynb
 memory.md
 test.py
 Project_Explainer.pdf
