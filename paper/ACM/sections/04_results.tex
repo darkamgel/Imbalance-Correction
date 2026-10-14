@@ -131,7 +131,7 @@ $r{\neq}0.50$, and their mean CG rises from $-0.004$/$-0.009$ pooled to
 0.013/$-0.004$. At $r{=}0.50$ alone the same two methods fail 85.6\% and 76.0\% of
 the time under Direction B, with mean gains of $-0.055$ and $-0.023$, and they
 rarely reach break-even there (3.8\% of (dataset, $r{=}0.50$) pairs for both,
-versus 46.2\%/47.4\% at $r{\neq}0.50$). Under Direction A the change is small. The
+versus 48.7\%/42.3\% at $r{\neq}0.50$ under Direction B). Under Direction A the change is small. The
 DistPFN pair's CHR moves from 35.1\%/33.9\% pooled to 34.9\%/35.9\%.
 \texttt{tabpfn\_downsample}'s Direction A CHR does not fall when $r{=}0.50$ is
 excluded (20.4\% pooled vs.\ 18.6\%), consistent with
@@ -288,7 +288,7 @@ Method / Direction & mean PSG (pooled) & mean PSG ($c{=}0.30$) \\
 \texttt{tabpfn\_threshold}, Dir.\ A  & $-0.012$ & $-0.037$ \\
 \texttt{tabpfn\_threshold}, Dir.\ B  & $-0.008$ & $-0.019$ \\
 \texttt{tabpfn\_distpfn}, Dir.\ A    & $-0.007$ & $-0.033$ \\
-\texttt{tabpfn\_distpfn}, Dir.\ B    & $-0.020$ & $-0.043$ \\
+\texttt{tabpfn\_distpfn}, Dir.\ B    & $-0.020$ & $-0.042$ \\
 \texttt{tabpfn\_distpfn\_t}, Dir.\ A & $-0.008$ & $-0.036$ \\
 \texttt{tabpfn\_distpfn\_t}, Dir.\ B & $-0.014$ & $-0.033$ \\
 \bottomrule
@@ -407,8 +407,7 @@ Figure~\ref{fig:reliability} tracks Brier score and expected calibration error (
 against noise level. Every XGBoost correction improves on \texttt{xgb\_none} at every
 noise level tested, in both directions. \texttt{tabpfn\_downsample} is worse-calibrated
 than the uncorrected \texttt{tabpfn\_none} on both ECE and Brier score at every noise
-level under Direction A, the only method in the study with that pattern on either
-metric. \texttt{tabpfn\_threshold} never exceeds its baseline's Brier score or ECE in
+level in both directions, the only method in the study with that pattern. \texttt{tabpfn\_threshold} never exceeds its baseline's Brier score or ECE in
 either direction. This follows from how it works. It moves only the decision threshold,
 so the probabilities that Brier score and ECE measure are identical to those of
 \texttt{tabpfn\_none} by construction. \texttt{tabpfn\_distpfn} and
@@ -434,7 +433,7 @@ DistPFN variants are a poor choice under contamination. A system that acts on pr
 probabilities, for example by setting a risk threshold, allocating a limited budget, or
 ranking cases by urgency, cares about calibration first. For that use, the pair's CHR is
 the wrong reason to rule them out. Reporting CHR and mean CG alone would also miss that
-\texttt{tabpfn\_downsample} is uniquely poor on calibration under Direction A, even though
+\texttt{tabpfn\_downsample} is uniquely poor on calibration in both directions, even though
 its balanced accuracy profile looks far more favorable there, with the second-highest
 mean CG of any method. Deployment requires checking both axes separately rather than
 inferring one from the other.

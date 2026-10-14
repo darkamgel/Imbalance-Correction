@@ -1,7 +1,44 @@
+# Secrets and local environments
 .env
 .venv/
 .venv_notebook/
+.claude/
+
+# Python
 __pycache__/
 *.pyc
-.claude/
 .ipynb_checkpoints/
+
+# OS junk
+.DS_Store
+**/.DS_Store
+
+# LaTeX build output (source .tex / .bib stay tracked)
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.toc
+
+# Overleaf upload bundles (paper source is already in paper/ and paper/ACM/)
+*.zip
+paper_overleaf_upload/
+
+# Local working copies, not part of the public paper
+backup.ipynb
+memory.md
+test.py
+Project_Explainer.pdf
+Study_Explainer.pdf
+conferences.pdf
+finaldraft.pdf
+results_comparison.pdf
+paper/comparison.pdf
